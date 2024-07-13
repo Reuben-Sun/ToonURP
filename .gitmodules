@@ -1,0 +1,3 @@
+[submodule "LWGUI"]
+	path = LWGUI
+	url = https://github.com/JasonMa0012/LWGUI.git
