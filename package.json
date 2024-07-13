@@ -1,0 +1,21 @@
+﻿{
+  "name": "com.reubensun.toonurp",
+  "description": "A omnipotence rendering pipeline for Unity",
+  "version": "1.0.0",
+  "unity": "2022.3",
+  "displayName": "Toon URP",
+  "dependencies": {
+    "com.unity.mathematics": "1.2.1",
+    "com.unity.burst": "1.8.4",
+    "com.unity.render-pipelines.universal": "14.0.10",
+    "com.jasonma.lwgui": "1.17.0"
+  },
+  "author": {
+    "name": "Reuben Sun",
+    "url": "https://github.com/Reuben-Sun/ToonURP"
+  },
+  "keywords": [
+    "shaders",
+    "toon"
+  ]
+}
