@@ -131,9 +131,14 @@ void ToonShandardPassFragment(Varyings input, out float4 outColor: SV_Target0)
 
     InputData inputData;
     InitializeInputData(input, surfaceData.normalTS, inputData);
-    
-    float4 color = UniversalFragmentPBR(inputData, surfaceData);
+
+    float4 color = 0;
+    #if _PBRSHADING
+    color = UniversalFragmentPBR(inputData, surfaceData);
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
+    #elif _CELLSHADING
+    color = float4(1, 0, 1, 1);
+    #endif
     outColor = color;
 }
 

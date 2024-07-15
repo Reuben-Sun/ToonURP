@@ -14,7 +14,9 @@ Material:
   m_ValidKeywords:
   - _ALBEDOMAP
   - _NORMALMAP
-  m_InvalidKeywords: []
+  - _PBRSHADING
+  m_InvalidKeywords:
+  - _LAMBERTIAN
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -113,6 +115,7 @@ Material:
     - _EnableMetallicMap: 0
     - _EnableNormalMap: 1
     - _EnableRoughnessMap: 0
+    - _EnumShadingMode: 1
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
@@ -122,17 +125,25 @@ Material:
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
+    - _RenderSettingGroup: 0
     - _Roughness: 0.533
+    - _ShadingModeGroup: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _SurfaceGroup: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
+    - _enum_diffuse: 3
     - _group: 0
+    - _lightingModeGroup: 0
+    - _renderSettingGroup: 0
     - _settingGroup: 0
+    - _shadingModeGroup: 0
+    - _surfaceGroup: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
