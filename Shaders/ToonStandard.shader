@@ -26,11 +26,11 @@
     	
     	// RenderSetting
     	[Main(RenderSetting, _, off, off)] _settingGroup("RenderSetting", float) = 0
-    	// [SubEnum(RenderSetting, UnityEngine.Rendering.CullMode)] _Cull("Cull Mode", Float) = 2.0
-        [Preset(RenderSetting, ToonURP_BlendModePreset)] _BlendMode ("Blend Mode Preset", float) = 0
+        [Preset(RenderSetting, LWGUI_BlendModePreset)] _BlendMode ("Blend Mode Preset", float) = 0
     	[SubEnum(RenderSetting, UnityEngine.Rendering.BlendMode)] _SrcBlend("Src Alpha", Float) = 1.0
         [SubEnum(RenderSetting, UnityEngine.Rendering.BlendMode)] _DstBlend("Dst Alpha", Float) = 0.0
     	[SubEnum(RenderSetting, Off, 0, On, 1)] _ZWrite("Z Write", Float) = 1.0
+    	[SubEnum(RenderSetting, UnityEngine.Rendering.CullMode)] _Cull("Cull Mode", Float) = 2.0
     }
     SubShader
     {
