@@ -133,8 +133,7 @@ void ToonShandardPassFragment(Varyings input, out float4 outColor: SV_Target0)
     InitializeInputData(input, surfaceData.normalTS, inputData);
     
     float4 color = UniversalFragmentPBR(inputData, surfaceData);
-    // color.rgb = MixFog(color.rgb, inputData.fogCoord);
-    // color.a = OutputAlpha(color.a, IsSurfaceTypeTransparent(_Surface));
+    color.rgb = MixFog(color.rgb, inputData.fogCoord);
     outColor = color;
 }
 

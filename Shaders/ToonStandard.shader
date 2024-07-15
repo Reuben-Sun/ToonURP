@@ -44,14 +44,20 @@
             Cull [_Cull]
             
             HLSLPROGRAM
+			
+			#pragma vertex ToonStandardPassVertex
+            #pragma fragment ToonShandardPassFragment
 
+			// -------------------------------------
+            // Material Keywords
 			#pragma shader_feature_local _ALBEDOMAP
             #pragma shader_feature_local _NORMALMAP
             #pragma shader_feature_local _ROUGHNESSMAP
             #pragma shader_feature_local _METALLICMAP
 
-			#pragma vertex ToonStandardPassVertex
-            #pragma fragment ToonShandardPassFragment
+			// -------------------------------------
+            // Unity defined keywords
+			#pragma multi_compile_fog
 			
 			#include "Packages/com.reubensun.toonurp/Shaders/ToonLitInput.hlsl"
 			#include "Packages/com.reubensun.toonurp/Shaders/ToonStandardForwardPass.hlsl"
