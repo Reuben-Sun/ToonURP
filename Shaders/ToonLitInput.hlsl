@@ -10,15 +10,17 @@
 
 CBUFFER_START(UnityPerMaterial)
 float4 _MainTex_ST;
-half4 _BaseColor;
+float4 _BaseColor;
 float _Roughness;
 float _Metallic;
+float4 _EmissionColor;
 CBUFFER_END
 
 TEXTURE2D(_MainTex);        SAMPLER(sampler_MainTex);
 TEXTURE2D(_RoughnessMap);        SAMPLER(sampler_RoughnessMap);
 TEXTURE2D(_MetallicMap);        SAMPLER(sampler_MetallicMap);
 TEXTURE2D(_NormalMap);        SAMPLER(sampler_NormalMap);
+TEXTURE2D(_OcclusionMap);        SAMPLER(sampler_OcclusionMap);
 
 inline void InitializeToonStandardLitSurfaceData(float2 uv, out ToonSurfaceData outSurfaceData)
 {
@@ -44,7 +46,14 @@ inline void InitializeToonStandardLitSurfaceData(float2 uv, out ToonSurfaceData 
     #endif
     
     outSurfaceData.occlusion = 1.0;
+    #if _OCCLUSIONMAP
+    outSurfaceData.occlusion = SAMPLE_TEXTURE2D(_OcclusionMap, sampler_OcclusionMap, uv).r;
+    #endif
+    
     outSurfaceData.emission = half3(0.0h, 0.0h, 0.0h);
+    #if _EMISSION
+    outSurfaceData.emission = _EmissionColor.rgb;
+    #endif
 }
 
 
