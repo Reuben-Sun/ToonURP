@@ -1,7 +1,7 @@
 ﻿#ifndef TOON_STANDARD_FORWARD_PASS_INCLUDED
 #define TOON_STANDARD_FORWARD_PASS_INCLUDED
 
-#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+#include "Packages/com.reubensun.toonurp/ShaderLibrary/ToonLighting.hlsl"
 
 struct Attributes
 {
@@ -37,6 +37,48 @@ struct Varyings
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
 };
+
+void InitializeInputData(Varyings input, half3 normalTS, out InputData inputData)
+{
+    inputData = (InputData)0;
+    
+    inputData.positionWS = input.positionWS;
+
+    half3 viewDirWS = GetWorldSpaceNormalizeViewDir(input.positionWS);
+    
+    #if _NORMALMAP
+    float sgn = input.tangentWS.w;      // should be either +1 or -1
+    float3 bitangent = sgn * cross(input.normalWS.xyz, input.tangentWS.xyz);
+    half3x3 tangentToWorld = half3x3(input.tangentWS.xyz, bitangent.xyz, input.normalWS.xyz);
+    inputData.tangentToWorld = tangentToWorld;
+    inputData.normalWS = TransformTangentToWorld(normalTS, tangentToWorld);
+    #else
+    inputData.normalWS = input.normalWS;
+    #endif
+    inputData.normalWS = NormalizeNormalPerPixel(inputData.normalWS);
+    
+    inputData.viewDirectionWS = viewDirWS;
+    
+    inputData.shadowCoord = input.shadowCoord;
+    
+    inputData.fogCoord = InitializeInputDataFog(float4(input.positionWS, 1.0), input.fogFactor);
+    
+    inputData.bakedGI = SAMPLE_GI(input.staticLightmapUV, input.vertexSH, inputData.normalWS);
+    
+    inputData.normalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(input.positionCS);
+    inputData.shadowMask = SAMPLE_SHADOWMASK(input.staticLightmapUV);
+
+    #if defined(DEBUG_DISPLAY)
+    #if defined(DYNAMICLIGHTMAP_ON)
+    inputData.dynamicLightmapUV = input.dynamicLightmapUV;
+    #endif
+    #if defined(LIGHTMAP_ON)
+    inputData.staticLightmapUV = input.staticLightmapUV;
+    #else
+    inputData.vertexSH = input.vertexSH;
+    #endif
+    #endif
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -81,7 +123,19 @@ Varyings ToonStandardPassVertex(Attributes input)
 
 void ToonShandardPassFragment(Varyings input, out float4 outColor: SV_Target0)
 {
-    outColor = _BaseColor;
+    UNITY_SETUP_INSTANCE_ID(input);
+    UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
+
+    ToonSurfaceData surfaceData;
+    InitializeToonStandardLitSurfaceData(input.uv, surfaceData);
+
+    InputData inputData;
+    InitializeInputData(input, surfaceData.normalTS, inputData);
+    
+    float4 color = UniversalFragmentPBR(inputData, surfaceData);
+    // color.rgb = MixFog(color.rgb, inputData.fogCoord);
+    // color.a = OutputAlpha(color.a, IsSurfaceTypeTransparent(_Surface));
+    outColor = color;
 }
 
 
