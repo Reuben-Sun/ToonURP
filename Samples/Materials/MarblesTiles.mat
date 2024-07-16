@@ -128,7 +128,7 @@ Material:
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _RenderSettingGroup: 0
-    - _Roughness: 0.533
+    - _Roughness: 0.557
     - _ShadingModeGroup: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
