@@ -98,6 +98,20 @@ float3 ToonMainLightDirectLighting(BRDFData brdfData, InputData inputData, ToonS
     return color;
 }
 
+
+float3 ToonIndirectLighting(BRDFData brdfData, InputData inputData, float occlusion)
+{
+    float3 indirectDiffuse = inputData.bakedGI * occlusion;
+    float3 reflectVector = reflect(-inputData.viewDirectionWS, inputData.normalWS);
+    float NoV = saturate(dot(inputData.normalWS, inputData.viewDirectionWS));
+    float fresnelTerm = Pow4(1.0 - NoV);
+    half3 indirectSpecular = GlossyEnvironmentReflection(reflectVector, inputData.positionWS,
+        brdfData.perceptualRoughness, occlusion, inputData.normalizedScreenSpaceUV);
+    float3 indirectColor = EnvironmentBRDF(brdfData, indirectDiffuse, indirectSpecular, fresnelTerm);
+    
+    return indirectColor;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 //                      Fragment Func                                        //
 ///////////////////////////////////////////////////////////////////////////////
@@ -135,7 +149,7 @@ float4 ToonFragment(InputData inputData, ToonSurfaceData toonSurfaceData)
     float4 color = 1;
     color.rgb = ToonMainLightDirectLighting(brdfData, inputData, toonSurfaceData, lightingData);
     // color.rgb += FernAdditionLightDirectLighting(brdfData, clearCoatbrdfData, input, inputData, surfaceData, addInputData, shadowMask, meshRenderingLayers, aoFactor);
-    // color.rgb += FernIndirectLighting(brdfData, inputData, input, surfaceData.occlusion);
+    color.rgb += ToonIndirectLighting(brdfData, inputData, toonSurfaceData.occlusion);
     // color.rgb += FernRimLighting(lightingData, inputData, input, addInputData); 
 
     // color.rgb += surfaceData.emission;
