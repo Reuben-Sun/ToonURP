@@ -16,5 +16,12 @@
   "keywords": [
     "shaders",
     "toon"
+  ],
+  "samples": [
+    {
+      "displayName": "ToonURP Package Samples",
+      "description": "Collection of scenes showcasing different features of the Toon URP.",
+      "path": "Samples"
+    }
   ]
 }
