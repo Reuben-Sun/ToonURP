@@ -152,11 +152,10 @@ float4 ToonFragment(InputData inputData, ToonSurfaceData toonSurfaceData)
     color.rgb += ToonIndirectLighting(brdfData, inputData, toonSurfaceData.occlusion);
     // color.rgb += FernRimLighting(lightingData, inputData, input, addInputData); 
 
-    // color.rgb += surfaceData.emission;
+    color.rgb += toonSurfaceData.emission;
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
 
-    // color.a = surfaceData.alpha;
-    // return color;
+    color.a = toonSurfaceData.alpha;
     return color;
 }
 

@@ -134,11 +134,11 @@ Material:
     - _ShadingModeGroup: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
-    - _SpecularAlbedoWeight: 0
+    - _SpecularAlbedoWeight: 0.29
     - _SpecularHighlights: 1
-    - _SpecularIntensity: 5.04
-    - _SpecularSize: 0.302
-    - _SpecularSoftness: 0.154
+    - _SpecularIntensity: 6.08
+    - _SpecularSize: 0.114
+    - _SpecularSoftness: 0.188
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0

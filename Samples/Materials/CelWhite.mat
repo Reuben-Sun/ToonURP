@@ -103,7 +103,7 @@ Material:
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
     - _CellSmoothing: 0.027
-    - _CellThreshold: 0.314
+    - _CellThreshold: 0.328
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -135,7 +135,7 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularAlbedoWeight: 0
     - _SpecularHighlights: 1
-    - _SpecularIntensity: 3.78
+    - _SpecularIntensity: 4.75
     - _SpecularSize: 0.113
     - _SpecularSoftness: 0.001
     - _SrcBlend: 1
