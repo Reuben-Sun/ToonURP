@@ -1,6 +1,7 @@
 ﻿#ifndef TOON_LIGHTING_INCLUDED
 #define TOON_LIGHTING_INCLUDED
 
+#include "Packages/com.reubensun.toonurp/Shaders/ToonLitInput.hlsl"
 #include "Packages/com.reubensun.toonurp/ShaderLibrary/ToonSurfaceData.hlsl"
 #include "Packages/com.reubensun.toonurp/ShaderLibrary/ToonBRDF.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
@@ -12,7 +13,7 @@ struct ToonLightingData
     float3 lightDir;
     float NoL;
     float NoLClamp;
-    float HalfLambert;
+    float halfLambert;
     float NoVClamp;
     float NoHClamp;
     float LoHClamp;
@@ -27,7 +28,7 @@ ToonLightingData InitializeLightingData(Light mainLight, float3 normalWS, float3
     lightData.lightDir = mainLight.direction.xyz;
     lightData.NoL = dot(normalWS, lightData.lightDir);
     lightData.NoLClamp = saturate(lightData.NoL);
-    lightData.HalfLambert = 0.5 * (lightData.NoL + 1);
+    lightData.halfLambert = 0.5 * (lightData.NoL + 1);
     lightData.NoVClamp = saturate(dot(normalWS, viewDir));
     half3 halfDir = SafeNormalize(lightData.lightDir + viewDir);
     lightData.halfDir = halfDir;
@@ -36,6 +37,51 @@ ToonLightingData InitializeLightingData(Light mainLight, float3 normalWS, float3
     lightData.shadowAttenuation = mainLight.shadowAttenuation * mainLight.distanceAttenuation;
     return lightData;
 }
+
+half LightingRadiance(ToonLightingData lightingData, half useHalfLambert, half occlusion, half useRadianceOcclusion)
+{
+    half radiance = lerp(lightingData.NoLClamp, lightingData.halfLambert, useHalfLambert);
+    radiance = saturate(lerp(radiance, (radiance + occlusion) * 0.5, useRadianceOcclusion)) * lightingData.shadowAttenuation;
+    return radiance;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//                      Lighting                                             //
+///////////////////////////////////////////////////////////////////////////////
+
+inline half3 CellShadingDiffuse(inout half radiance, half cellThreshold, half cellSmooth, half3 highColor, half3 darkColor)
+{
+    half3 diffuse = 0;
+    radiance = saturate(1 + (radiance - cellThreshold - cellSmooth) / max(cellSmooth, 1e-3));
+    diffuse = lerp(darkColor.rgb, highColor.rgb, radiance);
+    return diffuse;
+}
+
+float3 NPRDiffuseLighting(BRDFData brdfData, ToonLightingData lightingData, half radiance)
+{
+    float3 diffuse = 0;
+    #if _CELLSHADING
+    diffuse = CellShadingDiffuse(radiance, _CellThreshold, _CellSmoothing, _HighColor.rgb, _DarkColor.rgb);
+    // TODO: _SDFFACE
+    #endif
+    diffuse *= brdfData.diffuse;
+    return diffuse;
+}
+
+float3 ToonMainLightDirectLighting(BRDFData brdfData, InputData inputData, ToonSurfaceData surfData, ToonLightingData lightData)
+{
+    half radiance = LightingRadiance(lightData, _UseHalfLambert, surfData.occlusion, _UseRadianceOcclusion);
+
+    half3 diffuse = NPRDiffuseLighting(brdfData, lightData, radiance);
+    // half3 specular = NPRSpecularLighting(brdfData, surfData, input, inputData, surfData.albedo, radiance, lightData);
+    // half3 color = (diffuse + specular) * lightData.lightColor;
+    float3 color = diffuse;
+    return color;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//                      Fragment Func                                        //
+///////////////////////////////////////////////////////////////////////////////
 
 float4 UniversalFragmentPBR(InputData inputData, ToonSurfaceData toonSurfaceData)
 {
@@ -67,8 +113,8 @@ float4 ToonFragment(InputData inputData, ToonSurfaceData toonSurfaceData)
     // lighting
     ToonLightingData lightingData = InitializeLightingData(mainLight, inputData.normalWS, inputData.viewDirectionWS);
     
-    half4 color = 1;
-    // color.rgb = FernMainLightDirectLighting(brdfData, clearCoatbrdfData, input, inputData, surfaceData, lightingData);
+    float4 color = 1;
+    color.rgb = ToonMainLightDirectLighting(brdfData, inputData, toonSurfaceData, lightingData);
     // color.rgb += FernAdditionLightDirectLighting(brdfData, clearCoatbrdfData, input, inputData, surfaceData, addInputData, shadowMask, meshRenderingLayers, aoFactor);
     // color.rgb += FernIndirectLighting(brdfData, inputData, input, surfaceData.occlusion);
     // color.rgb += FernRimLighting(lightingData, inputData, input, addInputData); 
@@ -78,7 +124,7 @@ float4 ToonFragment(InputData inputData, ToonSurfaceData toonSurfaceData)
 
     // color.a = surfaceData.alpha;
     // return color;
-    return float4(1, 0, 1, 1);
+    return color;
 }
 
 #endif

@@ -29,6 +29,12 @@
     	// Lighting mode
     	[Main(ShadingMode, _, off, off)] _ShadingModeGroup("ShadingMode", float) = 0
     	[KWEnum(ShadingMode, CelShading, _CELLSHADING, PBRShading, _PBRSHADING)] _EnumShadingMode ("Mode", float) = 0
+    	[SubToggle(ShadingMode)] _UseHalfLambert ("Use HalfLambert (More Flatter)", float) = 0
+        [SubToggle(ShadingMode)] _UseRadianceOcclusion ("Radiance Occlusion", float) = 0
+    	[Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] [HDR] _HighColor ("Hight Color", Color) = (1,1,1,1)
+        [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _DarkColor ("Dark Color", Color) = (0,0,0,1)
+        [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _CellThreshold ("Cell Threshold", Range(0.01,1)) = 0.5
+        [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _CellSmoothing ("Cell Smoothing", Range(0.001,1)) = 0.001
     	
     	// RenderSetting
     	[Main(RenderSetting, _, off, off)] _RenderSettingGroup("RenderSetting", float) = 0

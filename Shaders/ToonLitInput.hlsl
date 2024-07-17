@@ -14,6 +14,17 @@ float4 _BaseColor;
 float _Roughness;
 float _Metallic;
 float4 _EmissionColor;
+
+float _UseHalfLambert;
+float _UseRadianceOcclusion;
+
+#if _CELLSHADING
+float4 _HighColor;
+float4 _DarkColor;
+float _CellThreshold;
+float _CellSmoothing;
+#endif
+
 CBUFFER_END
 
 TEXTURE2D(_MainTex);        SAMPLER(sampler_MainTex);
