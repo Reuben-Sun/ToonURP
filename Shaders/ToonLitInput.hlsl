@@ -17,12 +17,17 @@ float4 _EmissionColor;
 
 float _UseHalfLambert;
 float _UseRadianceOcclusion;
+float4 _SpecularColor;
 
 #if _CELLSHADING
 float4 _HighColor;
 float4 _DarkColor;
 float _CellThreshold;
 float _CellSmoothing;
+float _SpecularIntensity;
+float _SpecularSize;
+float _SpecularSoftness;
+float _SpecularAlbedoWeight;
 #endif
 
 CBUFFER_END

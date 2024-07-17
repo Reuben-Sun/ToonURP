@@ -5,6 +5,7 @@
 #include "Packages/com.reubensun.toonurp/ShaderLibrary/ToonSurfaceData.hlsl"
 #include "Packages/com.reubensun.toonurp/ShaderLibrary/ToonBRDF.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+#include "Packages/com.reubensun.toonurp/ShaderLibrary/ToonShaderUtils.hlsl"
 
 struct ToonLightingData
 {
@@ -30,7 +31,7 @@ ToonLightingData InitializeLightingData(Light mainLight, float3 normalWS, float3
     lightData.NoLClamp = saturate(lightData.NoL);
     lightData.halfLambert = 0.5 * (lightData.NoL + 1);
     lightData.NoVClamp = saturate(dot(normalWS, viewDir));
-    half3 halfDir = SafeNormalize(lightData.lightDir + viewDir);
+    float3 halfDir = SafeNormalize(lightData.lightDir + viewDir);
     lightData.halfDir = halfDir;
     lightData.NoHClamp = saturate(dot(normalWS, halfDir));
     lightData.LoHClamp = saturate(dot(lightData.lightDir, halfDir));
@@ -49,15 +50,15 @@ half LightingRadiance(ToonLightingData lightingData, half useHalfLambert, half o
 //                      Lighting                                             //
 ///////////////////////////////////////////////////////////////////////////////
 
-inline half3 CellShadingDiffuse(inout half radiance, half cellThreshold, half cellSmooth, half3 highColor, half3 darkColor)
+inline float3 CellShadingDiffuse(inout float radiance, float cellThreshold, float cellSmooth, float3 highColor, float3 darkColor)
 {
-    half3 diffuse = 0;
+    float3 diffuse = 0;
     radiance = saturate(1 + (radiance - cellThreshold - cellSmooth) / max(cellSmooth, 1e-3));
     diffuse = lerp(darkColor.rgb, highColor.rgb, radiance);
     return diffuse;
 }
 
-float3 NPRDiffuseLighting(BRDFData brdfData, ToonLightingData lightingData, half radiance)
+float3 NPRDiffuseLighting(BRDFData brdfData, ToonLightingData lightingData, float radiance)
 {
     float3 diffuse = 0;
     #if _CELLSHADING
@@ -68,14 +69,32 @@ float3 NPRDiffuseLighting(BRDFData brdfData, ToonLightingData lightingData, half
     return diffuse;
 }
 
+inline float3 StylizedSpecular(float3 albedo, float NoHClamp, float specularSize, float specularSoftness, float albedoWeight)
+{
+    float specSize = 1 - (specularSize * specularSize);
+    float NoHStylized = (NoHClamp - specSize * specSize) / (1 - specSize);
+    half3 specular = LinearStep(0, specularSoftness, NoHStylized);
+    specular = lerp(specular, albedo * specular, albedoWeight);
+    return specular;
+}
+
+float3 NPRSpecularLighting(BRDFData brdfData, ToonSurfaceData surfData, InputData inputData, float3 albedo, half radiance, ToonLightingData lightData)
+{
+    float3 specular = 0;
+    #if _CELLSHADING
+    specular = StylizedSpecular(albedo, lightData.NoHClamp, _SpecularSize, _SpecularSoftness, _SpecularAlbedoWeight) * _SpecularIntensity;
+    #endif
+    specular *= _SpecularColor.rgb * radiance * brdfData.specular;
+    return specular;
+}
+
 float3 ToonMainLightDirectLighting(BRDFData brdfData, InputData inputData, ToonSurfaceData surfData, ToonLightingData lightData)
 {
     half radiance = LightingRadiance(lightData, _UseHalfLambert, surfData.occlusion, _UseRadianceOcclusion);
 
-    half3 diffuse = NPRDiffuseLighting(brdfData, lightData, radiance);
-    // half3 specular = NPRSpecularLighting(brdfData, surfData, input, inputData, surfData.albedo, radiance, lightData);
-    // half3 color = (diffuse + specular) * lightData.lightColor;
-    float3 color = diffuse;
+    float3 diffuse = NPRDiffuseLighting(brdfData, lightData, radiance);
+    float3 specular = NPRSpecularLighting(brdfData, surfData, inputData, surfData.albedo, radiance, lightData);
+    float3 color = (diffuse + specular) * lightData.lightColor;
     return color;
 }
 
