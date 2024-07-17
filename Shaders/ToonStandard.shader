@@ -41,6 +41,13 @@
         [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _SpecularSoftness ("Specular Softness", Range(0.001,1)) = 0.05
         [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _SpecularAlbedoWeight ("Color Albedo Weight", Range(0,1)) = 0
     	
+    	// Rim
+    	[Main(Rim, _, off, off)] _RimGroup("RimSettings", float) = 0
+    	[KWEnum(Rim, None, _, FresnelRim, _FRESNELRIM)] _EnumRim ("Rim Mode", float) = 0
+    	[Sub(Rim)] [ShowIf(_EnumRim, NEqual, 0)] _RimDirectionLightContribution("DirLight Contribution", Range(0,1)) = 1.0
+        [Sub(Rim)] [ShowIf(_EnumRim, NEqual, 0)] [HDR] _RimColor("Rim Color",Color) = (1,1,1,1)
+        [Sub(Rim)] [ShowIf(_EnumRim, Equal, 1)] _RimThreshold("Rim Threshold",Range(0,1)) = 0.2
+        [Sub(Rim)] [ShowIf(_EnumRim, Equal, 1)] _RimSoftness("Rim Softness",Range(0.001,1)) = 0.01
     	
     	// RenderSetting
     	[Main(RenderSetting, _, off, off)] _RenderSettingGroup("RenderSetting", float) = 0
@@ -76,6 +83,7 @@
 			#pragma shader_feature_local _EMISSION
 
 			#pragma shader_feature_local _CELLSHADING _PBRSHADING
+			#pragma shader_feature_local _ _FRESNELRIM
 
 			// -------------------------------------
             // Unity defined keywords

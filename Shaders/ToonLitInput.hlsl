@@ -9,16 +9,17 @@
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DBuffer.hlsl"
 
 CBUFFER_START(UnityPerMaterial)
+// Surface
 float4 _MainTex_ST;
 float4 _BaseColor;
 float _Roughness;
 float _Metallic;
 float4 _EmissionColor;
 
+// Lighting mode
 float _UseHalfLambert;
 float _UseRadianceOcclusion;
 float4 _SpecularColor;
-
 #if _CELLSHADING
 float4 _HighColor;
 float4 _DarkColor;
@@ -29,6 +30,12 @@ float _SpecularSize;
 float _SpecularSoftness;
 float _SpecularAlbedoWeight;
 #endif
+
+// Rim Setting
+float _RimDirectionLightContribution;
+float _RimThreshold;
+float _RimSoftness;
+float4 _RimColor;
 
 CBUFFER_END
 

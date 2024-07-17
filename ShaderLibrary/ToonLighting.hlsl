@@ -112,6 +112,19 @@ float3 ToonIndirectLighting(BRDFData brdfData, InputData inputData, float occlus
     return indirectColor;
 }
 
+float3 ToonRimLighting(ToonLightingData lightingData, InputData inputData)
+{
+    float3 rimColor = 0;
+    #if _FRESNELRIM
+    float NoV4 = Pow4(1 - lightingData.NoVClamp);
+    rimColor = LinearStep(_RimThreshold, _RimThreshold + _RimSoftness, NoV4);
+    rimColor *= LerpWhiteTo(lightingData.NoLClamp, _RimDirectionLightContribution);
+    rimColor *= _RimColor.rgb;
+    #endif
+    // TODO: _SCREENSPACERIM
+    return rimColor;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 //                      Fragment Func                                        //
 ///////////////////////////////////////////////////////////////////////////////
@@ -150,7 +163,7 @@ float4 ToonFragment(InputData inputData, ToonSurfaceData toonSurfaceData)
     color.rgb = ToonMainLightDirectLighting(brdfData, inputData, toonSurfaceData, lightingData);
     // color.rgb += FernAdditionLightDirectLighting(brdfData, clearCoatbrdfData, input, inputData, surfaceData, addInputData, shadowMask, meshRenderingLayers, aoFactor);
     color.rgb += ToonIndirectLighting(brdfData, inputData, toonSurfaceData.occlusion);
-    // color.rgb += FernRimLighting(lightingData, inputData, input, addInputData); 
+    color.rgb += ToonRimLighting(lightingData, inputData); 
 
     color.rgb += toonSurfaceData.emission;
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
