@@ -13,3 +13,7 @@ git clone https://github.com/Reuben-Sun/ToonURP.git
 ```
 git submodule update --init --recursive
 ```
+
+## 参考
+
+[FernRP](https://github.com/FernRP/FernRPExample)
