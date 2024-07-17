@@ -98,6 +98,66 @@ float3 ToonMainLightDirectLighting(BRDFData brdfData, InputData inputData, ToonS
     return color;
 }
 
+float3 NPRAdditionLighting(Light light, BRDFData brdfData, InputData inputData, ToonSurfaceData surfData)
+{
+    ToonLightingData lightingData = InitializeLightingData(light, inputData.normalWS, inputData.viewDirectionWS);
+    float pureIntencity = 0.299 * lightingData.lightColor.r + 0.587 * lightingData.lightColor.g + 0.114 * lightingData.lightColor.b;
+    lightingData.lightColor = max(0, lerp(lightingData.lightColor, min(lightingData.lightColor, lightingData.lightColor / pureIntencity * _MaxAdditionLightNum), _LimitAdditionLightNum));
+    half3 addLightColor = ToonMainLightDirectLighting(brdfData, inputData, surfData, lightingData);
+    return addLightColor;
+}
+
+float3 ToonAdditionLightDirectLighting(BRDFData brdfData, InputData inputData, ToonSurfaceData surfData, half4 shadowMask, half meshRenderingLayers, AmbientOcclusionFactor aoFactor)
+{
+    half3 additionLightColor = 0;
+    float pureIntensityMax = 0;
+    #if defined(_ADDITIONAL_LIGHTS)
+    uint pixelLightCount = GetAdditionalLightsCount();
+
+    #if USE_FORWARD_PLUS
+    for (uint lightIndex = 0; lightIndex < min(URP_FP_DIRECTIONAL_LIGHTS_COUNT, MAX_VISIBLE_LIGHTS); lightIndex++)
+    {
+        FORWARD_PLUS_SUBTRACTIVE_LIGHT_CHECK
+
+        Light light = GetAdditionalLight(lightIndex, inputData, shadowMask, aoFactor);
+
+    #ifdef _LIGHT_LAYERS
+        if (IsMatchingLightLayer(light.layerMask, meshRenderingLayers))
+    #endif
+        {
+            additionLightColor += NPRAdditionLighting(light, brdfData, inputData, surfData);
+        }
+    }
+    #endif
+
+    #if USE_CLUSTERED_LIGHTING
+    for (uint lightIndex = 0; lightIndex < min(_AdditionalLightsDirectionalCount, MAX_VISIBLE_LIGHTS); lightIndex++)
+    {
+        Light light = GetAdditionalLight(lightIndex, inputData, shadowMask, aoFactor);
+    #ifdef _LIGHT_LAYERS
+        if (IsMatchingLightLayer(light.layerMask, meshRenderingLayers))
+    #endif
+        {
+            additionLightColor += NPRAdditionLighting(light, brdfData, inputData, surfData);;
+        }
+    }
+    #endif
+
+    LIGHT_LOOP_BEGIN(pixelLightCount)
+        Light light = GetAdditionalLight(lightIndex, inputData, shadowMask, aoFactor);
+    #ifdef _LIGHT_LAYERS
+        if (IsMatchingLightLayer(light.layerMask, meshRenderingLayers))
+    #endif
+        {
+            additionLightColor += NPRAdditionLighting(light, brdfData, inputData, surfData);;
+        }
+    LIGHT_LOOP_END
+    #endif
+    
+
+    return additionLightColor;
+}
+
 
 float3 ToonIndirectLighting(BRDFData brdfData, InputData inputData, float occlusion)
 {
@@ -146,7 +206,7 @@ float4 ToonFragment(InputData inputData, ToonSurfaceData toonSurfaceData)
     #if defined(_SCREEN_SPACE_OCCLUSION)
     AmbientOcclusionFactor aoFactor = GetScreenSpaceAmbientOcclusion(inputData.normalizedScreenSpaceUV);
     mainLight.color *= aoFactor.directAmbientOcclusion;
-    surfaceData.occlusion = min(surfaceData.occlusion, aoFactor.indirectAmbientOcclusion);
+    toonSurfaceData.occlusion = min(toonSurfaceData.occlusion, aoFactor.indirectAmbientOcclusion);
     #else
     AmbientOcclusionFactor aoFactor;
     aoFactor.indirectAmbientOcclusion = 1;
@@ -161,7 +221,7 @@ float4 ToonFragment(InputData inputData, ToonSurfaceData toonSurfaceData)
     
     float4 color = 1;
     color.rgb = ToonMainLightDirectLighting(brdfData, inputData, toonSurfaceData, lightingData);
-    // color.rgb += FernAdditionLightDirectLighting(brdfData, clearCoatbrdfData, input, inputData, surfaceData, addInputData, shadowMask, meshRenderingLayers, aoFactor);
+    color.rgb += ToonAdditionLightDirectLighting(brdfData, inputData, toonSurfaceData, shadowMask, meshRenderingLayers, aoFactor);
     color.rgb += ToonIndirectLighting(brdfData, inputData, toonSurfaceData.occlusion);
     color.rgb += ToonRimLighting(lightingData, inputData); 
 

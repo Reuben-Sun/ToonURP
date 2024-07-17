@@ -37,6 +37,10 @@ float _RimThreshold;
 float _RimSoftness;
 float4 _RimColor;
 
+// MultLight Setting
+float _LimitAdditionLightNum;
+float _MaxAdditionLightNum;
+
 CBUFFER_END
 
 TEXTURE2D(_MainTex);        SAMPLER(sampler_MainTex);

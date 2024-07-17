@@ -49,6 +49,11 @@
         [Sub(Rim)] [ShowIf(_EnumRim, Equal, 1)] _RimThreshold("Rim Threshold",Range(0,1)) = 0.2
         [Sub(Rim)] [ShowIf(_EnumRim, Equal, 1)] _RimSoftness("Rim Softness",Range(0.001,1)) = 0.01
     	
+    	// MultLightSetting
+    	[Main(MultLightSetting, _, off, off)] _MultipleLightGroup ("MultLightSetting", float) = 0
+        [SubToggle(MultLightSetting)] _LimitAdditionLightNum("Limit Addition Light Number", Float) = 0
+        [Sub(MultLightSetting)] [ShowIf(_LimitAdditionLightNum, Equal, 1)] _MaxAdditionLightNum("Max Additional Light Number", Range(0, 8)) = 1
+    	
     	// RenderSetting
     	[Main(RenderSetting, _, off, off)] _RenderSettingGroup("RenderSetting", float) = 0
         [Preset(RenderSetting, LWGUI_BlendModePreset)] _BlendMode ("Blend Mode Preset", float) = 0
@@ -84,10 +89,22 @@
 
 			#pragma shader_feature_local _CELLSHADING _PBRSHADING
 			#pragma shader_feature_local _ _FRESNELRIM
-
+			
+			// -------------------------------------
+            // Universal Pipeline keywords
+			#pragma multi_compile _ _ADDITIONAL_LIGHTS
+			#pragma multi_compile_fragment _ _LIGHT_LAYERS
+            #pragma multi_compile_fragment _ _LIGHT_COOKIES
+            #pragma multi_compile _ _FORWARD_PLUS
+			#pragma multi_compile_fragment _ _SHADOWS_SOFT
+			#pragma multi_compile_fragment _ _SCREEN_SPACE_OCCLUSION
+			#pragma multi_compile_fragment _ _REFLECTION_PROBE_BLENDING
+            #pragma multi_compile_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
+			
 			// -------------------------------------
             // Unity defined keywords
 			#pragma multi_compile_fog
+			#pragma multi_compile _ LIGHTMAP_ON
 			
 			#include "Packages/com.reubensun.toonurp/Shaders/ToonLitInput.hlsl"
 			#include "Packages/com.reubensun.toonurp/Shaders/ToonStandardForwardPass.hlsl"
