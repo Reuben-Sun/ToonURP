@@ -3,12 +3,13 @@
     SubShader
     {
         Cull Off ZWrite Off ZTest Always
+        Tags { "RenderType"="UniversalPipeline" }
         Pass
         {
             HLSLPROGRAM
             
-            // #pragma vertex FullScreenTrianglePostProcessVertex
-            // #pragma fragment EdgeDetectionFragment
+            #pragma vertex EdgeOutlineVertex
+            #pragma fragment EdgeOutlineFragment
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
@@ -25,7 +26,7 @@
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
-            Varyings FullScreenTrianglePostProcessVertex (Attributes input)
+            Varyings EdgeOutlineVertex (Attributes input)
             {
                 Varyings output;
                 UNITY_SETUP_INSTANCE_ID(input);
@@ -34,13 +35,18 @@
                 output.texcoord = GetFullScreenTriangleTexCoord(input.vertexID);
                 return output;
             }
+            
+            CBUFFER_START(UnityPerMaterial)
+            float4 _EdgeThreshold;
+            float4 _EdgeColor;
+            CBUFFER_END
 
-            void ToonShandardPassFragment(Varyings input, out float4 outColor: SV_Target0)
+            void EdgeOutlineFragment(Varyings input, out float4 outColor: SV_Target0)
             {         
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
                 float2 uv = UnityStereoTransformScreenSpaceTex(input.texcoord);
-                outColor = float4(uv, 0, 1);
+                outColor = _EdgeColor;
             }
             
             ENDHLSL
