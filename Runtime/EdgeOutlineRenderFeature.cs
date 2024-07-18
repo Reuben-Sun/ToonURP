@@ -7,21 +7,24 @@ namespace ToonURP
 {
     public class EdgeOutlineRenderFeature : ScriptableRendererFeature
     {
+        
+        
         class EdgeDetectionRenderPass : ScriptableRenderPass
         {
             private EdgeOutline m_EdgeOutlineSettings = null;
             private Material m_Material = null;
             private RTHandle m_OutlineRTHandle = null;
             private readonly bool m_SupportsR8RenderTextureFormat =  SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.R8);
-            static class OutlineShaderIDs {
+            
+            static class DetectionShaderIDs 
+            {
                 internal static readonly int Threshold = Shader.PropertyToID("_EdgeThreshold");
-                internal static readonly int Color = Shader.PropertyToID("_EdgeColor");
                 internal static readonly int TempTarget = Shader.PropertyToID("_TempTarget");
             }
             
-            public EdgeDetectionRenderPass(Shader outlineShader)
+            public EdgeDetectionRenderPass(Shader shader)
             {
-                m_Material = CoreUtils.CreateEngineMaterial(outlineShader);
+                m_Material = CoreUtils.CreateEngineMaterial(shader);
                 ConfigureInput(ScriptableRenderPassInput.Depth | ScriptableRenderPassInput.Normal);
             }
             
@@ -49,15 +52,14 @@ namespace ToonURP
                 // create temp rt
                 var width = renderingData.cameraData.camera.scaledPixelWidth;
                 var height = renderingData.cameraData.camera.scaledPixelHeight;
-                cmd.GetTemporaryRT(OutlineShaderIDs.TempTarget, width, height, 0, FilterMode.Point, RenderTextureFormat.Default);
+                cmd.GetTemporaryRT(DetectionShaderIDs.TempTarget, width, height, 0, FilterMode.Point, RenderTextureFormat.Default);
                 // pass value
                 float angleThreshold = m_EdgeOutlineSettings.angleThreshold.value;
                 float depthThreshold = m_EdgeOutlineSettings.depthThreshold.value;
                 Vector4 threshold = new Vector4(Mathf.Cos(angleThreshold * Mathf.Deg2Rad), m_EdgeOutlineSettings.thickness.value, depthThreshold, m_EdgeOutlineSettings.intensity.value);
-                cmd.SetGlobalVector(OutlineShaderIDs.Threshold, threshold);
-                // cmd.SetGlobalColor(OutlineShaderIDs.Color, m_EdgeOutlineSettings.color.value);
+                cmd.SetGlobalVector(DetectionShaderIDs.Threshold, threshold);
                 // blit
-                cmd.Blit(OutlineShaderIDs.TempTarget, m_OutlineRTHandle, m_Material, 0);
+                cmd.Blit(DetectionShaderIDs.TempTarget, m_OutlineRTHandle, m_Material, 0);
                 cmd.SetGlobalTexture("_EdgeDetectionTexture", m_OutlineRTHandle.nameID);
                 context.ExecuteCommandBuffer(cmd);
                 CommandBufferPool.Release(cmd);
@@ -74,27 +76,91 @@ namespace ToonURP
             
         }
 
+        class EdgeOutlineRenderPass : ScriptableRenderPass
+        {
+            private EdgeOutline m_EdgeOutlineSettings = null;
+            private Material m_Material = null;
+            static class OutlineShaderIDs 
+            {
+                internal static readonly int Threshold = Shader.PropertyToID("_EdgeThreshold");
+                internal static readonly int Color = Shader.PropertyToID("_EdgeColor");
+                internal static readonly int TempTarget = Shader.PropertyToID("_TempTarget");
+                internal static readonly int CurrentTarget = Shader.PropertyToID("_CurrentTarget");
+            }
+            
+            public EdgeOutlineRenderPass(Shader shader)
+            {
+                m_Material = CoreUtils.CreateEngineMaterial(shader);
+                ConfigureInput(ScriptableRenderPassInput.Color);
+            }
+
+            public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
+            {
+                ResetTarget();
+            }
+
+            public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
+            {
+                var stack = VolumeManager.instance.stack;
+                m_EdgeOutlineSettings = stack.GetComponent<EdgeOutline>();
+                if (m_EdgeOutlineSettings == null || m_EdgeOutlineSettings.intensity.value <= 0)
+                {
+                    return;
+                }
+                var cmd = CommandBufferPool.Get("EdgeOutline");
+                // temp rt
+                // var width = renderingData.cameraData.camera.scaledPixelWidth;
+                // var height = renderingData.cameraData.camera.scaledPixelHeight;
+                // cmd.GetTemporaryRT(OutlineShaderIDs.TempTarget, width, height, 0, FilterMode.Point, RenderTextureFormat.Default);
+                // pass value
+                float angleThreshold = m_EdgeOutlineSettings.angleThreshold.value;
+                float depthThreshold = m_EdgeOutlineSettings.depthThreshold.value;
+                Vector4 threshold = new Vector4(Mathf.Cos(angleThreshold * Mathf.Deg2Rad), m_EdgeOutlineSettings.thickness.value, depthThreshold, m_EdgeOutlineSettings.intensity.value);
+                cmd.SetGlobalVector(OutlineShaderIDs.Threshold, threshold);
+                cmd.SetGlobalColor(OutlineShaderIDs.Color, m_EdgeOutlineSettings.color.value);
+                
+                CoreUtils.SetRenderTarget(cmd, renderingData.cameraData.renderer.cameraColorTargetHandle);
+                cmd.DrawProcedural(Matrix4x4.identity, m_Material, 0, MeshTopology.Triangles, 3, 1);
+                // Blitter.BlitCameraTexture(cmd, OutlineShaderIDs.TempTarget, re, mat, (int)pass);
+                context.ExecuteCommandBuffer(cmd);
+                CommandBufferPool.Release(cmd);
+            }
+            
+            
+        }
+        
         EdgeDetectionRenderPass m_EdgeDetectionPass;
+        EdgeOutlineRenderPass m_EdgeOutlinePass;
 
         [SerializeField] private Shader edgeDetectionShader = null;
+        [SerializeField] private Shader edgeOutlineShader = null;
 
         public override void Create()
         {
             edgeDetectionShader = Shader.Find("Hidden/ToonURP/EdgeDetection");
+            edgeOutlineShader = Shader.Find("Hidden/ToonURP/EdgeOutline");
             if (!edgeDetectionShader)
             {
                 Debug.LogError("Can't find Hidden/ToonURP/EdgeDetection shader.");
                 return;
             }
+            if (!edgeOutlineShader)
+            {
+                Debug.LogError("Can't find Hidden/ToonURP/EdgeOutline shader.");
+                return;
+            }
 
             m_EdgeDetectionPass = new EdgeDetectionRenderPass(edgeDetectionShader);
             m_EdgeDetectionPass.renderPassEvent = RenderPassEvent.AfterRenderingOpaques;
-            
+
+            m_EdgeOutlinePass = new EdgeOutlineRenderPass(edgeOutlineShader);
+            m_EdgeOutlinePass.renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
         }
         
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
             renderer.EnqueuePass(m_EdgeDetectionPass);
+            renderer.EnqueuePass(m_EdgeOutlinePass);
         }
     }
 }
