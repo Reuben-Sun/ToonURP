@@ -1,51 +1,84 @@
+using ToonURP;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-public class EdgeOutlineRenderFeature : ScriptableRendererFeature
+namespace ToonURP
 {
-    class EdgeOutlineRenderPass : ScriptableRenderPass
+    public class EdgeOutlineRenderFeature : ScriptableRendererFeature
     {
-        // This method is called before executing the render pass.
-        // It can be used to configure render targets and their clear state. Also to create temporary render target textures.
-        // When empty this render pass will render to the active camera render target.
-        // You should never call CommandBuffer.SetRenderTarget. Instead call <c>ConfigureTarget</c> and <c>ConfigureClear</c>.
-        // The render pipeline will ensure target setup and clearing happens in a performant manner.
-        public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
+        class EdgeOutlineRenderPass : ScriptableRenderPass
         {
+            private EdgeOutline m_EdgeOutlineSettings = null;
+            private Material m_Material = null;
+            private RTHandle m_OutlineRTHandle = null;
+            private readonly bool m_SupportsR8RenderTextureFormat =  SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.R8);
+            private static readonly int _TempTargetShaderId = Shader.PropertyToID("_TempTarget");
+            
+            public EdgeOutlineRenderPass(Shader outlineShader)
+            {
+                m_Material = CoreUtils.CreateEngineMaterial(outlineShader);
+            }
+
+            public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
+            {
+                var stack = VolumeManager.instance.stack;
+                m_EdgeOutlineSettings = stack.GetComponent<EdgeOutline>();
+                if (m_EdgeOutlineSettings == null || m_EdgeOutlineSettings.intensity.value <= 0)
+                {
+                    return;
+                }
+                
+                var descriptor = renderingData.cameraData.cameraTargetDescriptor;
+                descriptor.msaaSamples = 1;
+                descriptor.useMipMap = false;
+                descriptor.autoGenerateMips = false;
+                descriptor.depthBufferBits = 0;
+                descriptor.colorFormat = m_SupportsR8RenderTextureFormat ? RenderTextureFormat.R8 : RenderTextureFormat.ARGB32;
+            
+                RenderingUtils.ReAllocateIfNeeded(ref m_OutlineRTHandle, descriptor, FilterMode.Bilinear, TextureWrapMode.Clamp, name: "_EdgeDetectionTexture");
+                
+            }
+
+            public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
+            {
+                var cmd = CommandBufferPool.Get("EdgeOutline");
+                var width = renderingData.cameraData.camera.scaledPixelWidth;
+                var height = renderingData.cameraData.camera.scaledPixelHeight;
+                cmd.GetTemporaryRT(_TempTargetShaderId, width, height, 0, FilterMode.Point, RenderTextureFormat.Default);
+                cmd.Blit(_TempTargetShaderId, m_OutlineRTHandle, m_Material, 0);
+                cmd.SetGlobalTexture("_EdgeDetectionTexture", m_OutlineRTHandle.nameID);
+                context.ExecuteCommandBuffer(cmd);
+                CommandBufferPool.Release(cmd);
+            }
+
+            public override void OnCameraCleanup(CommandBuffer cmd)
+            {
+            }
+            
         }
 
-        // Here you can implement the rendering logic.
-        // Use <c>ScriptableRenderContext</c> to issue drawing commands or execute command buffers
-        // https://docs.unity3d.com/ScriptReference/Rendering.ScriptableRenderContext.html
-        // You don't have to call ScriptableRenderContext.submit, the render pipeline will call it at specific points in the pipeline.
-        public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
+        EdgeOutlineRenderPass m_ScriptablePass;
+
+        [SerializeField] private Shader edgeOutlineShader = null;
+
+        public override void Create()
         {
-        }
+            edgeOutlineShader = Shader.Find("Hidden/ToonURP/EdgeOutline");
+            if (!edgeOutlineShader)
+            {
+                Debug.LogError("Can't find Hidden/ToonURP/EdgeOutline shader.");
+                return;
+            }
 
-        // Cleanup any allocated resources that were created during the execution of this render pass.
-        public override void OnCameraCleanup(CommandBuffer cmd)
+            m_ScriptablePass = new EdgeOutlineRenderPass(edgeOutlineShader);
+            m_ScriptablePass.renderPassEvent = RenderPassEvent.AfterRenderingOpaques;
+        }
+        
+        public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
+            renderer.EnqueuePass(m_ScriptablePass);
         }
-    }
-
-    EdgeOutlineRenderPass m_ScriptablePass;
-
-    /// <inheritdoc/>
-    public override void Create()
-    {
-        m_ScriptablePass = new EdgeOutlineRenderPass();
-
-        // Configures where the render pass should be injected.
-        m_ScriptablePass.renderPassEvent = RenderPassEvent.AfterRenderingOpaques;
-    }
-
-    // Here you can inject one or multiple render passes in the renderer.
-    // This method is called when setting up the renderer once per-camera.
-    public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
-    {
-        renderer.EnqueuePass(m_ScriptablePass);
     }
 }
-
 
