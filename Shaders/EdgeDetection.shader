@@ -1,16 +1,16 @@
-﻿Shader "Hidden/ToonURP/EdgeOutline"
+﻿Shader "Hidden/ToonURP/EdgeDetection"
 {
     SubShader
     {
         Cull Off ZWrite Off ZTest Always
-        Name "Edge Outline"
+        Name "Edge Detection"
         Tags { "RenderType"="UniversalPipeline" }
         Pass
         {
             HLSLPROGRAM
             
-            #pragma vertex EdgeOutlineVertex
-            #pragma fragment EdgeOutlineFragment
+            #pragma vertex EdgeDetectionVertex
+            #pragma fragment EdgeDetectionFragment
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareNormalsTexture.hlsl"
@@ -29,7 +29,7 @@
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
-            Varyings EdgeOutlineVertex (Attributes input)
+            Varyings EdgeDetectionVertex (Attributes input)
             {
                 Varyings output;
                 UNITY_SETUP_INSTANCE_ID(input);
@@ -40,10 +40,8 @@
             }
             
             CBUFFER_START(UnityPerMaterial)
-            float4 _SourceSize;
             float4 _BlitTexture_TexelSize;
             float4 _EdgeThreshold;
-            float4 _EdgeColor;
             CBUFFER_END
             
             SAMPLER(sampler_linear_clamp);
@@ -93,7 +91,7 @@
                 return sum;
             }
 
-            void EdgeOutlineFragment(Varyings input, out float4 outColor: SV_Target0)
+            void EdgeDetectionFragment(Varyings input, out float4 outColor: SV_Target0)
             {         
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 

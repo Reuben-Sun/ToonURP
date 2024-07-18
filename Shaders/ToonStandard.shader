@@ -66,7 +66,7 @@
     {
         Pass
         {
-        	Name "Toon Forward"
+        	Name "Toon Standard"
             Tags{"LightMode" = "UniversalForward"}
             
             Blend [_SrcBlend] [_DstBlend]
