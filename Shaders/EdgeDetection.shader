@@ -96,7 +96,6 @@
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
                 float2 uv = UnityStereoTransformScreenSpaceTex(input.texcoord);
-                uv.y = 1 - uv.y;
                 float4 center = SampleSceneDepthNormal(uv);
                 float4 neighborhood = SampleNeighborhood(uv,  _EdgeThreshold.y);
                 float normalSampler = smoothstep(_EdgeThreshold.x, 1, dot(center.xyz, neighborhood.xyz));

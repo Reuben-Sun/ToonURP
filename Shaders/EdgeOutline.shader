@@ -53,7 +53,9 @@
 
                 float2 uv = UnityStereoTransformScreenSpaceTex(input.texcoord);
                 float3 sceneColor = SampleSceneColor(uv);
-                outColor = float4(sceneColor, 1);
+                float edgeDetect = SAMPLE_TEXTURE2D(_EdgeDetectionTexture, sampler_EdgeDetectionTexture, uv).r;
+                float3 color = lerp(sceneColor.rgb, _EdgeColor, edgeDetect * _EdgeThreshold.w);
+                outColor = float4(color, 1);
             }
             
             ENDHLSL
