@@ -16,7 +16,7 @@ namespace ToonURP
         public ColorParameter color = new ColorParameter(Color.black, true, false, true);
         
         [Tooltip("Controls the edge thickness.")]
-        public ClampedFloatParameter thickness = new ClampedFloatParameter(1, 0, 8);
+        public ClampedFloatParameter thickness = new ClampedFloatParameter(0, 0, 1);
         
         [Tooltip("Controls the threshold of the normal difference in degrees.")]
         public ClampedFloatParameter angleThreshold = new ClampedFloatParameter(1, 1, 179.9f);
