@@ -59,7 +59,8 @@ namespace ToonURP
                 Vector4 threshold = new Vector4(Mathf.Cos(angleThreshold * Mathf.Deg2Rad), m_EdgeOutlineSettings.thickness.value, depthThreshold, m_EdgeOutlineSettings.intensity.value);
                 cmd.SetGlobalVector(DetectionShaderIDs.Threshold, threshold);
                 // blit
-                cmd.Blit(DetectionShaderIDs.TempTarget, m_OutlineRTHandle, m_Material, 0);
+                // cmd.Blit(DetectionShaderIDs.TempTarget, m_OutlineRTHandle, m_Material, 0);
+                Blitter.BlitTexture(cmd, DetectionShaderIDs.TempTarget, m_OutlineRTHandle, m_Material, 0);
                 cmd.SetGlobalTexture("_EdgeDetectionTexture", m_OutlineRTHandle.nameID);
                 context.ExecuteCommandBuffer(cmd);
                 CommandBufferPool.Release(cmd);
@@ -80,6 +81,8 @@ namespace ToonURP
         {
             private EdgeOutline m_EdgeOutlineSettings = null;
             private Material m_Material = null;
+            private RTHandle m_OutlineRTHandle = null;
+            
             static class OutlineShaderIDs 
             {
                 internal static readonly int Threshold = Shader.PropertyToID("_EdgeThreshold");
@@ -87,16 +90,27 @@ namespace ToonURP
                 internal static readonly int TempTarget = Shader.PropertyToID("_TempTarget");
                 internal static readonly int CurrentTarget = Shader.PropertyToID("_CurrentTarget");
             }
-            
+            ScriptableRenderer m_Renderer;
             public EdgeOutlineRenderPass(Shader shader)
             {
                 m_Material = CoreUtils.CreateEngineMaterial(shader);
                 ConfigureInput(ScriptableRenderPassInput.Color);
             }
 
+            public void Setup(ScriptableRenderer renderer)
+            {
+                m_Renderer = renderer;
+            }
+            
             public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
             {
-                ResetTarget();
+                var descriptor = renderingData.cameraData.cameraTargetDescriptor;
+                descriptor.msaaSamples = 1;
+                descriptor.useMipMap = false;
+                descriptor.autoGenerateMips = false;
+                descriptor.depthBufferBits = 0;
+                descriptor.colorFormat = RenderTextureFormat.ARGB32;
+                RenderingUtils.ReAllocateIfNeeded(ref m_OutlineRTHandle, descriptor, FilterMode.Bilinear, TextureWrapMode.Clamp, name: "_TempOutlineRT");
             }
 
             public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
@@ -108,10 +122,6 @@ namespace ToonURP
                     return;
                 }
                 var cmd = CommandBufferPool.Get("EdgeOutline");
-                // temp rt
-                // var width = renderingData.cameraData.camera.scaledPixelWidth;
-                // var height = renderingData.cameraData.camera.scaledPixelHeight;
-                // cmd.GetTemporaryRT(OutlineShaderIDs.TempTarget, width, height, 0, FilterMode.Point, RenderTextureFormat.Default);
                 // pass value
                 float angleThreshold = m_EdgeOutlineSettings.angleThreshold.value;
                 float depthThreshold = m_EdgeOutlineSettings.depthThreshold.value;
@@ -119,9 +129,9 @@ namespace ToonURP
                 cmd.SetGlobalVector(OutlineShaderIDs.Threshold, threshold);
                 cmd.SetGlobalColor(OutlineShaderIDs.Color, m_EdgeOutlineSettings.color.value);
                 
-                CoreUtils.SetRenderTarget(cmd, renderingData.cameraData.renderer.cameraColorTargetHandle);
-                cmd.DrawProcedural(Matrix4x4.identity, m_Material, 0, MeshTopology.Triangles, 3, 1);
-                // Blitter.BlitCameraTexture(cmd, OutlineShaderIDs.TempTarget, re, mat, (int)pass);
+                // CoreUtils.SetRenderTarget(cmd, renderingData.cameraData.renderer.cameraColorTargetHandle);
+                // cmd.DrawProcedural(Matrix4x4.identity, m_Material, 0, MeshTopology.Triangles, 3, 1);
+                Blitter.BlitCameraTexture(cmd, m_OutlineRTHandle, m_Renderer.cameraColorTargetHandle, m_Material, 0);
                 context.ExecuteCommandBuffer(cmd);
                 CommandBufferPool.Release(cmd);
             }
@@ -160,6 +170,7 @@ namespace ToonURP
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
             renderer.EnqueuePass(m_EdgeDetectionPass);
+            m_EdgeOutlinePass.Setup(renderer);
             renderer.EnqueuePass(m_EdgeOutlinePass);
         }
     }
