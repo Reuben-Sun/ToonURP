@@ -89,6 +89,7 @@
 
 			#pragma shader_feature_local _CELLSHADING _PBRSHADING
 			#pragma shader_feature_local _ _FRESNELRIM
+			#pragma shader_feature_local _RECEIVE_SHADOWS_OFF
 			
 			// -------------------------------------
             // Universal Pipeline keywords
@@ -100,6 +101,7 @@
 			#pragma multi_compile_fragment _ _SCREEN_SPACE_OCCLUSION
 			#pragma multi_compile_fragment _ _REFLECTION_PROBE_BLENDING
             #pragma multi_compile_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
+			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
 			
 			// -------------------------------------
             // Unity defined keywords
