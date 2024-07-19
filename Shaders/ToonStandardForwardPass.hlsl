@@ -58,8 +58,12 @@ void InitializeInputData(Varyings input, half3 normalTS, out InputData inputData
     inputData.normalWS = NormalizeNormalPerPixel(inputData.normalWS);
     
     inputData.viewDirectionWS = viewDirWS;
-    
+
+    #if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
     inputData.shadowCoord = input.shadowCoord;
+    #elif defined(MAIN_LIGHT_CALCULATE_SHADOWS)
+    inputData.shadowCoord = TransformWorldToShadowCoord(input.positionWS);
+    #endif
     
     inputData.fogCoord = InitializeInputDataFog(float4(input.positionWS, 1.0), input.fogFactor);
     
@@ -116,6 +120,10 @@ Varyings ToonStandardPassVertex(Attributes input)
     half3 viewDirWS = GetWorldSpaceNormalizeViewDir(vertexInput.positionWS);
     output.viewDirWS = viewDirWS;
 
+    #if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
+    output.shadowCoord = GetShadowCoord(vertexInput);
+    #endif
+    
     OUTPUT_LIGHTMAP_UV(input.staticLightmapUV, unity_LightmapST, output.staticLightmapUV);
 
     return output;
