@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: EdgeOutlineRenderFeature
   m_EditorClassIdentifier: 
   m_Active: 1
-  edgeOutlineShader: {fileID: 4800000, guid: 0e7b5a6bb174468b80099a6dca6a29e1, type: 3}
+  edgeDetectionShader: {fileID: 4800000, guid: 0e7b5a6bb174468b80099a6dca6a29e1, type: 3}
+  edgeOutlineShader: {fileID: 4800000, guid: 015bde3ebcf546f8a94cb33d87c2708d, type: 3}
 --- !u!114 &-1878332245247344467
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -83,10 +83,10 @@ MonoBehaviour:
     m_Value: 1
   angleThreshold:
     m_OverrideState: 1
-    m_Value: 38.9
+    m_Value: 36.1
   depthThreshold:
     m_OverrideState: 1
-    m_Value: 0.006
+    m_Value: 0.016
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
