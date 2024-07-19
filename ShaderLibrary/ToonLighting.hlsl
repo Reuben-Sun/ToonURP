@@ -42,7 +42,7 @@ ToonLightingData InitializeLightingData(Light mainLight, float3 normalWS, float3
 half LightingRadiance(ToonLightingData lightingData, half useHalfLambert, half occlusion, half useRadianceOcclusion)
 {
     half radiance = lerp(lightingData.NoLClamp, lightingData.halfLambert, useHalfLambert);
-    radiance = saturate(lerp(radiance, (radiance + occlusion) * 0.5, useRadianceOcclusion)) * lightingData.shadowAttenuation;
+    radiance = saturate(lerp(radiance, (radiance + occlusion) * 0.5, useRadianceOcclusion));
     return radiance;
 }
 
@@ -50,19 +50,21 @@ half LightingRadiance(ToonLightingData lightingData, half useHalfLambert, half o
 //                      Lighting                                             //
 ///////////////////////////////////////////////////////////////////////////////
 
-inline float3 CellShadingDiffuse(inout float radiance, float cellThreshold, float cellSmooth, float3 highColor, float3 darkColor)
+inline float3 CellShadingDiffuse(inout float radiance, ToonLightingData lightingData, float cellThreshold, float cellSmooth, float3 highColor, float3 darkColor)
 {
     float3 diffuse = 0;
     radiance = saturate(1 + (radiance - cellThreshold - cellSmooth) / max(cellSmooth, 1e-3));
     diffuse = lerp(darkColor.rgb, highColor.rgb, radiance);
-    return diffuse;
+    // only high color receive shadow
+    float shadow = lerp(1, lightingData.shadowAttenuation, radiance);
+    return diffuse * shadow;
 }
 
 float3 NPRDiffuseLighting(BRDFData brdfData, ToonLightingData lightingData, float radiance)
 {
     float3 diffuse = 0;
     #if _CELLSHADING
-    diffuse = CellShadingDiffuse(radiance, _CellThreshold, _CellSmoothing, _HighColor.rgb, _DarkColor.rgb);
+    diffuse = CellShadingDiffuse(radiance, lightingData, _CellThreshold, _CellSmoothing, _HighColor.rgb, _DarkColor.rgb);
     // TODO: _SDFFACE
     #endif
     diffuse *= brdfData.diffuse;
@@ -94,6 +96,7 @@ float3 ToonMainLightDirectLighting(BRDFData brdfData, InputData inputData, ToonS
 
     float3 diffuse = NPRDiffuseLighting(brdfData, lightData, radiance);
     float3 specular = NPRSpecularLighting(brdfData, surfData, inputData, surfData.albedo, radiance, lightData);
+    // float shadow = lerp(0, lightData.shadowAttenuation, lightData.NoLClamp);
     float3 color = (diffuse + specular) * lightData.lightColor;
     return color;
 }
