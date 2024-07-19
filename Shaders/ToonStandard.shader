@@ -90,6 +90,7 @@
 			#pragma shader_feature_local _CELLSHADING _PBRSHADING
 			#pragma shader_feature_local _ _FRESNELRIM
 			#pragma shader_feature_local _RECEIVE_SHADOWS_OFF
+			#pragma shader_feature_local_fragment _SURFACE_TYPE_TRANSPARENT
 			
 			// -------------------------------------
             // Universal Pipeline keywords
@@ -97,11 +98,11 @@
 			#pragma multi_compile_fragment _ _LIGHT_LAYERS
             #pragma multi_compile_fragment _ _LIGHT_COOKIES
             #pragma multi_compile _ _FORWARD_PLUS
-			#pragma multi_compile_fragment _ _SHADOWS_SOFT
 			#pragma multi_compile_fragment _ _SCREEN_SPACE_OCCLUSION
 			#pragma multi_compile_fragment _ _REFLECTION_PROBE_BLENDING
             #pragma multi_compile_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
+			#pragma multi_compile_fragment _ _SHADOWS_SOFT _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
 			
 			// -------------------------------------
             // Unity defined keywords
