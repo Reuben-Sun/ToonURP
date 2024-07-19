@@ -54,6 +54,10 @@
         [SubToggle(MultLightSetting)] _LimitAdditionLightNum("Limit Addition Light Number", Float) = 0
         [Sub(MultLightSetting)] [ShowIf(_LimitAdditionLightNum, Equal, 1)] _MaxAdditionLightNum("Max Additional Light Number", Range(0, 8)) = 1
     	
+    	// Shadow
+    	[Main(ShadowSetting, _, off, off)] _ShadowSettingGroup ("ShadowSetting", float) = 1
+        [SubToggle(ShadowSetting, _RECEIVE_SHADOWS_OFF)] _RECEIVE_SHADOWS_OFF("Receive Shadow Off", Float) = 1
+    	
     	// RenderSetting
     	[Main(RenderSetting, _, off, off)] _RenderSettingGroup("RenderSetting", float) = 0
         [Preset(RenderSetting, LWGUI_BlendModePreset)] _BlendMode ("Blend Mode Preset", float) = 0

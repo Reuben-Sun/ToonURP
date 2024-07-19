@@ -14,6 +14,7 @@ Material:
   m_ValidKeywords:
   - _CELLSHADING
   - _FRESNELRIM
+  - _RECEIVE_SHADOWS_OFF
   m_InvalidKeywords:
   - _ENABLEFILTERLIGHTCOLOR_ON
   - _LAMBERTIAN
@@ -137,6 +138,7 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueOffset: 0
+    - _RECEIVE_SHADOWS_OFF: 1
     - _ReceiveShadows: 1
     - _RenderSettingGroup: 0
     - _RimDirectionLightContribution: 1
@@ -145,6 +147,7 @@ Material:
     - _RimThreshold: 0.161
     - _Roughness: 0.752
     - _ShadingModeGroup: 0
+    - _ShadowSettingGroup: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularAlbedoWeight: 0
