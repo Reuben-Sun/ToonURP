@@ -56,7 +56,7 @@
     	
     	// Shadow
     	[Main(ShadowSetting, _, off, off)] _ShadowSettingGroup ("ShadowSetting", float) = 1
-        [SubToggle(ShadowSetting, _RECEIVE_SHADOWS_OFF)] _RECEIVE_SHADOWS_OFF("Receive Shadow Off", Float) = 1
+        [SubToggle(ShadowSetting, _RECEIVE_SHADOWS_OFF)] _RECEIVE_SHADOWS_OFF("Receive Shadow Off", Float) = 0
     	
     	// RenderSetting
     	[Main(RenderSetting, _, off, off)] _RenderSettingGroup("RenderSetting", float) = 0
