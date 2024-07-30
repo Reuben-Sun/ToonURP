@@ -21,7 +21,7 @@ git submodule update --init --recursive
 
 ## 目前实现的功能
 
-- [] 卡通材质
+- [ ] 卡通材质
 - [x] 边缘检测描边 
 
 ## 参考
