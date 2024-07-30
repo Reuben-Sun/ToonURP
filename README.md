@@ -16,6 +16,7 @@ git clone https://github.com/Reuben-Sun/ToonURP.git
 并拉新submodule
 
 ```
+cd ToonURP
 git submodule update --init --recursive
 ```
 
