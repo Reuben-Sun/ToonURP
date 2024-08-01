@@ -20,10 +20,26 @@ cd ToonURP
 git submodule update --init --recursive
 ```
 
-## 目前实现的功能
+## 开发计划
 
-- [ ] 卡通材质
+- [ ] 基础卡通材质
+  - [x] 二值CellShading
+  - [x] 多光源
+  - [ ] 色散
+  - [ ] SRP batcher
 - [x] 边缘检测描边 
+- [ ] 人物
+  - [ ] 眼睛
+  - [ ] 头发
+  - [ ] 黑丝
+  - [ ] 脸
+    - [ ] SDF阴影
+- [ ] 卡通面片草
+  - [ ] HiZ剔除+Instance
+- [ ] 卡通石头
+  - [ ] 顶部覆盖植被
+- [ ] 卡通水
+- [ ] 卡通树
 
 ## 参考
 
