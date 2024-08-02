@@ -12,14 +12,14 @@ CBUFFER_START(UnityPerMaterial)
 // Surface
 float4 _MainTex_ST;
 float4 _BaseColor;
+float4 _SpecularColor;
+float4 _EmissionColor;
 float _Roughness;
 float _Metallic;
-float4 _EmissionColor;
-
 // Lighting mode
 float _UseHalfLambert;
 float _UseRadianceOcclusion;
-float4 _SpecularColor;
+
 #if _CELLSHADING
 float4 _HighColor;
 float4 _DarkColor;
@@ -29,12 +29,14 @@ float _SpecularIntensity;
 float _SpecularSize;
 float _SpecularSoftness;
 float _SpecularAlbedoWeight;
+// float2 padding;
 #endif
 
 // Rim Setting
 float _RimDirectionLightContribution;
 float _RimThreshold;
 float _RimSoftness;
+// float padding2;
 float4 _RimColor;
 
 // MultLight Setting
@@ -54,7 +56,7 @@ inline void InitializeToonStandardLitSurfaceData(float2 uv, out ToonSurfaceData 
     outSurfaceData.alpha = _BaseColor.a;
     outSurfaceData.albedo = _BaseColor.xyz;
     #if _ALBEDOMAP
-    outSurfaceData.albedo *= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv);;
+    outSurfaceData.albedo *= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv).rgb;
     #endif
     
     outSurfaceData.metallic = _Metallic;
