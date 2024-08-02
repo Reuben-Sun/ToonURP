@@ -20,6 +20,10 @@ cd ToonURP
 git submodule update --init --recursive
 ```
 
+替换Render Pipeline Assets，使用Setting文件夹下的URP-HighFidelity.asset
+
+![替换资产](Documentation~/image/replace_assets.png)
+
 ## 开发计划
 
 - [ ] 基础卡通材质
