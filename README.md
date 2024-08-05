@@ -30,7 +30,7 @@ git submodule update --init --recursive
   - [x] 二值CellShading
   - [x] 多光源
   - [x] 色散
-  - [ ] SRP batcher
+  - [x] SRP batcher
 - [x] 边缘检测描边 
 - [ ] 人物
   - [ ] 眼睛
