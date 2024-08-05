@@ -197,7 +197,6 @@
             // -------------------------------------
             // Material Keywords
             #pragma shader_feature_local _NORMALMAP
-            #pragma shader_feature_local _CELLSHADING _PBRSHADING
 
             // -------------------------------------
             // Universal Pipeline keywords
