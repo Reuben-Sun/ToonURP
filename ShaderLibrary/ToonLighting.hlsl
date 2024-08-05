@@ -50,13 +50,16 @@ half LightingRadiance(ToonLightingData lightingData, half useHalfLambert, half o
 //                      Lighting                                             //
 ///////////////////////////////////////////////////////////////////////////////
 
-inline float3 CellShadingDiffuse(inout float radiance, ToonLightingData lightingData, float cellThreshold, float cellSmooth, float3 highColor, float3 darkColor)
+inline float3 CellShadingDiffuse(inout float radiance, ToonLightingData lightingData, float cellThreshold, float cellSmooth, float3 highColor, float3 darkColor, float3 scatterColor, float scatterWeight)
 {
     float3 diffuse = 0;
     radiance = saturate(1 + (radiance - cellThreshold - cellSmooth) / max(cellSmooth, 1e-3));
     diffuse = lerp(darkColor.rgb, highColor.rgb, radiance);
+    float scatter = saturate(pow(radiance - 0.5, 2) * scatterWeight);
+    diffuse = lerp(diffuse * scatterColor, diffuse, scatter);
     // only high color receive shadow
     float shadow = lerp(1, lightingData.shadowAttenuation, radiance);
+    
     return diffuse * shadow;
 }
 
@@ -64,7 +67,7 @@ float3 NPRDiffuseLighting(BRDFData brdfData, ToonLightingData lightingData, floa
 {
     float3 diffuse = 0;
     #if _CELLSHADING
-    diffuse = CellShadingDiffuse(radiance, lightingData, _CellThreshold, _CellSmoothing, _HighColor.rgb, _DarkColor.rgb);
+    diffuse = CellShadingDiffuse(radiance, lightingData, _CellThreshold, _CellSmoothing, _HighColor.rgb, _DarkColor.rgb, _ScatterColor.rgb, _ScatterWeight);
     // TODO: _SDFFACE
     #endif
     diffuse *= brdfData.diffuse;

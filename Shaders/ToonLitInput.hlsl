@@ -29,7 +29,8 @@ float _SpecularIntensity;
 float _SpecularSize;
 float _SpecularSoftness;
 float _SpecularAlbedoWeight;
-// float2 padding;
+float4 _ScatterColor;
+float _ScatterWeight;
 #endif
 
 // Rim Setting
