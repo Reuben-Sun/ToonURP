@@ -20,7 +20,8 @@ float _Metallic;
 float _UseHalfLambert;
 float _UseRadianceOcclusion;
 
-#if _CELLSHADING
+// remove #if for srp batcher
+// #if _CELLSHADING
 float4 _HighColor;
 float4 _DarkColor;
 float _CellThreshold;
@@ -31,7 +32,7 @@ float _SpecularSoftness;
 float _SpecularAlbedoWeight;
 float4 _ScatterColor;
 float _ScatterWeight;
-#endif
+// #endif
 
 // Rim Setting
 float _RimDirectionLightContribution;
