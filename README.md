@@ -29,7 +29,7 @@ git submodule update --init --recursive
 - [ ] 基础卡通材质
   - [x] 二值CellShading
   - [x] 多光源
-  - [ ] 色散
+  - [x] 色散
   - [ ] SRP batcher
 - [x] 边缘检测描边 
 - [ ] 人物
