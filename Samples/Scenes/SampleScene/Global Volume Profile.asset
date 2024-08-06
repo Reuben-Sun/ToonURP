@@ -77,13 +77,13 @@ MonoBehaviour:
     m_Value: 1
   color:
     m_OverrideState: 1
-    m_Value: {r: 0.24528301, g: 0.14735763, b: 0.12611249, a: 1}
+    m_Value: {r: 0.06415099, g: 0.03265043, b: 0.022150245, a: 1}
   thickness:
     m_OverrideState: 1
     m_Value: 1
   angleThreshold:
     m_OverrideState: 1
-    m_Value: 36.1
+    m_Value: 60.3
   depthThreshold:
     m_OverrideState: 1
     m_Value: 0.036
@@ -164,7 +164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 558a8e2b6826cf840aae193990ba9f2e, type: 3}
   m_Name: ShadowsMidtonesHighlights
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   shadows:
     m_OverrideState: 1
     m_Value: {x: 1, y: 1, z: 1, w: 0}
