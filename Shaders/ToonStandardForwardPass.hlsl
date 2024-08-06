@@ -84,6 +84,11 @@ void InitializeInputData(Varyings input, half3 normalTS, out InputData inputData
     #endif
 }
 
+void PreProcessMaterial(inout InputData inputData, inout ToonSurfaceData surfaceData)
+{
+    
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 //                  Vertex and Fragment functions                            //
@@ -140,6 +145,8 @@ void ToonShandardPassFragment(Varyings input, out float4 outColor: SV_Target0)
     InputData inputData;
     InitializeInputData(input, surfaceData.normalTS, inputData);
 
+    PreProcessMaterial(inputData, surfaceData);
+    
     float4 color = 0;
     #if _PBRSHADING
     color = UniversalFragmentPBR(inputData, surfaceData);

@@ -43,6 +43,15 @@
     	[Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _ScatterColor ("Scatter Color", Color) = (1,1,1,1)
     	[Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _ScatterWeight ("Scatter Weight", Range(4,20)) = 10
     	
+    	// Feature
+    	[Main(FeatureMode, _, off, off)] _FeatureGroup("Feature", float) = 0
+    	[KWEnum(FeatureMode, None, _, SnowRock, _SNOWROCK, GrassRock, _GRASSROCK)] _EnumFeatureMode ("Feature", float) = 0
+    	[Sub(FeatureMode)] [ShowIf(_EnumFeatureMode, Equal, 1)] _SnowRockColor ("Snow Color", Color) = (1,1,1,1)
+		[Sub(FeatureMode)] [ShowIf(_EnumFeatureMode, Equal, 1)] _SnowRockWeight ("Snow Weight", Range(0,1)) = 0.5
+    	[Sub(FeatureMode)] [ShowIf(_EnumFeatureMode, Equal, 1)] _SnowLine ("Snow Line (World)", Float) = 0.5
+		[Sub(FeatureMode)] [ShowIf(_EnumFeatureMode, Equal, 2)] _GrassRockColor ("Grass Rock Color", Color) = (1,1,1,1)
+
+    	
     	// Rim
     	[Main(Rim, _, off, off)] _RimGroup("RimSettings", float) = 0
     	[KWEnum(Rim, None, _, FresnelRim, _FRESNELRIM)] _EnumRim ("Rim Mode", float) = 0
@@ -94,6 +103,7 @@
 			#pragma shader_feature_local _EMISSION
 
 			#pragma shader_feature_local _CELLSHADING _PBRSHADING
+			#pragma shader_feature_local _ _SNOWROCK _GRASSROCK
 			#pragma shader_feature_local _ _FRESNELRIM
 			#pragma shader_feature_local _RECEIVE_SHADOWS_OFF
 			#pragma shader_feature_local_fragment _SURFACE_TYPE_TRANSPARENT
