@@ -40,8 +40,8 @@ git submodule update --init --recursive
     - [ ] SDF阴影
 - [ ] 卡通面片草
   - [ ] HiZ剔除+Instance
-- [ ] 卡通石头
-  - [ ] 顶部覆盖植被
+- [x] 卡通石头
+  - [x] 顶部覆盖植被
 - [ ] 卡通水
 - [ ] 卡通树
 
