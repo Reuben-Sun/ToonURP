@@ -1,4 +1,4 @@
-﻿Shader "ToonURP/ToonStandard"
+Shader "ToonURP/ToonStandard"
 {
     Properties
     {
