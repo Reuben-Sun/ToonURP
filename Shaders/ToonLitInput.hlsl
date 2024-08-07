@@ -16,12 +16,14 @@ float4 _SpecularColor;
 float4 _EmissionColor;
 float _Roughness;
 float _Metallic;
+// end Surface
+
 // Lighting mode
 float _UseHalfLambert;
 float _UseRadianceOcclusion;
+// end Lighting mode
 
-// remove #if for srp batcher
-// #if _CELLSHADING
+// _CELLSHADING
 float4 _HighColor;
 float4 _DarkColor;
 float _CellThreshold;
@@ -32,18 +34,29 @@ float _SpecularSoftness;
 float _SpecularAlbedoWeight;
 float4 _ScatterColor;
 float _ScatterWeight;
-// #endif
+// end _CELLSHADING
+
+// _SNOWROCK
+float4 _SnowRockColor;
+float _SnowLine;
+// end _SNOWROCK
+
+// _GRASSROCK
+float4 _GrassRockColor;
+float _GrassScale;
+// end _GRASSROCK
 
 // Rim Setting
 float _RimDirectionLightContribution;
 float _RimThreshold;
 float _RimSoftness;
-// float padding2;
 float4 _RimColor;
+// end Rim Setting
 
 // MultLight Setting
 float _LimitAdditionLightNum;
 float _MaxAdditionLightNum;
+// end MultLight Setting
 
 CBUFFER_END
 
@@ -52,6 +65,7 @@ TEXTURE2D(_RoughnessMap);        SAMPLER(sampler_RoughnessMap);
 TEXTURE2D(_MetallicMap);        SAMPLER(sampler_MetallicMap);
 TEXTURE2D(_NormalMap);        SAMPLER(sampler_NormalMap);
 TEXTURE2D(_OcclusionMap);        SAMPLER(sampler_OcclusionMap);
+TEXTURE2D(_GrassMap);        SAMPLER(sampler_GrassMap);
 
 inline void InitializeToonStandardLitSurfaceData(float2 uv, out ToonSurfaceData outSurfaceData)
 {
