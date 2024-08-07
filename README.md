@@ -36,8 +36,8 @@ git submodule update --init --recursive
   - [ ] 眼睛
   - [ ] 头发
   - [ ] 黑丝
-  - [ ] 脸
-    - [ ] SDF阴影
+  - [x] 脸
+    - [x] SDF阴影
 - [ ] 卡通面片草
   - [ ] HiZ剔除+Instance
 - [x] 卡通石头
