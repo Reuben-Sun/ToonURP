@@ -16,7 +16,7 @@ struct Attributes
 struct Varyings
 {
     float4 positionCS : SV_POSITION;
-    float2 uv : TEXCOORD0;
+    float4 uv : TEXCOORD0;      // zw for sdf
     float3 positionWS : TEXCOORD1;
     float3 normalWS : TEXCOORD2;
     float4 tangentWS : TEXCOORD3;    // xyz: tangent, w: sign
@@ -94,9 +94,7 @@ void PreProcessMaterial(inout InputData inputData, inout ToonSurfaceData surface
 
     #if _GRASSROCK
     float3 grassColor = _GrassRockColor.rgb;
-    #if _GRASSMAP
     grassColor *= SAMPLE_TEXTURE2D(_GrassMap, sampler_GrassMap, uv).rgb;
-    #endif
 
     float3 upVector = float3(0, 1, 0);
     float NoU = dot(upVector, inputData.normalWS);
@@ -134,7 +132,10 @@ Varyings ToonStandardPassVertex(Attributes input)
         fogFactor = ComputeFogFactor(vertexInput.positionCS.z);
     #endif
 
-    output.uv = TRANSFORM_TEX(input.uv, _MainTex);
+    output.uv.xy = TRANSFORM_TEX(input.uv, _MainTex);
+    #if _SDFFACE
+    SDFFaceUV(_SDFDirectionReversal, _SDFFaceArea, output.uv.zw);
+    #endif
     
     output.normalWS = normalInput.normalWS;
     real sign = input.tangentOS.w * GetOddNegativeScale();
@@ -160,19 +161,21 @@ void ToonShandardPassFragment(Varyings input, out float4 outColor: SV_Target0)
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
     ToonSurfaceData surfaceData;
-    InitializeToonStandardLitSurfaceData(input.uv, surfaceData);
+    InitializeToonStandardLitSurfaceData(input.uv.xy, surfaceData);
 
     InputData inputData;
     InitializeInputData(input, surfaceData.normalTS, inputData);
 
-    PreProcessMaterial(inputData, surfaceData, input.uv);
+    PreProcessMaterial(inputData, surfaceData, input.uv.xy);
     
     float4 color = 0;
     #if _PBRSHADING
     color = UniversalFragmentPBR(inputData, surfaceData);
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
     #elif _CELLSHADING
-    color = ToonFragment(inputData, surfaceData);
+    color = ToonFragment(inputData, surfaceData, input.uv);
+    #elif _SDFFACE
+    color = ToonFragment(inputData, surfaceData, input.uv);
     #endif
     outColor = color;
 }

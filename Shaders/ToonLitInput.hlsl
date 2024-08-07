@@ -36,6 +36,12 @@ float4 _ScatterColor;
 float _ScatterWeight;
 // end _CELLSHADING
 
+// _SDFFACE
+float _SDFDirectionReversal;
+float _SDFFaceArea;
+float _SDFShadingSoftness;
+// end _SDFFACE
+
 // _SNOWROCK
 float4 _SnowRockColor;
 float _SnowLine;
@@ -66,6 +72,7 @@ TEXTURE2D(_MetallicMap);        SAMPLER(sampler_MetallicMap);
 TEXTURE2D(_NormalMap);        SAMPLER(sampler_NormalMap);
 TEXTURE2D(_OcclusionMap);        SAMPLER(sampler_OcclusionMap);
 TEXTURE2D(_GrassMap);        SAMPLER(sampler_GrassMap);
+TEXTURE2D(_SDFFaceMap);      SAMPLER(sampler_SDFFaceMap);
 
 inline void InitializeToonStandardLitSurfaceData(float2 uv, out ToonSurfaceData outSurfaceData)
 {
