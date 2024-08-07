@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fbcbca3fb14507af6ed5c104c40b84, type: 3}
   m_Name: Toon_BlendModePreset
   m_EditorClassIdentifier: 
-  presets:
+  presets: 
   - presetName: Opaque
     propertyValues:
     - propertyName: _SrcBlend

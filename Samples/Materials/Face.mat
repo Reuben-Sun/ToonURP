@@ -162,6 +162,7 @@ Material:
     - _RimSoftness: 0.059
     - _RimThreshold: 0.161
     - _Roughness: 0.752
+    - _SDFDirectionReversal: 0
     - _SDFFaceArea: 107
     - _SDFShadingSoftness: 0.639
     - _ScatterWeight: 4

@@ -133,11 +133,7 @@ float3 NPRDiffuseLighting(BRDFData brdfData, ToonLightingData lightingData, floa
 float3 NPRSpecularLighting(BRDFData brdfData, ToonSurfaceData surfData, InputData inputData, float3 albedo, half radiance, ToonLightingData lightData)
 {
     float3 specular = 0;
-    #if _CELLSHADING
     specular = StylizedSpecular(albedo, lightData.NoHClamp, _SpecularSize, _SpecularSoftness, _SpecularAlbedoWeight) * _SpecularIntensity;
-    #elif _SDFFACE
-    
-    #endif
     specular *= _SpecularColor.rgb * radiance * brdfData.specular;
     return specular;
 }
