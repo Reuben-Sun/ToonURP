@@ -7,25 +7,20 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Face
+  m_Name: "\u773C\u775B"
   m_Shader: {fileID: 4800000, guid: a5ffc5e0b3cf48ca9d0b624edef86772, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _ALBEDOMAP
-  - _FRESNELRIM
+  - _CELLSHADING
+  - _EMISSION
   - _RECEIVE_SHADOWS_OFF
-  - _SDFFACE
-  m_InvalidKeywords:
-  - _ENABLEFILTERLIGHTCOLOR_ON
-  - _LAMBERTIAN
-  - _LIMITADDITIONLIGHTNUM_ON
-  - _USEHALFLAMBERT_ON
-  - _USERADIANCEOCCLUSION_ON
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
@@ -89,10 +84,6 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SDFFaceMap:
-        m_Texture: {fileID: 2800000, guid: 5c816db46deff744aa082bb9d931df2c, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SDFFaceTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -120,34 +111,31 @@ Material:
     - _BlendMode: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
-    - _CellSmoothing: 0.108
-    - _CellThreshold: 0.504
+    - _CellSmoothing: 0.001
+    - _CellThreshold: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _Cull: 0
+    - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnableAlbedoMap: 1
-    - _EnableEmission: 0
-    - _EnableFilterLightColor: 0
-    - _EnableGrassMap: 0
+    - _EnableEmission: 1
     - _EnableMetallicMap: 0
     - _EnableNormalMap: 0
     - _EnableOcclusionMap: 0
     - _EnableRoughnessMap: 0
     - _EnumFeatureMode: 0
-    - _EnumRim: 1
-    - _EnumShadingMode: 2
+    - _EnumRim: 0
+    - _EnumShadingMode: 0
     - _EnvironmentReflections: 1
     - _FeatureGroup: 0
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _GrassScale: 0.9
-    - _LightIntensityClamp: 0
     - _LimitAdditionLightNum: 0
     - _MaxAdditionLightNum: 1
     - _Metallic: 0
@@ -160,13 +148,13 @@ Material:
     - _RenderSettingGroup: 0
     - _RimDirectionLightContribution: 1
     - _RimGroup: 0
-    - _RimSoftness: 0.059
-    - _RimThreshold: 0.161
+    - _RimSoftness: 0.01
+    - _RimThreshold: 0.2
     - _Roughness: 1
     - _SDFDirectionReversal: 0
-    - _SDFFaceArea: 107
-    - _SDFShadingSoftness: 0.639
-    - _ScatterWeight: 4
+    - _SDFFaceArea: 0
+    - _SDFShadingSoftness: 0.3
+    - _ScatterWeight: 10
     - _ShadingModeGroup: 0
     - _ShadowSettingGroup: 1
     - _Smoothness: 0.5
@@ -174,39 +162,31 @@ Material:
     - _SnowLine: 0.5
     - _SpecularAlbedoWeight: 0
     - _SpecularHighlights: 1
-    - _SpecularIntensity: 2.73
-    - _SpecularSize: 0.106
-    - _SpecularSoftness: 0.319
+    - _SpecularIntensity: 0.85
+    - _SpecularSize: 0.264
+    - _SpecularSoftness: 0.05
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _SurfaceGroup: 0
-    - _UseHalfLambert: 1
+    - _UseHalfLambert: 0
     - _UseRadianceOcclusion: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
-    - _enum_diffuse: 3
-    - _group: 0
-    - _lightingModeGroup: 0
-    - _renderSettingGroup: 0
-    - _settingGroup: 0
-    - _shadingModeGroup: 0
-    - _surfaceGroup: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DarkColor: {r: 1, g: 0.7075472, b: 0.7075472, a: 1}
-    - _Emission: {r: 0, g: 0, b: 0, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _DarkColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0.014993303, b: 0.4198113, a: 1}
     - _GrassRockColor: {r: 1, g: 1, b: 1, a: 1}
-    - _HighColor: {r: 1, g: 0.8537736, b: 0.8537736, a: 1}
+    - _HighColor: {r: 0.5424528, g: 0.5424528, b: 0.5424528, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
-    - _ScatterColor: {r: 1, g: 0.9393792, b: 0.84339625, a: 1}
+    - _ScatterColor: {r: 1, g: 1, b: 1, a: 1}
     - _SnowRockColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
---- !u!114 &672697171056913788
+--- !u!114 &2303999622764705656
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

@@ -3,7 +3,42 @@ guid: 54c43b568bba91042ae4e55003c62aee
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: "\u5934\u53D1"
+    second: {fileID: 2100000, guid: 4106dddd0a8713f4ca542fc8422e83f7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: "\u7709\u6BDB"
+    second: {fileID: 2100000, guid: bd4df3bdf099d5640913955b3f0ee909, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: "\u773C\u767D"
+    second: {fileID: 2100000, guid: 536f9168efdfb6d4988b5805ae8e8e56, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: "\u773C\u775B"
+    second: {fileID: 2100000, guid: 9ad74735b61d51645a4358ac1fb5e5a1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: "\u773C\u775B1"
+    second: {fileID: 2100000, guid: 41af3f32459b17646bd3dadcc63fdaf5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: "\u8033\u673A"
+    second: {fileID: 2100000, guid: d06703b0457f7d949bffc32167276da5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: "\u8138"
+    second: {fileID: 2100000, guid: 817f9261492da6041b2beb467e0fd8df, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -90,7 +125,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.01
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
