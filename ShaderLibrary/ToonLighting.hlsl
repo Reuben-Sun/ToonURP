@@ -47,7 +47,7 @@ half LightingRadiance(ToonLightingData lightingData, half useHalfLambert, half o
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-//                      Lighting                                             //
+//                      Cell  Lighting                                       //
 ///////////////////////////////////////////////////////////////////////////////
 
 inline float3 CellShadingDiffuse(inout float radiance, ToonLightingData lightingData, float cellThreshold, float cellSmooth, float3 highColor, float3 darkColor, float3 scatterColor, float scatterWeight)
@@ -63,16 +63,7 @@ inline float3 CellShadingDiffuse(inout float radiance, ToonLightingData lighting
     return diffuse * shadow;
 }
 
-float3 NPRDiffuseLighting(BRDFData brdfData, ToonLightingData lightingData, float radiance)
-{
-    float3 diffuse = 0;
-    #if _CELLSHADING
-    diffuse = CellShadingDiffuse(radiance, lightingData, _CellThreshold, _CellSmoothing, _HighColor.rgb, _DarkColor.rgb, _ScatterColor.rgb, _ScatterWeight);
-    // TODO: _SDFFACE
-    #endif
-    diffuse *= brdfData.diffuse;
-    return diffuse;
-}
+
 
 inline float3 StylizedSpecular(float3 albedo, float NoHClamp, float specularSize, float specularSoftness, float albedoWeight)
 {
@@ -81,6 +72,62 @@ inline float3 StylizedSpecular(float3 albedo, float NoHClamp, float specularSize
     half3 specular = LinearStep(0, specularSoftness, NoHStylized);
     specular = lerp(specular, albedo * specular, albedoWeight);
     return specular;
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//                       PBR  Lighting                                       //
+///////////////////////////////////////////////////////////////////////////////
+
+float4 UniversalFragmentPBR(InputData inputData, ToonSurfaceData toonSurfaceData)
+{
+    SurfaceData surfaceData = ConvertToonSurfaceDataToURPSurfaceData(toonSurfaceData);
+    return UniversalFragmentPBR(inputData, surfaceData);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//                      SDF Face Lighting                                    //
+///////////////////////////////////////////////////////////////////////////////
+
+void SDFFaceUV(half reversal, half faceArea, out half2 result)
+{
+    Light mainLight = GetMainLight();
+    half2 lightDir = normalize(mainLight.direction.xz);
+
+    half2 Front = normalize(_FaceObjectToWorld._13_33);
+    half2 Right = normalize(_FaceObjectToWorld._11_31);
+
+    float FdotL = dot(Front, lightDir);
+    float RdotL = dot(Right, lightDir) * lerp(1, -1, reversal);
+    result.x = 1 - max(0,-(acos(FdotL) * INV_PI * 90.0 /(faceArea) -0.5) * 2);
+    result.y = 1 - 2 * step(RdotL, 0);
+}
+
+half3 SDFFaceDiffuse(half4 uv, ToonLightingData lightData, half SDFShadingSoftness, half3 highColor, half3 darkColor, TEXTURE2D_X_PARAM(_SDFFaceTex, sampler_SDFFaceTex))
+{
+    half FdotL = uv.z;
+    half sign = uv.w;
+    half SDFMap = SAMPLE_TEXTURE2D(_SDFFaceTex, sampler_SDFFaceTex, uv.xy * float2(-sign, 1)).r;
+    half diffuseRadiance = smoothstep(-SDFShadingSoftness * 0.1, SDFShadingSoftness * 0.1, (abs(FdotL) - SDFMap)) * lightData.shadowAttenuation;
+    half3 diffuseColor = lerp(darkColor.rgb, highColor.rgb, diffuseRadiance);
+    return diffuseColor;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//                      Light                                                //
+///////////////////////////////////////////////////////////////////////////////
+
+float3 NPRDiffuseLighting(BRDFData brdfData, ToonLightingData lightingData, float radiance, float4 uv)
+{
+    float3 diffuse = 0;
+    #if _CELLSHADING
+    diffuse = CellShadingDiffuse(radiance, lightingData, _CellThreshold, _CellSmoothing, _HighColor.rgb, _DarkColor.rgb, _ScatterColor.rgb, _ScatterWeight);
+    #elif _SDFFACE
+    diffuse = SDFFaceDiffuse(uv, lightingData, _SDFShadingSoftness, _HighColor.rgb, _DarkColor.rgb, TEXTURECUBE_ARGS(_SDFFaceMap, sampler_SDFFaceMap));
+    #endif
+    diffuse *= brdfData.diffuse;
+    return diffuse;
 }
 
 float3 NPRSpecularLighting(BRDFData brdfData, ToonSurfaceData surfData, InputData inputData, float3 albedo, half radiance, ToonLightingData lightData)
@@ -93,27 +140,27 @@ float3 NPRSpecularLighting(BRDFData brdfData, ToonSurfaceData surfData, InputDat
     return specular;
 }
 
-float3 ToonMainLightDirectLighting(BRDFData brdfData, InputData inputData, ToonSurfaceData surfData, ToonLightingData lightData)
+float3 ToonMainLightDirectLighting(BRDFData brdfData, InputData inputData, ToonSurfaceData surfData, ToonLightingData lightData, float4 uv)
 {
     half radiance = LightingRadiance(lightData, _UseHalfLambert, surfData.occlusion, _UseRadianceOcclusion);
 
-    float3 diffuse = NPRDiffuseLighting(brdfData, lightData, radiance);
+    float3 diffuse = NPRDiffuseLighting(brdfData, lightData, radiance, uv);
     float3 specular = NPRSpecularLighting(brdfData, surfData, inputData, surfData.albedo, radiance, lightData);
     // float shadow = lerp(0, lightData.shadowAttenuation, lightData.NoLClamp);
     float3 color = (diffuse + specular) * lightData.lightColor;
     return color;
 }
 
-float3 NPRAdditionLighting(Light light, BRDFData brdfData, InputData inputData, ToonSurfaceData surfData)
+float3 NPRAdditionLighting(Light light, BRDFData brdfData, InputData inputData, ToonSurfaceData surfData, float4 uv)
 {
     ToonLightingData lightingData = InitializeLightingData(light, inputData.normalWS, inputData.viewDirectionWS);
     float pureIntencity = 0.299 * lightingData.lightColor.r + 0.587 * lightingData.lightColor.g + 0.114 * lightingData.lightColor.b;
     lightingData.lightColor = max(0, lerp(lightingData.lightColor, min(lightingData.lightColor, lightingData.lightColor / pureIntencity * _MaxAdditionLightNum), _LimitAdditionLightNum));
-    half3 addLightColor = ToonMainLightDirectLighting(brdfData, inputData, surfData, lightingData);
+    half3 addLightColor = ToonMainLightDirectLighting(brdfData, inputData, surfData, lightingData, uv);
     return addLightColor;
 }
 
-float3 ToonAdditionLightDirectLighting(BRDFData brdfData, InputData inputData, ToonSurfaceData surfData, half4 shadowMask, half meshRenderingLayers, AmbientOcclusionFactor aoFactor)
+float3 ToonAdditionLightDirectLighting(BRDFData brdfData, InputData inputData, ToonSurfaceData surfData, half4 shadowMask, half meshRenderingLayers, AmbientOcclusionFactor aoFactor, float4 uv)
 {
     half3 additionLightColor = 0;
     float pureIntensityMax = 0;
@@ -131,7 +178,7 @@ float3 ToonAdditionLightDirectLighting(BRDFData brdfData, InputData inputData, T
         if (IsMatchingLightLayer(light.layerMask, meshRenderingLayers))
     #endif
         {
-            additionLightColor += NPRAdditionLighting(light, brdfData, inputData, surfData);
+            additionLightColor += NPRAdditionLighting(light, brdfData, inputData, surfData, uv);
         }
     }
     #endif
@@ -144,7 +191,7 @@ float3 ToonAdditionLightDirectLighting(BRDFData brdfData, InputData inputData, T
         if (IsMatchingLightLayer(light.layerMask, meshRenderingLayers))
     #endif
         {
-            additionLightColor += NPRAdditionLighting(light, brdfData, inputData, surfData);;
+            additionLightColor += NPRAdditionLighting(light, brdfData, inputData, surfData, uv);
         }
     }
     #endif
@@ -155,7 +202,7 @@ float3 ToonAdditionLightDirectLighting(BRDFData brdfData, InputData inputData, T
         if (IsMatchingLightLayer(light.layerMask, meshRenderingLayers))
     #endif
         {
-            additionLightColor += NPRAdditionLighting(light, brdfData, inputData, surfData);;
+            additionLightColor += NPRAdditionLighting(light, brdfData, inputData, surfData, uv);
         }
     LIGHT_LOOP_END
     #endif
@@ -191,17 +238,12 @@ float3 ToonRimLighting(ToonLightingData lightingData, InputData inputData)
     return rimColor;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 //                      Fragment Func                                        //
 ///////////////////////////////////////////////////////////////////////////////
 
-float4 UniversalFragmentPBR(InputData inputData, ToonSurfaceData toonSurfaceData)
-{
-    SurfaceData surfaceData = ConvertToonSurfaceDataToURPSurfaceData(toonSurfaceData);
-    return UniversalFragmentPBR(inputData, surfaceData);
-}
-
-float4 ToonFragment(InputData inputData, ToonSurfaceData toonSurfaceData)
+float4 ToonFragment(InputData inputData, ToonSurfaceData toonSurfaceData, float4 uv)
 {
     // prepare
     half4 shadowMask = CalculateShadowMask(inputData);
@@ -226,8 +268,8 @@ float4 ToonFragment(InputData inputData, ToonSurfaceData toonSurfaceData)
     ToonLightingData lightingData = InitializeLightingData(mainLight, inputData.normalWS, inputData.viewDirectionWS);
     
     float4 color = 1;
-    color.rgb = ToonMainLightDirectLighting(brdfData, inputData, toonSurfaceData, lightingData);
-    color.rgb += ToonAdditionLightDirectLighting(brdfData, inputData, toonSurfaceData, shadowMask, meshRenderingLayers, aoFactor);
+    color.rgb = ToonMainLightDirectLighting(brdfData, inputData, toonSurfaceData, lightingData, uv);
+    color.rgb += ToonAdditionLightDirectLighting(brdfData, inputData, toonSurfaceData, shadowMask, meshRenderingLayers, aoFactor, uv);
     color.rgb += ToonIndirectLighting(brdfData, inputData, toonSurfaceData.occlusion);
     color.rgb += ToonRimLighting(lightingData, inputData); 
 
