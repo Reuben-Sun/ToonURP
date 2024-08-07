@@ -93,8 +93,11 @@ void PreProcessMaterial(inout InputData inputData, inout ToonSurfaceData surface
     #endif
 
     #if _GRASSROCK
-    float3 grassColor =  SAMPLE_TEXTURE2D(_GrassMap, sampler_GrassMap, uv).rgb;
-    grassColor *= _GrassRockColor.rgb;
+    float3 grassColor = _GrassRockColor.rgb;
+    #if _GRASSMAP
+    grassColor *= SAMPLE_TEXTURE2D(_GrassMap, sampler_GrassMap, uv).rgb;
+    #endif
+
     float3 upVector = float3(0, 1, 0);
     float NoU = dot(upVector, inputData.normalWS);
     float grassScale = saturate(NoU - _GrassScale);

@@ -50,7 +50,8 @@
     	[Sub(FeatureMode)] [ShowIf(_EnumFeatureMode, Equal, 1)] _SnowLine ("Snow Line (World)", Float) = 0.5
 		[Sub(FeatureMode)] [ShowIf(_EnumFeatureMode, Equal, 2)] _GrassRockColor ("Grass Rock Color", Color) = (1,1,1,1)
     	[Sub(FeatureMode)] [ShowIf(_EnumFeatureMode, Equal, 2)] _GrassScale ("Grass Scale", Range(0,1)) = 0.9
-    	[Sub(FeatureMode)] [ShowIf(_EnumFeatureMode, Equal, 2)] [Tex(FeatureMode_GRASSMAP)] _GrassMap("GrassMap", 2D) = "white" {}
+    	[SubToggle(FeatureMode, _GRASSMAP)] [ShowIf(_EnumFeatureMode, Equal, 2)] _EnableGrassMap("Enable Grass Map", Float) = 0.0
+    	[Tex(FeatureMode_GRASSMAP)] [ShowIf(_EnableGrassMap, Equal, 1)] _GrassMap("GrassMap", 2D) = "white" {}
     	
     	// Rim
     	[Main(Rim, _, off, off)] _RimGroup("RimSettings", float) = 0
@@ -71,7 +72,7 @@
     	
     	// RenderSetting
     	[Main(RenderSetting, _, off, off)] _RenderSettingGroup("RenderSetting", float) = 0
-        [Preset(RenderSetting, LWGUI_BlendModePreset)] _BlendMode ("Blend Mode Preset", float) = 0
+        [Preset(RenderSetting, Toon_BlendModePreset)] _BlendMode ("Blend Mode Preset", float) = 0
     	[SubEnum(RenderSetting, UnityEngine.Rendering.BlendMode)] _SrcBlend("Src Alpha", Float) = 1.0
         [SubEnum(RenderSetting, UnityEngine.Rendering.BlendMode)] _DstBlend("Dst Alpha", Float) = 0.0
     	[SubEnum(RenderSetting, Off, 0, On, 1)] _ZWrite("Z Write", Float) = 1.0
@@ -101,6 +102,7 @@
             #pragma shader_feature_local _METALLICMAP
 			#pragma shader_feature_local _OCCLUSIONMAP
 			#pragma shader_feature_local _EMISSION
+			#pragma shader_feature_local _GRASSMAP
 
 			#pragma shader_feature_local _CELLSHADING _PBRSHADING
 			#pragma shader_feature_local _ _SNOWROCK _GRASSROCK
