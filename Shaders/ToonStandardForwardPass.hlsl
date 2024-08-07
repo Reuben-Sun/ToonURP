@@ -134,7 +134,7 @@ Varyings ToonStandardPassVertex(Attributes input)
 
     output.uv.xy = TRANSFORM_TEX(input.uv, _MainTex);
     #if _SDFFACE
-    SDFFaceUV(0, _SDFFaceArea, output.uv.zw);
+    SDFFaceUV(_SDFDirectionReversal, _SDFFaceArea, output.uv.zw);
     #endif
     
     output.normalWS = normalInput.normalWS;
@@ -161,18 +161,20 @@ void ToonShandardPassFragment(Varyings input, out float4 outColor: SV_Target0)
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
     ToonSurfaceData surfaceData;
-    InitializeToonStandardLitSurfaceData(input.uv, surfaceData);
+    InitializeToonStandardLitSurfaceData(input.uv.xy, surfaceData);
 
     InputData inputData;
     InitializeInputData(input, surfaceData.normalTS, inputData);
 
-    PreProcessMaterial(inputData, surfaceData, input.uv);
+    PreProcessMaterial(inputData, surfaceData, input.uv.xy);
     
     float4 color = 0;
     #if _PBRSHADING
     color = UniversalFragmentPBR(inputData, surfaceData);
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
     #elif _CELLSHADING
+    color = ToonFragment(inputData, surfaceData, input.uv);
+    #elif _SDFFACE
     color = ToonFragment(inputData, surfaceData, input.uv);
     #endif
     outColor = color;

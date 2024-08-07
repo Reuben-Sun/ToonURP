@@ -95,8 +95,8 @@ void SDFFaceUV(half reversal, half faceArea, out half2 result)
     Light mainLight = GetMainLight();
     half2 lightDir = normalize(mainLight.direction.xz);
 
-    half2 Front = normalize(_FaceObjectToWorld._13_33);
-    half2 Right = normalize(_FaceObjectToWorld._11_31);
+    half2 Front = normalize(unity_ObjectToWorld._13_33);
+    half2 Right = normalize(unity_ObjectToWorld._11_31);
 
     float FdotL = dot(Front, lightDir);
     float RdotL = dot(Right, lightDir) * lerp(1, -1, reversal);
@@ -104,11 +104,11 @@ void SDFFaceUV(half reversal, half faceArea, out half2 result)
     result.y = 1 - 2 * step(RdotL, 0);
 }
 
-half3 SDFFaceDiffuse(half4 uv, ToonLightingData lightData, half SDFShadingSoftness, half3 highColor, half3 darkColor, TEXTURE2D_X_PARAM(_SDFFaceTex, sampler_SDFFaceTex))
+half3 SDFFaceDiffuse(half4 uv, ToonLightingData lightData, half SDFShadingSoftness, half3 highColor, half3 darkColor, TEXTURE2D_X_PARAM(_SDFFaceMap, sampler_SDFFaceMap))
 {
     half FdotL = uv.z;
     half sign = uv.w;
-    half SDFMap = SAMPLE_TEXTURE2D(_SDFFaceTex, sampler_SDFFaceTex, uv.xy * float2(-sign, 1)).r;
+    half SDFMap = SAMPLE_TEXTURE2D(_SDFFaceMap, sampler_SDFFaceMap, uv.xy * float2(-sign, 1)).r;
     half diffuseRadiance = smoothstep(-SDFShadingSoftness * 0.1, SDFShadingSoftness * 0.1, (abs(FdotL) - SDFMap)) * lightData.shadowAttenuation;
     half3 diffuseColor = lerp(darkColor.rgb, highColor.rgb, diffuseRadiance);
     return diffuseColor;
@@ -135,6 +135,8 @@ float3 NPRSpecularLighting(BRDFData brdfData, ToonSurfaceData surfData, InputDat
     float3 specular = 0;
     #if _CELLSHADING
     specular = StylizedSpecular(albedo, lightData.NoHClamp, _SpecularSize, _SpecularSoftness, _SpecularAlbedoWeight) * _SpecularIntensity;
+    #elif _SDFFACE
+    
     #endif
     specular *= _SpecularColor.rgb * radiance * brdfData.specular;
     return specular;

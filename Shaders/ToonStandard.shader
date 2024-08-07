@@ -32,8 +32,8 @@
     	[SubToggle(ShadingMode)] _UseHalfLambert ("Use HalfLambert (More Flatter)", float) = 0
         [SubToggle(ShadingMode)] _UseRadianceOcclusion ("Radiance Occlusion", float) = 0
     	[Sub(ShadingMode)] _SpecularColor ("Specular Color", Color) = (1,1,1,1)
-    	[Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] [HDR] _HighColor ("Hight Color", Color) = (1,1,1,1)
-        [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _DarkColor ("Dark Color", Color) = (0,0,0,1)
+    	[Sub(ShadingMode)] [HDR] _HighColor ("Hight Color", Color) = (1,1,1,1)
+        [Sub(ShadingMode)] _DarkColor ("Dark Color", Color) = (0,0,0,1)
         [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _CellThreshold ("Cell Threshold", Range(0.01,1)) = 0.5
         [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _CellSmoothing ("Cell Smoothing", Range(0.001,1)) = 0.001
     	[Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _SpecularIntensity ("Specular Intensity", Range(0,8)) = 1
@@ -42,6 +42,7 @@
         [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _SpecularAlbedoWeight ("Color Albedo Weight", Range(0,1)) = 0
     	[Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _ScatterColor ("Scatter Color", Color) = (1,1,1,1)
     	[Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _ScatterWeight ("Scatter Weight", Range(4,20)) = 10
+    	[SubToggle(ShadingMode_SDFFACE)] _SDFDirectionReversal ("Direction Reversal",Float) = 0 
     	[Tex(ShadingMode_SDFFACE)] _SDFFaceMap("SDF Face Map", 2D) = "white" {}
     	[Sub(ShadingMode_SDFFACE)] _SDFFaceArea ("Face Angle Range (0~360)",Range(0,360)) = 0
     	[Sub(ShadingMode_SDFFACE)] _SDFShadingSoftness ("SDF Shading Softness",Range(0,1)) = 0.3
@@ -165,7 +166,7 @@
             // Material Keywords
             #pragma shader_feature_local _ALPHATEST_ON
             #pragma shader_feature_local_fragment _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
-            #pragma shader_feature_local _CELLSHADING _PBRSHADING
+
 
             //--------------------------------------
             // GPU Instancing

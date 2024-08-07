@@ -37,7 +37,7 @@ float _ScatterWeight;
 // end _CELLSHADING
 
 // _SDFFACE
-float4x4 _FaceObjectToWorld;
+float _SDFDirectionReversal;
 float _SDFFaceArea;
 float _SDFShadingSoftness;
 // end _SDFFACE
