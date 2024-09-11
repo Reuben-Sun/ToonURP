@@ -39,7 +39,9 @@ git submodule update --init --recursive
   - [x] 脸
     - [x] SDF阴影
 - [ ] 卡通面片草
+  - [x] 几何着色器草
   - [ ] HiZ剔除+Instance
+  
 - [x] 卡通石头
   - [x] 顶部覆盖植被
 - [ ] 卡通水
