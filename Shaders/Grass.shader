@@ -1,4 +1,4 @@
-Shader "Toon/Grass"
+Shader "ToonURP/Grass"
 {
     Properties
     {
