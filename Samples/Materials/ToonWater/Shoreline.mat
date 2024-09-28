@@ -1,0 +1,160 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Shoreline
+  m_Shader: {fileID: 4800000, guid: a5ffc5e0b3cf48ca9d0b624edef86772, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _ALBEDOMAP
+  - _CELLSHADING
+  - _METALLICMAP
+  m_InvalidKeywords:
+  - _USEHALFLAMBERT_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GrassMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: bc8c4a4c033d64d31b72966faa2f1011, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RoughnessMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SDFFaceMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BlendMode: 0
+    - _BumpScale: 1
+    - _CellSmoothing: 0.001
+    - _CellThreshold: 0.5
+    - _Cull: 2
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _EnableAlbedoMap: 1
+    - _EnableEmission: 0
+    - _EnableMetallicMap: 0.73
+    - _EnableNormalMap: 0
+    - _EnableOcclusionMap: 0
+    - _EnableRoughnessMap: 0
+    - _EnumFeatureMode: 0
+    - _EnumRim: 0
+    - _EnumShadingMode: 0
+    - _FeatureGroup: 0
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _GrassScale: 0.9
+    - _LimitAdditionLightNum: 0
+    - _MaxAdditionLightNum: 1
+    - _Metallic: 0.09
+    - _Mode: 0
+    - _MultipleLightGroup: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _RECEIVE_SHADOWS_OFF: 0
+    - _RenderSettingGroup: 0
+    - _RimDirectionLightContribution: 1
+    - _RimGroup: 0
+    - _RimSoftness: 0.01
+    - _RimThreshold: 0.2
+    - _Roughness: 1
+    - _SDFDirectionReversal: 0
+    - _SDFFaceArea: 0
+    - _SDFShadingSoftness: 0.3
+    - _ScatterWeight: 10
+    - _ShadingModeGroup: 0
+    - _ShadowSettingGroup: 1
+    - _SmoothnessTextureChannel: 0
+    - _SnowLine: 0.5
+    - _SpecularAlbedoWeight: 0
+    - _SpecularHighlights: 1
+    - _SpecularIntensity: 1
+    - _SpecularSize: 0.1
+    - _SpecularSoftness: 0.05
+    - _SrcBlend: 1
+    - _SurfaceGroup: 0
+    - _UVSec: 0
+    - _UseHalfLambert: 0
+    - _UseRadianceOcclusion: 0
+    - _WindQuality: 0
+    - _ZWrite: 1
+    m_Colors:
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _DarkColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _GrassRockColor: {r: 1, g: 1, b: 1, a: 1}
+    - _HighColor: {r: 1, g: 1, b: 1, a: 1}
+    - _HueVariation: {r: 1, g: 0.5, b: 0, a: 0.1}
+    - _RimColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ScatterColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SnowRockColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
