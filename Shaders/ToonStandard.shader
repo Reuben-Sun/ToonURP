@@ -139,6 +139,30 @@
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
 			
 			#include "Packages/com.reubensun.toonurp/Shaders/ToonLitInput.hlsl"
+			
+			void PreProcessMaterial(inout InputData inputData, inout ToonSurfaceData surfaceData, float2 uv)
+			{
+			    
+			    #if _SNOWROCK
+			    float snowScale = saturate(inputData.positionWS.y - _SnowLine);
+			    surfaceData.albedo = lerp(surfaceData.albedo, _SnowRockColor.rgb, snowScale);
+			    #endif
+
+			    #if _GRASSROCK
+			    float3 grassColor = _GrassRockColor.rgb;
+			    grassColor *= SAMPLE_TEXTURE2D(_GrassMap, sampler_GrassMap, uv).rgb;
+
+			    float3 upVector = float3(0, 1, 0);
+			    float NoU = dot(upVector, inputData.normalWS);
+			    float grassScale = saturate(NoU - _GrassScale);
+			    // surfaceData.albedo = lerp(surfaceData.albedo, grassColor, grassScale);
+			    if(NoU > _GrassScale)
+			    {
+			        surfaceData.albedo = grassColor;
+			    }
+			    #endif
+			}
+			
 			#include "Packages/com.reubensun.toonurp/Shaders/ToonStandardForwardPass.hlsl"
 			
 			ENDHLSL
