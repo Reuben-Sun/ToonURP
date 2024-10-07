@@ -95,7 +95,6 @@ Shader "ToonURP/GenshinWater"
                 v2f o;
                 o.posCS = TransformObjectToHClip(v.vertex);
                 o.posWS = TransformObjectToWorld(v.vertex);
-                // o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.uv = v.uv;
                 o.viewNormal = mul(UNITY_MATRIX_IT_MV, v.normal);
                 o.screenPosition = ComputeScreenPos(o.posCS);
@@ -191,7 +190,6 @@ Shader "ToonURP/GenshinWater"
                 float waterDepthDifference = saturate(depthDifference / _DepthMaxDistance);
 
                 // calculate water color
-                // float4 waterColor = lerp(_DepthGradientShallow, _DepthGradientDeep, waterDepthDifference);
                 float4 cos_grad = cosine_gradient(1 - waterDepthDifference, phases, amplitudes, frequencies, offsets);
                 cos_grad = saturate(cos_grad);
                 float4 waterColor = float4(toRGB(cos_grad), 1.0);
