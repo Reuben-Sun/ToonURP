@@ -5,6 +5,7 @@ Shader "ToonURP/GenshinWater"
         [Header(shading)]
         _DepthMaxDistance("Depth Max Distance", Float) = 1
         _DepthGradientShore("Depth Gradient Shore", Float) = 0.2
+        _DepthDisappearShore("Depth Disappear Shore", Float) = 50
 
         _SkyboxTexture ("Skybox Texture", Cube) = "_Skybox" {}
         _SurfaceNoise("Surface Noise", 2D) = "white" {}
@@ -74,6 +75,7 @@ Shader "ToonURP/GenshinWater"
             float4 _DepthGradientShallow;
             float4 _DepthGradientDeep;
             float _DepthGradientShore;
+            float _DepthDisappearShore;
 
             samplerCUBE _SkyboxTexture;
             sampler2D _SurfaceNoise;
@@ -118,9 +120,10 @@ Shader "ToonURP/GenshinWater"
                 return SAMPLE_TEXTURE2D_X(_Texture, sampler_Texture, UnityStereoTransformScreenSpaceTex(uv)).r;
             }
 
-            float4 afterBlend(float4 waterColor, float waterDepth) {
+            float4 afterBlend(float4 waterColor, float waterDepth, float shoreDisappearDepth) {
                 float3 color = waterColor.rgb;
-                float alpha = waterColor.a * waterDepth;
+                float alpha = lerp(0, waterColor.a, waterDepth);
+                alpha = lerp(alpha, 1, shoreDisappearDepth);
                 return float4(color, alpha);
             }
 
@@ -192,10 +195,11 @@ Shader "ToonURP/GenshinWater"
                 // calculate water color
                 float4 cos_grad = cosine_gradient(1 - waterDepthDifference, phases, amplitudes, frequencies, offsets);
                 cos_grad = saturate(cos_grad);
-                float4 waterColor = float4(toRGB(cos_grad), 1.0);
+                float4 waterColor = float4(toRGB(cos_grad), 0.7);
 
                 float shoreDepth = saturate(depthDifference / _DepthGradientShore);
-                waterColor = afterBlend(waterColor, shoreDepth);
+                float shoreDisappearDepth = saturate(depthDifference / _DepthDisappearShore);
+                waterColor = afterBlend(waterColor, shoreDepth, shoreDisappearDepth);
 
                 float3 viewDirWorld = normalize(_WorldSpaceCameraPos - i.posWS);
 
@@ -221,7 +225,7 @@ Shader "ToonURP/GenshinWater"
                 float NdotL = saturate(dot(swelledNormal, -lightDir));
                 float NdotV = abs(saturate(dot(swelledNormal, viewDirWorld)));
                 float3 halfDir = normalize(lightDir + viewDirWorld);
-                float NdotH = saturate(dot(swelledNormal, halfDir));
+                float NdotH = abs(saturate(dot(swelledNormal, halfDir)));
                 float LdotH = saturate(dot(-lightDir, halfDir));
                 float VdotH = saturate(dot(-viewDirWorld, halfDir));
 
@@ -236,7 +240,7 @@ Shader "ToonURP/GenshinWater"
                 float specular = _specularColor.rgb * _SpecularAtten * pow(NdotH, _Gloss);
             
                 float4 col = lerp(waterColor + specular, skyColor, fTerm);
-                // float4 col = float4(specular,specular,specular,1);
+                // float4 col = float4(waterDepthDifference, waterDepthDifference, waterDepthDifference,1);
                 return col;
             }
             ENDHLSL
