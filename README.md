@@ -52,6 +52,14 @@ git submodule update --init --recursive
   - [ ] 物体交互
 - [ ] 卡通树
 
+## Shader 设计
+
+> 可以参考ToonUnlit.shader的实现
+
+我希望我的Shader是易于扩展的，用户只需要定义一个Shader文件，修改传入的参数，在`PreProcessMaterial`中修改`ToonSurfaceData`，无需要改动Pass里的顶点片元函数，就能快速实现自己的效果
+
+
+
 ## 参考 
 
 [FernRP](https://github.com/FernRP/FernRPExample)
