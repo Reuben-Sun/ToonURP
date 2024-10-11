@@ -64,7 +64,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SkyboxTexture:
-        m_Texture: {fileID: 8900000, guid: 606f52fc647f84c06a343163bb41b058, type: 3}
+        m_Texture: {fileID: 8900000, guid: d6f5979d37b9d413bb667439bbcb39eb, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -98,7 +98,7 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
-    - _DepthDisappearShore: 70.3
+    - _DepthDisappearShore: 41.7
     - _DepthGradientShore: 8.7
     - _DepthMaxDistance: 51.4
     - _DetailAlbedoMapScale: 1
@@ -139,7 +139,7 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
-    - _WaveSpeed: {r: 0.22, g: 0.79, b: 0.96, a: 1}
+    - _WaveSpeed: {r: 0.07, g: 0.04, b: 0.19, a: 1}
     - _specularColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &1250943893369425374
