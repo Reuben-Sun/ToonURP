@@ -138,9 +138,9 @@
             #pragma multi_compile_instancing
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
 			
-			#include "Packages/com.reubensun.toonurp/Shaders/ToonLitInput.hlsl"
+			#include "Packages/com.reubensun.toonurp/Shaders/ToonStandardInput.hlsl"
 			
-			void PreProcessMaterial(inout InputData inputData, inout ToonSurfaceData surfaceData, float2 uv)
+            void PreProcessMaterial(inout InputData inputData, inout ToonSurfaceData surfaceData, float2 uv)
 			{
 			    
 			    #if _SNOWROCK
@@ -206,7 +206,7 @@
 
             // -------------------------------------
             // Includes
-            #include "Packages/com.reubensun.toonurp/Shaders/ToonLitInput.hlsl"
+            #include "Packages/com.reubensun.toonurp/Shaders/ToonStandardInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/ShadowCasterPass.hlsl"
             ENDHLSL
         }
@@ -247,7 +247,7 @@
 
             // -------------------------------------
             // Includes
-            #include "Packages/com.reubensun.toonurp/Shaders/ToonLitInput.hlsl"
+            #include "Packages/com.reubensun.toonurp/Shaders/ToonStandardInput.hlsl"
             #include "Packages/com.reubensun.toonurp/Shaders/ToonDepthNormalsPass.hlsl"
             ENDHLSL
         }

@@ -1,7 +1,7 @@
 ﻿#ifndef TOON_LIGHTING_INCLUDED
 #define TOON_LIGHTING_INCLUDED
 
-#include "Packages/com.reubensun.toonurp/Shaders/ToonLitInput.hlsl"
+#include "Packages/com.reubensun.toonurp/Shaders/ToonStandardInput.hlsl"
 #include "Packages/com.reubensun.toonurp/ShaderLibrary/ToonSurfaceData.hlsl"
 #include "Packages/com.reubensun.toonurp/ShaderLibrary/ToonBRDF.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
