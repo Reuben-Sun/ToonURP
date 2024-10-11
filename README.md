@@ -56,8 +56,11 @@ git submodule update --init --recursive
 
 > 可以参考ToonUnlit.shader的实现
 
-我希望我的Shader是易于扩展的，用户只需要定义一个Shader文件，修改传入的参数，在`PreProcessMaterial`中修改`ToonSurfaceData`，无需要改动Pass里的顶点片元函数，就能快速实现自己的效果
+我希望我的Shader是易于扩展的，无需重复编写顶点片元函数，就能快速实现自己的效果
 
+1. 定义一个Shader文件，在`Properties`加入你所需要的参数，在`SubShader`中加入你所需要的Pass和宏
+2. 定义一个Input.hlsl文件，在`CBUFFER_START(UnityPerMaterial)`中定义你所需要的参数
+3. 在Shader文件中修改`PreProcessMaterial`，几乎所有的材质效果均在这里实现
 
 
 ## 参考 
