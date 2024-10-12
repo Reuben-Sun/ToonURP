@@ -5,6 +5,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace ToonURP
 {
+    [DisallowMultipleRendererFeature("Edge Outline")]
     public class EdgeOutlineRenderFeature : ScriptableRendererFeature
     {
         EdgeDetectionRenderPass m_EdgeDetectionPass;
