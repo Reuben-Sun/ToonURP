@@ -148,9 +148,13 @@ namespace ToonURP
         
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
-            renderer.EnqueuePass(m_EdgeDetectionPass);
-            m_EdgeOutlinePass.Setup(renderer);
-            renderer.EnqueuePass(m_EdgeOutlinePass);
+            if (renderingData.cameraData.cameraType == CameraType.Game || renderingData.cameraData.cameraType == CameraType.SceneView)
+            {
+                renderer.EnqueuePass(m_EdgeDetectionPass);
+                m_EdgeOutlinePass.Setup(renderer);
+                renderer.EnqueuePass(m_EdgeOutlinePass);
+            }
+           
         }
     }
 }
