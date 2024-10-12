@@ -1,3 +1,6 @@
+// This code is modified based on the original code from:
+// https://github.com/ColinLeung-NiloCat/UnityURP-MobileScreenSpacePlanarReflection.git
+
 #define NUMTHREAD_X 8
 #define NUMTHREAD_Y 8
 #define MAX_UINT (uint)4294967295
