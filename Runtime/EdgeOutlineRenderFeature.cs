@@ -170,6 +170,12 @@ namespace ToonURP
         {
             if (renderingData.cameraData.cameraType == CameraType.Game || renderingData.cameraData.cameraType == CameraType.SceneView)
             {
+                var stack = VolumeManager.instance.stack;
+                EdgeOutline edgeOutline = stack.GetComponent<EdgeOutline>();
+                if (edgeOutline == null || edgeOutline.intensity.value <= 0)
+                {
+                    return;
+                }
                 renderer.EnqueuePass(m_EdgeDetectionPass);
                 renderer.EnqueuePass(m_EdgeOutlinePass);
             }
