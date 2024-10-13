@@ -42,10 +42,9 @@
         [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _SpecularAlbedoWeight ("Color Albedo Weight", Range(0,1)) = 0
     	[Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _ScatterColor ("Scatter Color", Color) = (1,1,1,1)
     	[Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _ScatterWeight ("Scatter Weight", Range(4,20)) = 10
-    	[SubToggle(ShadingMode_CUSTOMSHADING)] _SDFDirectionReversal ("Direction Reversal",Float) = 0 
-    	[Tex(ShadingMode_SDFFACE)] _SDFFaceMap("SDF Face Map", 2D) = "white" {}
-    	[Sub(ShadingMode_SDFFACE)] _SDFFaceArea ("Face Angle Range (0~360)",Range(0,360)) = 0
-    	[Sub(ShadingMode_SDFFACE)] _SDFShadingSoftness ("SDF Shading Softness",Range(0,1)) = 0.3
+    	[Sub(ShadingMode_CUSTOMSHADING)] _CustomFloat1 ("Noise Intensity",Range(-0.2,0.2)) = 0.0
+    	[Tex(ShadingMode_CUSTOMSHADING)] _CustomMap1("Noise Map", 2D) = "white" {}
+    	[Tex(ShadingMode_CUSTOMSHADING)] _CustomMap2("Mask Map", 2D) = "white" {}
     	
     	// Rim
     	[Main(Rim, _, off, off)] _RimGroup("RimSettings", float) = 0
@@ -129,6 +128,7 @@
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
 			
 			#include "Packages/com.reubensun.toonurp/Shaders/ToonStandardInput.hlsl"
+			#include "Packages/com.reubensun.toonurp/ShaderLibrary/SSPRInclude.hlsl"
 			
             void PreProcessMaterial(inout InputData inputData, inout ToonSurfaceData surfaceData, float2 uv)
 			{
@@ -136,7 +136,59 @@
 			
 			float4 CustomFragment(InputData inputData, ToonSurfaceData toonSurfaceData, float4 uv)
 			{
-				return 0;
+				// prepare main light
+			    half4 shadowMask = CalculateShadowMask(inputData);
+			    uint meshRenderingLayers = GetMeshRenderingLayer();
+			    Light mainLight = GetMainLight(inputData.shadowCoord, inputData.positionWS, shadowMask);
+			    MixRealtimeAndBakedGI(mainLight, inputData.normalWS, inputData.bakedGI);
+
+			    #if defined(_SCREEN_SPACE_OCCLUSION)
+			    AmbientOcclusionFactor aoFactor = GetScreenSpaceAmbientOcclusion(inputData.normalizedScreenSpaceUV);
+			    mainLight.color *= aoFactor.directAmbientOcclusion;
+			    toonSurfaceData.occlusion = min(toonSurfaceData.occlusion, aoFactor.indirectAmbientOcclusion);
+			    #else
+			    AmbientOcclusionFactor aoFactor;
+			    aoFactor.indirectAmbientOcclusion = 1;
+			    aoFactor.directAmbientOcclusion = 1;
+			    #endif
+
+			    BRDFData brdfData;
+			    InitializeToonBRDFData(toonSurfaceData, brdfData);
+
+			    // lighting
+			    ToonLightingData lightingData = InitializeLightingData(mainLight, inputData.normalWS, inputData.viewDirectionWS);
+			    
+			    float4 color = 1;
+			    color.rgb = ToonMainLightDirectLighting(brdfData, inputData, toonSurfaceData, lightingData, uv);
+			    color.rgb += ToonRimLighting(lightingData, inputData);
+
+				// ====================================
+				// noise
+				float4 noiseMap = SAMPLE_TEXTURE2D(_CustomMap1, sampler_CustomMap1, uv.xy);
+				float2 noise = noiseMap.xy;
+                noise = noise *2-1;
+                noise.y = -abs(noise); //hide missing data, only allow offset to valid location
+                noise.x *= 0.25;
+                noise *= _CustomFloat1;
+				// SSPR
+				ReflectionInput reflectionData = (ReflectionInput)0;
+                reflectionData.posWS = inputData.positionWS;
+                reflectionData.screenPos = ComputeScreenPos(inputData.positionCS);
+                reflectionData.roughness = brdfData.roughness;
+                reflectionData.SSPR_Usage = toonSurfaceData.alpha;
+                reflectionData.screenSpaceNoise = noise;
+				float3 reflectionColor = GetReflectionColor(reflectionData);
+				color.rgb = lerp(color.rgb, reflectionColor, noiseMap.a);
+				// color.rbg = reflectionColor;
+				// color.rgb = noiseMap.xyz;
+				// ====================================
+
+				
+			    color.rgb += toonSurfaceData.emission;
+			    color.rgb = MixFog(color.rgb, inputData.fogCoord);
+				
+			    color.a = toonSurfaceData.alpha;
+			    return color;
 			}
 			
 			#include "Packages/com.reubensun.toonurp/Shaders/ToonStandardForwardPass.hlsl"

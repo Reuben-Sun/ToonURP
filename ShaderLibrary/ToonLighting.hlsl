@@ -129,11 +129,7 @@ float3 NPRDiffuseSDFLighting(BRDFData brdfData, ToonLightingData lightingData, f
 float3 NPRDiffuseLighting(BRDFData brdfData, ToonLightingData lightingData, float radiance, float4 uv)
 {
     float3 diffuse = 0;
-    #if _CELLSHADING
     diffuse = CellShadingDiffuse(radiance, lightingData, _CellThreshold, _CellSmoothing, _HighColor.rgb, _DarkColor.rgb, _ScatterColor.rgb, _ScatterWeight);
-    #elif _SDFFACE
-    diffuse = SDFFaceDiffuse(uv, lightingData, _SDFShadingSoftness, _HighColor.rgb, _DarkColor.rgb, TEXTURECUBE_ARGS(_SDFFaceMap, sampler_SDFFaceMap));
-    #endif
     diffuse *= brdfData.diffuse;
     return diffuse;
 }

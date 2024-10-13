@@ -45,6 +45,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _CustomMap1:
+        m_Texture: {fileID: 2800000, guid: 74eef843081a3f04ea0747343242bc6c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CustomMap2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -122,6 +130,7 @@ Material:
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
+    - _CustomFloat1: 0.2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
@@ -153,7 +162,7 @@ Material:
     - _RimGroup: 0
     - _RimSoftness: 0.01
     - _RimThreshold: 0.2
-    - _Roughness: 1
+    - _Roughness: 0
     - _SDFDirectionReversal: 0
     - _SDFFaceArea: 0
     - _SDFShadingSoftness: 0.3
