@@ -97,7 +97,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
-  m_Name: Global Volume Profile
+  m_Name: SSPR
   m_EditorClassIdentifier: 
   components:
   - {fileID: 7397566805273789091}
@@ -105,6 +105,44 @@ MonoBehaviour:
   - {fileID: -1342684012205329032}
   - {fileID: 8091064021303886841}
   - {fileID: -467729114460966189}
+  - {fileID: 5786429499141550967}
+--- !u!114 &5786429499141550967
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3339a91a8494b19850d140c9963dd8c, type: 3}
+  m_Name: SSPR
+  m_EditorClassIdentifier: 
+  active: 1
+  enable:
+    m_OverrideState: 1
+    m_Value: 1
+  textureSize:
+    m_OverrideState: 1
+    m_Value: 0
+  planeHeight:
+    m_OverrideState: 1
+    m_Value: 0.01
+  stretchIntensity:
+    m_OverrideState: 1
+    m_Value: 4
+  stretchThreshold:
+    m_OverrideState: 1
+    m_Value: 0.7
+  verticalFadeOutDistance:
+    m_OverrideState: 1
+    m_Value: 0.25
+  horizontalFadeOutDistance:
+    m_OverrideState: 1
+    m_Value: 0.35
+  tintColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &7397566805273789091
 MonoBehaviour:
   m_ObjectHideFlags: 3
