@@ -28,7 +28,7 @@
     	
     	// Lighting mode
     	[Main(ShadingMode, _, off, off)] _ShadingModeGroup("ShadingMode", float) = 0
-    	[KWEnum(ShadingMode, CelShading, _CELLSHADING, PBRShading, _PBRSHADING, CustomShading, _CUSTOMSHADING)] _EnumShadingMode ("Mode", float) = 0
+    	[KWEnum(ShadingMode, CelShading, _CELLSHADING, PBRShading, _PBRSHADING, SDFFace, _CUSTOMSHADING)] _EnumShadingMode ("Mode", float) = 2
     	[SubToggle(ShadingMode)] _UseHalfLambert ("Use HalfLambert (More Flatter)", float) = 0
         [SubToggle(ShadingMode)] _UseRadianceOcclusion ("Radiance Occlusion", float) = 0
     	[Sub(ShadingMode)] _SpecularColor ("Specular Color", Color) = (1,1,1,1)

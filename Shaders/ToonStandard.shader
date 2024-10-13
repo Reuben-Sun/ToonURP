@@ -28,7 +28,7 @@
     	
     	// Lighting mode
     	[Main(ShadingMode, _, off, off)] _ShadingModeGroup("ShadingMode", float) = 0
-    	[KWEnum(ShadingMode, CelShading, _CELLSHADING, PBRShading, _PBRSHADING, SDFFaceShading, _SDFFACE)] _EnumShadingMode ("Mode", float) = 0
+    	[KWEnum(ShadingMode, CelShading, _CELLSHADING, PBRShading, _PBRSHADING)] _EnumShadingMode ("Mode", float) = 0
     	[SubToggle(ShadingMode)] _UseHalfLambert ("Use HalfLambert (More Flatter)", float) = 0
         [SubToggle(ShadingMode)] _UseRadianceOcclusion ("Radiance Occlusion", float) = 0
     	[Sub(ShadingMode)] _SpecularColor ("Specular Color", Color) = (1,1,1,1)
@@ -42,10 +42,6 @@
         [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _SpecularAlbedoWeight ("Color Albedo Weight", Range(0,1)) = 0
     	[Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _ScatterColor ("Scatter Color", Color) = (1,1,1,1)
     	[Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _ScatterWeight ("Scatter Weight", Range(4,20)) = 10
-    	[SubToggle(ShadingMode_SDFFACE)] _SDFDirectionReversal ("Direction Reversal",Float) = 0 
-    	[Tex(ShadingMode_SDFFACE)] _SDFFaceMap("SDF Face Map", 2D) = "white" {}
-    	[Sub(ShadingMode_SDFFACE)] _SDFFaceArea ("Face Angle Range (0~360)",Range(0,360)) = 0
-    	[Sub(ShadingMode_SDFFACE)] _SDFShadingSoftness ("SDF Shading Softness",Range(0,1)) = 0.3
     	
     	// Rim
     	[Main(Rim, _, off, off)] _RimGroup("RimSettings", float) = 0
@@ -97,7 +93,7 @@
 			#pragma shader_feature_local _OCCLUSIONMAP
 			#pragma shader_feature_local _EMISSION
 
-			#pragma shader_feature_local _CELLSHADING _PBRSHADING _SDFFACE
+			#pragma shader_feature_local _CELLSHADING _PBRSHADING _CUSTOMSHADING
 			#pragma shader_feature_local _ _FRESNELRIM
 			#pragma shader_feature_local _RECEIVE_SHADOWS_OFF
 			#pragma shader_feature_local_fragment _SURFACE_TYPE_TRANSPARENT
