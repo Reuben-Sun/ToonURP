@@ -121,4 +121,10 @@ inline void InitializeToonStandardLitSurfaceData(float2 uv, out ToonSurfaceData 
 
 #include "Packages/com.reubensun.toonurp/ShaderLibrary/ToonLighting.hlsl"
 
+struct AdditionInputData
+{
+    float4 uv;
+    float4 screenPos;
+};
+
 #endif

@@ -134,10 +134,10 @@
 			{
 			}
 
-			float4 CustomFragment(InputData inputData, ToonSurfaceData toonSurfaceData, float4 uv)
+			float4 CustomFragment(InputData inputData, ToonSurfaceData toonSurfaceData, AdditionInputData additionInput)
 			{
 
-				SDFFaceUV(_SDFDirectionReversal, _SDFFaceArea, uv.zw);
+				SDFFaceUV(_SDFDirectionReversal, _SDFFaceArea, additionInput.uv.zw);
 
 				// prepare main light
 			    half4 shadowMask = CalculateShadowMask(inputData);
@@ -162,7 +162,7 @@
 			    ToonLightingData lightingData = InitializeLightingData(mainLight, inputData.normalWS, inputData.viewDirectionWS);
 			    
 			    float4 color = 1;
-			    color.rgb = ToonMainLightSDFDirectLighting(brdfData, inputData, toonSurfaceData, lightingData, uv);
+			    color.rgb = ToonMainLightSDFDirectLighting(brdfData, inputData, toonSurfaceData, lightingData, additionInput.uv);
 			    color.rgb += ToonRimLighting(lightingData, inputData); 
 
 			    color.rgb += toonSurfaceData.emission;

@@ -150,7 +150,10 @@ void ToonShandardPassFragment(Varyings input, out float4 outColor: SV_Target0)
     #elif _CELLSHADING
     color = ToonFragment(inputData, surfaceData, input.uv);
     #elif _CUSTOMSHADING
-    color = CustomFragment(inputData, surfaceData, input.uv, input.screenPos);
+    AdditionInputData additionInputData;
+    additionInputData.uv = input.uv;
+    additionInputData.screenPos = input.screenPos;
+    color = CustomFragment(inputData, surfaceData, additionInputData);
     #endif
     outColor = color;
 }

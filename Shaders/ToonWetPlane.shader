@@ -134,7 +134,7 @@
 			{
 			}
 			
-			float4 CustomFragment(InputData inputData, ToonSurfaceData toonSurfaceData, float4 uv, float4 screenPos)
+			float4 CustomFragment(InputData inputData, ToonSurfaceData toonSurfaceData, AdditionInputData additionInput)
 			{
 				// prepare main light
 			    half4 shadowMask = CalculateShadowMask(inputData);
@@ -159,12 +159,12 @@
 			    ToonLightingData lightingData = InitializeLightingData(mainLight, inputData.normalWS, inputData.viewDirectionWS);
 			    
 			    float4 color = 1;
-			    color.rgb = ToonMainLightDirectLighting(brdfData, inputData, toonSurfaceData, lightingData, uv);
+			    color.rgb = ToonMainLightDirectLighting(brdfData, inputData, toonSurfaceData, lightingData, additionInput.uv);
 			    color.rgb += ToonRimLighting(lightingData, inputData);
 
 				// ====================================
 				// noise
-				float4 noiseMap = SAMPLE_TEXTURE2D(_CustomMap1, sampler_CustomMap1, uv.xy);
+				float4 noiseMap = SAMPLE_TEXTURE2D(_CustomMap1, sampler_CustomMap1, additionInput.uv.xy);
 				float2 noise = noiseMap.xy;
                 noise = noise *2-1;
                 noise.y = -abs(noise); //hide missing data, only allow offset to valid location
@@ -173,7 +173,7 @@
 				// SSPR
 				ReflectionInput reflectionData = (ReflectionInput)0;
                 reflectionData.posWS = inputData.positionWS;
-                reflectionData.screenPos = screenPos;
+                reflectionData.screenPos = additionInput.screenPos;
                 reflectionData.roughness = brdfData.roughness;
                 reflectionData.SSPR_Usage = toonSurfaceData.alpha;
                 reflectionData.screenSpaceNoise = noise;

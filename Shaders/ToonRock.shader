@@ -157,7 +157,7 @@
                 }
                 #endif
 			}
-			float4 CustomFragment(InputData inputData, ToonSurfaceData toonSurfaceData, Varyings input)
+			float4 CustomFragment(InputData inputData, ToonSurfaceData toonSurfaceData, AdditionInputData additionInput)
 			{
 				return 0;
 			}
