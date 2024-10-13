@@ -120,11 +120,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   active: 1
   enable:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: 1
   textureSize:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0
+  planeHeight:
+    m_OverrideState: 1
+    m_Value: 0.01
+  stretchIntensity:
+    m_OverrideState: 1
+    m_Value: 4
+  stretchThreshold:
+    m_OverrideState: 1
+    m_Value: 0.7
+  verticalFadeOutDistance:
+    m_OverrideState: 1
+    m_Value: 0.25
+  horizontalFadeOutDistance:
+    m_OverrideState: 1
+    m_Value: 0.35
+  tintColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &7397566805273789091
 MonoBehaviour:
   m_ObjectHideFlags: 3
