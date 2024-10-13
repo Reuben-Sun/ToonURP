@@ -1,5 +1,18 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6405810728199850120
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 7
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -8,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Mountains
-  m_Shader: {fileID: 4800000, guid: a5ffc5e0b3cf48ca9d0b624edef86772, type: 3}
+  m_Shader: {fileID: 4800000, guid: 7c900b38fedc4d7a82ccb67e1bbf6833, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
@@ -18,7 +31,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
@@ -30,6 +43,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CustomMap1:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -46,10 +63,6 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _GrassMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -105,11 +118,13 @@ Material:
     - _BlendMode: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
-    - _CellSmoothing: 0.038
+    - _CellSmoothing: 0.001
     - _CellThreshold: 0.5
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
+    - _CustomFloat1: 0.5
+    - _CustomFloat2: 0.9
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
@@ -117,12 +132,11 @@ Material:
     - _DstBlendAlpha: 0
     - _EnableAlbedoMap: 0
     - _EnableEmission: 0
-    - _EnableGrassMap: 0
     - _EnableMetallicMap: 0
     - _EnableNormalMap: 0
     - _EnableOcclusionMap: 0
     - _EnableRoughnessMap: 0
-    - _EnumFeatureMode: 1
+    - _EnumFeatureMode: 0
     - _EnumRim: 0
     - _EnumShadingMode: 0
     - _EnvironmentReflections: 1
@@ -130,7 +144,6 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _GrassScale: 0.9
     - _LimitAdditionLightNum: 0
     - _MaxAdditionLightNum: 1
     - _Metallic: 0
@@ -145,17 +158,15 @@ Material:
     - _RimGroup: 0
     - _RimSoftness: 0.01
     - _RimThreshold: 0.2
-    - _Roughness: 0.926
+    - _Roughness: 1
     - _ScatterWeight: 10
     - _ShadingModeGroup: 0
     - _ShadowSettingGroup: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
-    - _SnowLine: 4.21
-    - _SnowRockWeight: 0.53
     - _SpecularAlbedoWeight: 0
     - _SpecularHighlights: 1
-    - _SpecularIntensity: 0.7
+    - _SpecularIntensity: 1
     - _SpecularSize: 0.1
     - _SpecularSoftness: 0.05
     - _SrcBlend: 1
@@ -167,28 +178,15 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.43137255, g: 0.46739173, b: 0.5333333, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DarkColor: {r: 0.41242433, g: 0.4512034, b: 0.6603774, a: 1}
+    - _CustomVector1: {r: 1, g: 1, b: 1, a: 1}
+    - _CustomVector2: {r: 1, g: 1, b: 1, a: 1}
+    - _DarkColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _GrassRockColor: {r: 1, g: 1, b: 1, a: 1}
     - _HighColor: {r: 1, g: 1, b: 1, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
     - _ScatterColor: {r: 1, g: 1, b: 1, a: 1}
-    - _SnowRockColor: {r: 0.94716984, g: 0.94716984, b: 0.94716984, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
---- !u!114 &5902058766006794853
-MonoBehaviour:
-  m_ObjectHideFlags: 11
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 7
