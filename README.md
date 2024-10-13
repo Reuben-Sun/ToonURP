@@ -20,9 +20,25 @@ cd ToonURP
 git submodule update --init --recursive
 ```
 
-替换Render Pipeline Assets，使用Setting文件夹下的URP-HighFidelity.asset
+替换Render Pipeline Assets，使用Setting文件夹下的URP-HighFidelity.asset（或者使用自己的URP Asset）
 
 ![替换资产](Documentation~/image/replace_assets.png)
+
+## 效果演示
+
+### Skin
+
+![Skin](Documentation~/image/Skin.png)
+
+### SSPR
+
+![SSPR](Documentation~/image/SSPR.png)
+
+### Grass
+
+> 基于Geometry shader
+
+![Grass](Documentation~/image/Grass.png)
 
 ## 开发计划
 
@@ -51,8 +67,11 @@ git submodule update --init --recursive
   - [ ] 近海水花
   - [ ] 物体交互
 - [ ] 卡通树
+- [ ] 湿平面
+  - [x] SSPR
 
-## Shader 设计
+
+## 设计理念
 
 > 可以参考ToonUnlit.shader的实现
 
