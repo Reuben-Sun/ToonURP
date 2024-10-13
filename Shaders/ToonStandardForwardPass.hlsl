@@ -1,7 +1,6 @@
 ﻿#ifndef TOON_STANDARD_FORWARD_PASS_INCLUDED
 #define TOON_STANDARD_FORWARD_PASS_INCLUDED
 
-#include "Packages/com.reubensun.toonurp/ShaderLibrary/ToonLighting.hlsl"
 struct Attributes
 {
     float4 positionOS : POSITION;
@@ -16,10 +15,11 @@ struct Attributes
 struct Varyings
 {
     float4 positionCS : SV_POSITION;
-    float4 uv : TEXCOORD0;      // zw for sdf
+    float4 uv : TEXCOORD0;      // normally only use xy, but sdf face use zw
     float3 positionWS : TEXCOORD1;
     float3 normalWS : TEXCOORD2;
     float4 tangentWS : TEXCOORD3;    // xyz: tangent, w: sign
+    float4 screenPos : TEXCOORD4;
 
     #ifdef _ADDITIONAL_LIGHTS_VERTEX
     half4 fogFactorAndVertexLight   : TEXCOORD5; // x: fogFactor, yzw: vertex light
@@ -101,6 +101,7 @@ Varyings ToonStandardPassVertex(Attributes input)
 
     output.positionCS = vertexInput.positionCS;
     output.positionWS = vertexInput.positionWS;
+    output.screenPos = ComputeScreenPos(output.positionCS);
     
     half3 vertexLight = VertexLighting(vertexInput.positionWS, normalInput.normalWS);
 
@@ -110,9 +111,6 @@ Varyings ToonStandardPassVertex(Attributes input)
     #endif
 
     output.uv.xy = TRANSFORM_TEX(input.uv, _MainTex);
-    #if _SDFFACE
-    SDFFaceUV(_SDFDirectionReversal, _SDFFaceArea, output.uv.zw);
-    #endif
     
     output.normalWS = normalInput.normalWS;
     real sign = input.tangentOS.w * GetOddNegativeScale();
@@ -151,8 +149,8 @@ void ToonShandardPassFragment(Varyings input, out float4 outColor: SV_Target0)
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
     #elif _CELLSHADING
     color = ToonFragment(inputData, surfaceData, input.uv);
-    #elif _SDFFACE
-    color = ToonFragment(inputData, surfaceData, input.uv);
+    #elif _CUSTOMSHADING
+    color = CustomFragment(inputData, surfaceData, input.uv, input.screenPos);
     #endif
     outColor = color;
 }

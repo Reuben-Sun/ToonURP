@@ -1,4 +1,4 @@
-﻿Shader "ToonURP/ToonStandard"
+﻿Shader "ToonURP/ToonFace"
 {
     Properties
     {
@@ -28,7 +28,7 @@
     	
     	// Lighting mode
     	[Main(ShadingMode, _, off, off)] _ShadingModeGroup("ShadingMode", float) = 0
-    	[KWEnum(ShadingMode, CelShading, _CELLSHADING, PBRShading, _PBRSHADING)] _EnumShadingMode ("Mode", float) = 0
+    	[KWEnum(ShadingMode, CelShading, _CELLSHADING, PBRShading, _PBRSHADING, SDFFace, _CUSTOMSHADING)] _EnumShadingMode ("Mode", float) = 2
     	[SubToggle(ShadingMode)] _UseHalfLambert ("Use HalfLambert (More Flatter)", float) = 0
         [SubToggle(ShadingMode)] _UseRadianceOcclusion ("Radiance Occlusion", float) = 0
     	[Sub(ShadingMode)] _SpecularColor ("Specular Color", Color) = (1,1,1,1)
@@ -42,6 +42,10 @@
         [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _SpecularAlbedoWeight ("Color Albedo Weight", Range(0,1)) = 0
     	[Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _ScatterColor ("Scatter Color", Color) = (1,1,1,1)
     	[Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _ScatterWeight ("Scatter Weight", Range(4,20)) = 10
+    	[SubToggle(ShadingMode_CUSTOMSHADING)] _SDFDirectionReversal ("Direction Reversal",Float) = 0 
+    	[Tex(ShadingMode_CUSTOMSHADING)] _SDFFaceMap("SDF Face Map", 2D) = "white" {}
+    	[Sub(ShadingMode_CUSTOMSHADING)] _SDFFaceArea ("Face Angle Range (0~360)",Range(0,360)) = 0
+    	[Sub(ShadingMode_CUSTOMSHADING)] _SDFShadingSoftness ("SDF Shading Softness",Range(0,1)) = 0.3
     	
     	// Rim
     	[Main(Rim, _, off, off)] _RimGroup("RimSettings", float) = 0
@@ -129,9 +133,43 @@
             void PreProcessMaterial(inout InputData inputData, inout ToonSurfaceData surfaceData, float2 uv)
 			{
 			}
+
 			float4 CustomFragment(InputData inputData, ToonSurfaceData toonSurfaceData, float4 uv)
 			{
-				return 0;
+
+				SDFFaceUV(_SDFDirectionReversal, _SDFFaceArea, uv.zw);
+
+				// prepare main light
+			    half4 shadowMask = CalculateShadowMask(inputData);
+			    uint meshRenderingLayers = GetMeshRenderingLayer();
+			    Light mainLight = GetMainLight(inputData.shadowCoord, inputData.positionWS, shadowMask);
+			    MixRealtimeAndBakedGI(mainLight, inputData.normalWS, inputData.bakedGI);
+
+			    #if defined(_SCREEN_SPACE_OCCLUSION)
+			    AmbientOcclusionFactor aoFactor = GetScreenSpaceAmbientOcclusion(inputData.normalizedScreenSpaceUV);
+			    mainLight.color *= aoFactor.directAmbientOcclusion;
+			    toonSurfaceData.occlusion = min(toonSurfaceData.occlusion, aoFactor.indirectAmbientOcclusion);
+			    #else
+			    AmbientOcclusionFactor aoFactor;
+			    aoFactor.indirectAmbientOcclusion = 1;
+			    aoFactor.directAmbientOcclusion = 1;
+			    #endif
+
+			    BRDFData brdfData;
+			    InitializeToonBRDFData(toonSurfaceData, brdfData);
+
+			    // lighting
+			    ToonLightingData lightingData = InitializeLightingData(mainLight, inputData.normalWS, inputData.viewDirectionWS);
+			    
+			    float4 color = 1;
+			    color.rgb = ToonMainLightSDFDirectLighting(brdfData, inputData, toonSurfaceData, lightingData, uv);
+			    color.rgb += ToonRimLighting(lightingData, inputData); 
+
+			    color.rgb += toonSurfaceData.emission;
+			    color.rgb = MixFog(color.rgb, inputData.fogCoord);
+
+			    color.a = toonSurfaceData.alpha;
+			    return color;
 			}
 			
 			#include "Packages/com.reubensun.toonurp/Shaders/ToonStandardForwardPass.hlsl"

@@ -42,16 +42,6 @@ float _SDFFaceArea;
 float _SDFShadingSoftness;
 // end _SDFFACE
 
-// _SNOWROCK
-float4 _SnowRockColor;
-float _SnowLine;
-// end _SNOWROCK
-
-// _GRASSROCK
-float4 _GrassRockColor;
-float _GrassScale;
-// end _GRASSROCK
-
 // Rim Setting
 float _RimDirectionLightContribution;
 float _RimThreshold;
@@ -64,6 +54,23 @@ float _LimitAdditionLightNum;
 float _MaxAdditionLightNum;
 // end MultLight Setting
 
+
+// Feature Custom Value
+float _CustomFloat1;
+float _CustomFloat2;
+float _CustomFloat3;
+float _CustomFloat4;
+float _CustomFloat5;
+float _CustomFloat6;
+float _CustomFloat7;
+float _CustomFloat8;
+
+float4 _CustomVector1;
+float4 _CustomVector2;
+float4 _CustomVector3;
+float4 _CustomVector4;
+// end Feature Custom Value
+
 CBUFFER_END
 
 TEXTURE2D(_MainTex);        SAMPLER(sampler_MainTex);
@@ -71,8 +78,12 @@ TEXTURE2D(_RoughnessMap);        SAMPLER(sampler_RoughnessMap);
 TEXTURE2D(_MetallicMap);        SAMPLER(sampler_MetallicMap);
 TEXTURE2D(_NormalMap);        SAMPLER(sampler_NormalMap);
 TEXTURE2D(_OcclusionMap);        SAMPLER(sampler_OcclusionMap);
-TEXTURE2D(_GrassMap);        SAMPLER(sampler_GrassMap);
 TEXTURE2D(_SDFFaceMap);      SAMPLER(sampler_SDFFaceMap);
+
+TEXTURE2D(_CustomMap1);        SAMPLER(sampler_CustomMap1);
+TEXTURE2D(_CustomMap2);        SAMPLER(sampler_CustomMap2);
+TEXTURE2D(_CustomMap3);        SAMPLER(sampler_CustomMap3);
+TEXTURE2D(_CustomMap4);        SAMPLER(sampler_CustomMap4);
 
 inline void InitializeToonStandardLitSurfaceData(float2 uv, out ToonSurfaceData outSurfaceData)
 {
@@ -108,6 +119,6 @@ inline void InitializeToonStandardLitSurfaceData(float2 uv, out ToonSurfaceData 
     #endif
 }
 
-
+#include "Packages/com.reubensun.toonurp/ShaderLibrary/ToonLighting.hlsl"
 
 #endif
