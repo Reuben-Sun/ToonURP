@@ -86,7 +86,7 @@
             HLSLPROGRAM
 			
 			#pragma vertex ToonStandardPassVertex
-            #pragma fragment ToonWetPlaneFragment
+            #pragma fragment ToonShandardPassFragment
 
 			// -------------------------------------
             // Material Keywords
@@ -134,32 +134,12 @@
 			{
 			}
 			
-			#include "Packages/com.reubensun.toonurp/Shaders/ToonStandardForwardPass.hlsl"
-
-			void ToonWetPlaneFragment(Varyings input, out float4 outColor: SV_Target0)
+			float4 CustomFragment(InputData inputData, ToonSurfaceData toonSurfaceData, float4 uv)
 			{
-			    UNITY_SETUP_INSTANCE_ID(input);
-			    UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
-
-			    ToonSurfaceData surfaceData;
-			    InitializeToonStandardLitSurfaceData(input.uv.xy, surfaceData);
-
-			    InputData inputData;
-			    InitializeInputData(input, surfaceData.normalTS, inputData);
-
-			    PreProcessMaterial(inputData, surfaceData, input.uv.xy);
-			    
-			    float4 color = 0;
-			    #if _PBRSHADING
-			    color = UniversalFragmentPBR(inputData, surfaceData);
-			    color.rgb = MixFog(color.rgb, inputData.fogCoord);
-			    #elif _CELLSHADING
-			    color = ToonFragment(inputData, surfaceData, input.uv);
-			    #elif _SDFFACE
-			    color = ToonFragment(inputData, surfaceData, input.uv);
-			    #endif
-			    outColor = color;
+				return 0;
 			}
+			
+			#include "Packages/com.reubensun.toonurp/Shaders/ToonStandardForwardPass.hlsl"
 			
 			ENDHLSL
         }
