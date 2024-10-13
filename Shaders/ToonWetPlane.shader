@@ -44,7 +44,6 @@
     	[Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _ScatterWeight ("Scatter Weight", Range(4,20)) = 10
     	[Sub(ShadingMode_CUSTOMSHADING)] _CustomFloat1 ("Noise Intensity",Range(-0.2,0.2)) = 0.0
     	[Tex(ShadingMode_CUSTOMSHADING)] _CustomMap1("Noise Map", 2D) = "white" {}
-    	[Tex(ShadingMode_CUSTOMSHADING)] _CustomMap2("Mask Map", 2D) = "white" {}
     	
     	// Rim
     	[Main(Rim, _, off, off)] _RimGroup("RimSettings", float) = 0
