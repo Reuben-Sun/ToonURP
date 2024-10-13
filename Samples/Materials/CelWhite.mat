@@ -80,6 +80,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SDFFaceMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -143,6 +147,9 @@ Material:
     - _RimSoftness: 0.222
     - _RimThreshold: 0.171
     - _Roughness: 0.499
+    - _SDFDirectionReversal: 0
+    - _SDFFaceArea: 0
+    - _SDFShadingSoftness: 0.3
     - _ScatterWeight: 10
     - _ShadingModeGroup: 0
     - _ShadowSettingGroup: 1
