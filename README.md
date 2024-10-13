@@ -62,6 +62,12 @@ git submodule update --init --recursive
 2. 定义一个Input.hlsl文件，在`CBUFFER_START(UnityPerMaterial)`中定义你所需要的参数
 3. 在Shader文件中修改`PreProcessMaterial`，几乎所有的材质效果均在这里实现
 
+### 新增 ShadingMode
+
+> 有没有办法优化这部分？
+
+当你打算新增一个ShadingMode，而不是一个简单的材质特效时，你需要在ToonStandardInput.hlsl中的`CBUFFER_START(UnityPerMaterial)`添加你所需的参数
+
 
 ## 参考 
 
