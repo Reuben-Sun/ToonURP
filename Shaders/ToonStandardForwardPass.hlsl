@@ -15,7 +15,7 @@ struct Attributes
 struct Varyings
 {
     float4 positionCS : SV_POSITION;
-    float4 uv : TEXCOORD0;      // zw for sdf
+    float4 uv : TEXCOORD0;      // normally only use xy, but sdf face use zw
     float3 positionWS : TEXCOORD1;
     float3 normalWS : TEXCOORD2;
     float4 tangentWS : TEXCOORD3;    // xyz: tangent, w: sign
