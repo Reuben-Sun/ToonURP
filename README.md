@@ -137,7 +137,7 @@ OK，Done！像这样的材质需求，写这么点代码才是正常的
 除了编写`PreProcessMaterial`外，你需要额外定义一个`CustomFragment`函数，当你的模式为`_CUSTOMSHADING`时，会调用这个函数
 
 ```cpp
-float4 CustomFragment(InputData inputData, ToonSurfaceData toonSurfaceData, float4 uv){}
+float4 CustomFragment(InputData inputData, ToonSurfaceData toonSurfaceData, AdditionInputData additionInput){}
 ```
 
 #### 维持 SRP Batcher
