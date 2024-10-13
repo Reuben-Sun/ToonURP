@@ -26,7 +26,7 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _CELLSHADING
-  - _SNOWROCK
+  - _GRASSROCK
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -47,7 +47,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CustomMap1:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: d1e625ea9223c7f40a30af11eeb369e4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -136,7 +136,7 @@ Material:
     - _EnableNormalMap: 0
     - _EnableOcclusionMap: 0
     - _EnableRoughnessMap: 0
-    - _EnumFeatureMode: 0
+    - _EnumFeatureMode: 1
     - _EnumRim: 0
     - _EnumShadingMode: 0
     - _EnvironmentReflections: 1
@@ -178,7 +178,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColor: {r: 0.6066883, g: 0.6593374, b: 0.7028302, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _CustomVector1: {r: 1, g: 1, b: 1, a: 1}
     - _CustomVector2: {r: 1, g: 1, b: 1, a: 1}

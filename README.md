@@ -85,34 +85,58 @@ git submodule update --init --recursive
 
 > 参考 ToonRock.shader
 
+复制ToonStandard.shader，并在新shader第一行重命名新shader的名称为`Shader "ToonURP/ToonRock"`
+
+添加Feature栏，方便管理参数
+
+```cpp
+// Feature
+[Main(FeatureMode, _, off, off)] _FeatureGroup("Feature", float) = 0
+[KWEnum(FeatureMode, SnowRock, _SNOWROCK, GrassRock, _GRASSROCK)] _EnumFeatureMode ("Feature", float) = 0
+```
+
+添加宏
+
+```cpp
+#pragma shader_feature_local _SNOWROCK _GRASSROCK
+```
+
+修改`PreProcessMaterial`
+
+```cpp
+void PreProcessMaterial(inout InputData inputData, inout ToonSurfaceData surfaceData, float2 uv){}
+```
+
+OK，Done！像这样的材质需求，写这么点代码才是正常的
+
 ### 新增 ShadingMode
 
-> 参考 ToonWetPlane.shader
+> 参考 ToonWetPlane.shader，相较于新材质，这很显然更复杂
 
 你想基于ToonStandard.shader新增一个材质Shader，首先要在`_EnumShadingMode`添加新的模式，并将默认值指向你新增的模式
 
-```hlsl
+```cpp
 [Main(ShadingMode, _, off, off)] _ShadingModeGroup("ShadingMode", float) = 0
 [KWEnum(ShadingMode, CelShading, _CELLSHADING, PBRShading, _PBRSHADING)] _EnumShadingMode ("Mode", float) = 0
 ```
 
-```hlsl
+```cpp
 [Main(ShadingMode, _, off, off)] _ShadingModeGroup("ShadingMode", float) = 0
 [KWEnum(ShadingMode, CelShading, _CELLSHADING, PBRShading, _PBRSHADING, WetPlane, _CUSTOMSHADING)] _EnumShadingMode ("Mode", float) = 2
 ```
 
 并在宏中添加你的模式，注意新模式的宏名称必须为`_CUSTOMSHADING`
-```hlsl
+```cp
 #pragma shader_feature_local _CELLSHADING _PBRSHADING
 ```
 
-```hlsl
+```cpp
 #pragma shader_feature_local _CELLSHADING _PBRSHADING _CUSTOMSHADING
 ```
 
 除了编写`PreProcessMaterial`外，你需要额外定义一个`CustomFragment`函数，当你的模式为`_CUSTOMSHADING`时，会调用这个函数
 
-```hlsl
+```cpp
 float4 CustomFragment(InputData inputData, ToonSurfaceData toonSurfaceData, float4 uv){}
 ```
 

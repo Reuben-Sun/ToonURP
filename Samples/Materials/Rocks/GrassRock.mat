@@ -110,7 +110,7 @@ Material:
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
-    - _CustomFloat1: 0.5
+    - _CustomFloat1: 3.39
     - _CustomFloat2: 0.9
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
@@ -165,7 +165,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColor: {r: 0.60784316, g: 0.6627451, b: 0.7058824, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _CustomVector1: {r: 1, g: 1, b: 1, a: 1}
     - _CustomVector2: {r: 1, g: 1, b: 1, a: 1}
