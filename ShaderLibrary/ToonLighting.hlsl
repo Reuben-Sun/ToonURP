@@ -114,8 +114,16 @@ half3 SDFFaceDiffuse(half4 uv, ToonLightingData lightData, half SDFShadingSoftne
     return diffuseColor;
 }
 
+float3 NPRDiffuseSDFLighting(BRDFData brdfData, ToonLightingData lightingData, float radiance, float4 uv)
+{
+    float3 diffuse = SDFFaceDiffuse(uv, lightingData, _SDFShadingSoftness, _HighColor.rgb, _DarkColor.rgb, TEXTURECUBE_ARGS(_SDFFaceMap, sampler_SDFFaceMap));
+    diffuse *= brdfData.diffuse;
+    return diffuse;
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
-//                      Light                                                //
+//                      Standard Cel Lighting                                //
 ///////////////////////////////////////////////////////////////////////////////
 
 float3 NPRDiffuseLighting(BRDFData brdfData, ToonLightingData lightingData, float radiance, float4 uv)
@@ -138,6 +146,12 @@ float3 NPRSpecularLighting(BRDFData brdfData, ToonSurfaceData surfData, InputDat
     return specular;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+//                      Lighting modes                                       //
+///////////////////////////////////////////////////////////////////////////////
+
+// For Standard Cel Lighting
 float3 ToonMainLightDirectLighting(BRDFData brdfData, InputData inputData, ToonSurfaceData surfData, ToonLightingData lightData, float4 uv)
 {
     half radiance = LightingRadiance(lightData, _UseHalfLambert, surfData.occlusion, _UseRadianceOcclusion);
@@ -157,6 +171,18 @@ float3 NPRAdditionLighting(Light light, BRDFData brdfData, InputData inputData, 
     half3 addLightColor = ToonMainLightDirectLighting(brdfData, inputData, surfData, lightingData, uv);
     return addLightColor;
 }
+
+// For SDF face lighting
+float3 ToonMainLightSDFDirectLighting(BRDFData brdfData, InputData inputData, ToonSurfaceData surfData, ToonLightingData lightData, float4 uv)
+{
+    half radiance = LightingRadiance(lightData, _UseHalfLambert, surfData.occlusion, _UseRadianceOcclusion);
+
+    float3 diffuse = NPRDiffuseSDFLighting(brdfData, lightData, radiance, uv);
+    float3 specular = NPRSpecularLighting(brdfData, surfData, inputData, surfData.albedo, radiance, lightData);
+    float3 color = (diffuse + specular) * lightData.lightColor;
+    return color;
+}
+
 
 float3 ToonAdditionLightDirectLighting(BRDFData brdfData, InputData inputData, ToonSurfaceData surfData, half4 shadowMask, half meshRenderingLayers, AmbientOcclusionFactor aoFactor, float4 uv)
 {

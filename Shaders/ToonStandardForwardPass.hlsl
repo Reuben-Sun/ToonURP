@@ -1,7 +1,6 @@
 ﻿#ifndef TOON_STANDARD_FORWARD_PASS_INCLUDED
 #define TOON_STANDARD_FORWARD_PASS_INCLUDED
 
-#include "Packages/com.reubensun.toonurp/ShaderLibrary/ToonLighting.hlsl"
 struct Attributes
 {
     float4 positionOS : POSITION;
@@ -110,9 +109,6 @@ Varyings ToonStandardPassVertex(Attributes input)
     #endif
 
     output.uv.xy = TRANSFORM_TEX(input.uv, _MainTex);
-    #if _SDFFACE
-    SDFFaceUV(_SDFDirectionReversal, _SDFFaceArea, output.uv.zw);
-    #endif
     
     output.normalWS = normalInput.normalWS;
     real sign = input.tangentOS.w * GetOddNegativeScale();
@@ -151,8 +147,8 @@ void ToonShandardPassFragment(Varyings input, out float4 outColor: SV_Target0)
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
     #elif _CELLSHADING
     color = ToonFragment(inputData, surfaceData, input.uv);
-    #elif _SDFFACE
-    color = ToonFragment(inputData, surfaceData, input.uv);
+    #elif _CUSTOMSHADING
+    color = CustomFragment(inputData, surfaceData, input.uv);
     #endif
     outColor = color;
 }

@@ -119,6 +119,6 @@ inline void InitializeToonStandardLitSurfaceData(float2 uv, out ToonSurfaceData 
     #endif
 }
 
-
+#include "Packages/com.reubensun.toonurp/ShaderLibrary/ToonLighting.hlsl"
 
 #endif
