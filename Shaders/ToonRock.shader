@@ -46,11 +46,11 @@
     	// Feature
     	[Main(FeatureMode, _, off, off)] _FeatureGroup("Feature", float) = 0
     	[KWEnum(FeatureMode, SnowRock, _SNOWROCK, GrassRock, _GRASSROCK)] _EnumFeatureMode ("Feature", float) = 0
-    	[Sub(FeatureMode)] [ShowIf(_EnumFeatureMode, Equal, 1)] _SnowRockColor ("Snow Color", Color) = (1,1,1,1)
-    	[Sub(FeatureMode)] [ShowIf(_EnumFeatureMode, Equal, 1)] _SnowLine ("Snow Line (World)", Float) = 0.5
-		[Sub(FeatureMode)] [ShowIf(_EnumFeatureMode, Equal, 2)] _GrassRockColor ("Grass Rock Color", Color) = (1,1,1,1)
-    	[Sub(FeatureMode)] [ShowIf(_EnumFeatureMode, Equal, 2)] _GrassScale ("Grass Scale", Range(0,1)) = 0.9
-    	[Tex(FeatureMode_GRASSROCK)] _GrassMap("GrassMap", 2D) = "white" {}
+    	[Sub(FeatureMode)] [ShowIf(_EnumFeatureMode, Equal, 0)] _CustomVector1 ("Snow Color", Color) = (1,1,1,1)
+    	[Sub(FeatureMode)] [ShowIf(_EnumFeatureMode, Equal, 0)] _CustomFloat1 ("Snow Line (World)", Float) = 0.5
+		[Sub(FeatureMode)] [ShowIf(_EnumFeatureMode, Equal, 1)] _CustomVector2 ("Grass Rock Color", Color) = (1,1,1,1)
+    	[Sub(FeatureMode)] [ShowIf(_EnumFeatureMode, Equal, 1)] _CustomFloat2 ("Grass Scale", Range(0,1)) = 0.9
+    	[Tex(FeatureMode_GRASSROCK)] _CustomMap1("GrassMap", 2D) = "white" {}
     	
     	// Rim
     	[Main(Rim, _, off, off)] _RimGroup("RimSettings", float) = 0
@@ -138,8 +138,26 @@
 			
             void PreProcessMaterial(inout InputData inputData, inout ToonSurfaceData surfaceData, float2 uv)
 			{
+				#if _SNOWROCK
+                float snowScale = saturate(inputData.positionWS.y - _CustomFloat1);
+                surfaceData.albedo = lerp(surfaceData.albedo, _CustomVector1.rgb, snowScale);
+                #endif
+
+                #if _GRASSROCK
+                float3 grassColor = _CustomVector2.rgb;
+                grassColor *= SAMPLE_TEXTURE2D(_CustomMap1, sampler_CustomMap1, uv).rgb;
+
+                float3 upVector = float3(0, 1, 0);
+                float NoU = dot(upVector, inputData.normalWS);
+                float grassScale = saturate(NoU - _CustomFloat2);
+                // surfaceData.albedo = lerp(surfaceData.albedo, grassColor, grassScale);
+                if(NoU > _GrassScale)
+                {
+                    surfaceData.albedo = grassColor;
+                }
+                #endif
 			}
-			float4 CustomFragment(InputData inputData, ToonSurfaceData toonSurfaceData, float4 uv)
+			float4 CustomFragment(InputData inputData, ToonSurfaceData toonSurfaceData, Varyings input)
 			{
 				return 0;
 			}
