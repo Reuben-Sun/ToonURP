@@ -47,15 +47,6 @@
     	[Sub(ShadingMode_SDFFACE)] _SDFFaceArea ("Face Angle Range (0~360)",Range(0,360)) = 0
     	[Sub(ShadingMode_SDFFACE)] _SDFShadingSoftness ("SDF Shading Softness",Range(0,1)) = 0.3
     	
-    	// Feature
-    	[Main(FeatureMode, _, off, off)] _FeatureGroup("Feature", float) = 0
-    	[KWEnum(FeatureMode, None, _, SnowRock, _SNOWROCK, GrassRock, _GRASSROCK)] _EnumFeatureMode ("Feature", float) = 0
-    	[Sub(FeatureMode)] [ShowIf(_EnumFeatureMode, Equal, 1)] _SnowRockColor ("Snow Color", Color) = (1,1,1,1)
-    	[Sub(FeatureMode)] [ShowIf(_EnumFeatureMode, Equal, 1)] _SnowLine ("Snow Line (World)", Float) = 0.5
-		[Sub(FeatureMode)] [ShowIf(_EnumFeatureMode, Equal, 2)] _GrassRockColor ("Grass Rock Color", Color) = (1,1,1,1)
-    	[Sub(FeatureMode)] [ShowIf(_EnumFeatureMode, Equal, 2)] _GrassScale ("Grass Scale", Range(0,1)) = 0.9
-    	[Tex(FeatureMode_GRASSROCK)] _GrassMap("GrassMap", 2D) = "white" {}
-    	
     	// Rim
     	[Main(Rim, _, off, off)] _RimGroup("RimSettings", float) = 0
     	[KWEnum(Rim, None, _, FresnelRim, _FRESNELRIM)] _EnumRim ("Rim Mode", float) = 0
@@ -107,7 +98,6 @@
 			#pragma shader_feature_local _EMISSION
 
 			#pragma shader_feature_local _CELLSHADING _PBRSHADING _SDFFACE
-			#pragma shader_feature_local _ _SNOWROCK _GRASSROCK
 			#pragma shader_feature_local _ _FRESNELRIM
 			#pragma shader_feature_local _RECEIVE_SHADOWS_OFF
 			#pragma shader_feature_local_fragment _SURFACE_TYPE_TRANSPARENT
@@ -142,25 +132,6 @@
 			
             void PreProcessMaterial(inout InputData inputData, inout ToonSurfaceData surfaceData, float2 uv)
 			{
-			    
-			    #if _SNOWROCK
-			    float snowScale = saturate(inputData.positionWS.y - _SnowLine);
-			    surfaceData.albedo = lerp(surfaceData.albedo, _SnowRockColor.rgb, snowScale);
-			    #endif
-
-			    #if _GRASSROCK
-			    float3 grassColor = _GrassRockColor.rgb;
-			    grassColor *= SAMPLE_TEXTURE2D(_GrassMap, sampler_GrassMap, uv).rgb;
-
-			    float3 upVector = float3(0, 1, 0);
-			    float NoU = dot(upVector, inputData.normalWS);
-			    float grassScale = saturate(NoU - _GrassScale);
-			    // surfaceData.albedo = lerp(surfaceData.albedo, grassColor, grassScale);
-			    if(NoU > _GrassScale)
-			    {
-			        surfaceData.albedo = grassColor;
-			    }
-			    #endif
 			}
 			
 			#include "Packages/com.reubensun.toonurp/Shaders/ToonStandardForwardPass.hlsl"

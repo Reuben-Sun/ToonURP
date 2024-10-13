@@ -42,16 +42,6 @@ float _SDFFaceArea;
 float _SDFShadingSoftness;
 // end _SDFFACE
 
-// _SNOWROCK
-float4 _SnowRockColor;
-float _SnowLine;
-// end _SNOWROCK
-
-// _GRASSROCK
-float4 _GrassRockColor;
-float _GrassScale;
-// end _GRASSROCK
-
 // Rim Setting
 float _RimDirectionLightContribution;
 float _RimThreshold;
@@ -71,7 +61,6 @@ TEXTURE2D(_RoughnessMap);        SAMPLER(sampler_RoughnessMap);
 TEXTURE2D(_MetallicMap);        SAMPLER(sampler_MetallicMap);
 TEXTURE2D(_NormalMap);        SAMPLER(sampler_NormalMap);
 TEXTURE2D(_OcclusionMap);        SAMPLER(sampler_OcclusionMap);
-TEXTURE2D(_GrassMap);        SAMPLER(sampler_GrassMap);
 TEXTURE2D(_SDFFaceMap);      SAMPLER(sampler_SDFFaceMap);
 
 inline void InitializeToonStandardLitSurfaceData(float2 uv, out ToonSurfaceData outSurfaceData)
