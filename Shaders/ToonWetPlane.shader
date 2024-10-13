@@ -129,6 +129,9 @@
 			
 			#include "Packages/com.reubensun.toonurp/Shaders/ToonStandardInput.hlsl"
 			#include "Packages/com.reubensun.toonurp/ShaderLibrary/SSPRInclude.hlsl"
+
+			#define _NoiseMap _CustomMap1
+			#define _NoiseIntensity _CustomFloat1
 			
             void PreProcessMaterial(inout InputData inputData, inout ToonSurfaceData surfaceData, float2 uv)
 			{
@@ -164,12 +167,12 @@
 
 				// ====================================
 				// noise
-				float4 noiseMap = SAMPLE_TEXTURE2D(_CustomMap1, sampler_CustomMap1, additionInput.uv.xy);
+				float4 noiseMap = SAMPLE_TEXTURE2D(_NoiseMap, sampler_CustomMap1, additionInput.uv.xy);
 				float2 noise = noiseMap.xy;
                 noise = noise *2-1;
                 noise.y = -abs(noise); //hide missing data, only allow offset to valid location
                 noise.x *= 0.25;
-                noise *= _CustomFloat1;
+                noise *= _NoiseIntensity;
 				// SSPR
 				ReflectionInput reflectionData = (ReflectionInput)0;
                 reflectionData.posWS = inputData.positionWS;
