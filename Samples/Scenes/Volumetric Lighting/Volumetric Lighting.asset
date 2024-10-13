@@ -1,5 +1,21 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-5661581909781652423
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9addea695a94e65a3cd541e62ea7101, type: 3}
+  m_Name: VolumetricLighting
+  m_EditorClassIdentifier: 
+  active: 1
+  intensity:
+    m_OverrideState: 0
+    m_Value: 0
 --- !u!114 &-2318318568312946360
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -105,6 +121,7 @@ MonoBehaviour:
   - {fileID: -1342684012205329032}
   - {fileID: 8091064021303886841}
   - {fileID: -467729114460966189}
+  - {fileID: -5661581909781652423}
 --- !u!114 &7397566805273789091
 MonoBehaviour:
   m_ObjectHideFlags: 3
