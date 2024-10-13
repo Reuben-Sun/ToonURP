@@ -16,6 +16,7 @@ namespace ToonURP
         private ProfilingSampler m_FixHoleProfilingSampler = new ProfilingSampler("FixHole");
         private int m_RTWidth;
         private int m_RTHeight;
+
         
         const int SHADER_NUMTHREAD_X = 8; 
         const int SHADER_NUMTHREAD_Y = 8;
@@ -47,14 +48,11 @@ namespace ToonURP
             m_RTWidth = Mathf.CeilToInt(m_RTHeight * aspect / (float)SHADER_NUMTHREAD_X) * SHADER_NUMTHREAD_X;
 
             // create rt
-            var descriptor = renderingData.cameraData.cameraTargetDescriptor;
-            descriptor.width = m_RTWidth;
-            descriptor.height = m_RTHeight;
-            descriptor.msaaSamples = 1;
-            descriptor.useMipMap = false;
-            descriptor.autoGenerateMips = false;
-            descriptor.depthBufferBits = 0;
-            descriptor.colorFormat = RenderTextureFormat.ARGB32;
+            var descriptor = new RenderTextureDescriptor(m_RTWidth, m_RTHeight, RenderTextureFormat.ARGB32, 0, 0,
+                RenderTextureReadWrite.Linear)
+            {
+                enableRandomWrite = true
+            };
             RenderingUtils.ReAllocateIfNeeded(ref m_ReflectionColorRTHandle, descriptor, FilterMode.Bilinear,
                 TextureWrapMode.Clamp, name: "_ReflectionColorTexture");
             descriptor.colorFormat = RenderTextureFormat.RInt;
@@ -102,6 +100,30 @@ namespace ToonURP
                 cmd.DispatchCompute(m_CS, kernel_RenderUV, dispatchThreadGroupXCount, dispatchThreadGroupYCount, dispatchThreadGroupZCount);
 
             }
+
+            using (new ProfilingScope(cmd, m_RenderColorProfilingSampler))
+            {
+                int kernel_RenderColor = m_CS.FindKernel("RenderColor");
+                // cmd.SetComputeTextureParam(m_CS, kernel_RenderColor, "_CameraOpaqueTexture", new RenderTargetIdentifier("_CameraOpaqueTexture"));
+                cmd.SetComputeTextureParam(m_CS, kernel_RenderColor, "ColorRT", m_ReflectionColorRTHandle);
+                cmd.SetComputeTextureParam(m_CS, kernel_RenderColor, "UVRT", m_UVRTHandle);
+                cmd.DispatchCompute(m_CS, kernel_RenderColor, dispatchThreadGroupXCount, dispatchThreadGroupYCount, dispatchThreadGroupZCount);
+
+            }
+
+            using (new ProfilingScope(cmd, m_FixHoleProfilingSampler))
+            {
+                int kernel_FixHole = m_CS.FindKernel("FixHole");
+                cmd.SetComputeTextureParam(m_CS, kernel_FixHole, "ColorRT", m_ReflectionColorRTHandle);
+                cmd.SetComputeTextureParam(m_CS, kernel_FixHole, "UVRT", m_UVRTHandle);
+                cmd.DispatchCompute(m_CS, kernel_FixHole, Mathf.CeilToInt(dispatchThreadGroupXCount / 2f), Mathf.CeilToInt(dispatchThreadGroupYCount / 2f), dispatchThreadGroupZCount);
+
+            }
+            // sent global texture
+            cmd.SetGlobalTexture("_SSPRGlobalColorRT", m_ReflectionColorRTHandle);
+            
+            context.ExecuteCommandBuffer(cmd);
+            CommandBufferPool.Release(cmd);
         }
     }
 }
