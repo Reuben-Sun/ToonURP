@@ -19,6 +19,7 @@ struct Varyings
     float3 positionWS : TEXCOORD1;
     float3 normalWS : TEXCOORD2;
     float4 tangentWS : TEXCOORD3;    // xyz: tangent, w: sign
+    float4 screenPos : TEXCOORD4;
 
     #ifdef _ADDITIONAL_LIGHTS_VERTEX
     half4 fogFactorAndVertexLight   : TEXCOORD5; // x: fogFactor, yzw: vertex light
@@ -100,6 +101,7 @@ Varyings ToonStandardPassVertex(Attributes input)
 
     output.positionCS = vertexInput.positionCS;
     output.positionWS = vertexInput.positionWS;
+    output.screenPos = ComputeScreenPos(output.positionCS);
     
     half3 vertexLight = VertexLighting(vertexInput.positionWS, normalInput.normalWS);
 
@@ -148,7 +150,7 @@ void ToonShandardPassFragment(Varyings input, out float4 outColor: SV_Target0)
     #elif _CELLSHADING
     color = ToonFragment(inputData, surfaceData, input.uv);
     #elif _CUSTOMSHADING
-    color = CustomFragment(inputData, surfaceData, input.uv);
+    color = CustomFragment(inputData, surfaceData, input.uv, input.screenPos);
     #endif
     outColor = color;
 }

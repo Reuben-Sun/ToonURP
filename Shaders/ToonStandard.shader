@@ -129,6 +129,10 @@
             void PreProcessMaterial(inout InputData inputData, inout ToonSurfaceData surfaceData, float2 uv)
 			{
 			}
+			float4 CustomFragment(InputData inputData, ToonSurfaceData toonSurfaceData, float4 uv)
+			{
+				return 0;
+			}
 			
 			#include "Packages/com.reubensun.toonurp/Shaders/ToonStandardForwardPass.hlsl"
 			

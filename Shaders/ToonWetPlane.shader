@@ -134,7 +134,7 @@
 			{
 			}
 			
-			float4 CustomFragment(InputData inputData, ToonSurfaceData toonSurfaceData, float4 uv)
+			float4 CustomFragment(InputData inputData, ToonSurfaceData toonSurfaceData, float4 uv, float4 screenPos)
 			{
 				// prepare main light
 			    half4 shadowMask = CalculateShadowMask(inputData);
@@ -173,14 +173,12 @@
 				// SSPR
 				ReflectionInput reflectionData = (ReflectionInput)0;
                 reflectionData.posWS = inputData.positionWS;
-                reflectionData.screenPos = ComputeScreenPos(inputData.positionCS);
+                reflectionData.screenPos = screenPos;
                 reflectionData.roughness = brdfData.roughness;
                 reflectionData.SSPR_Usage = toonSurfaceData.alpha;
                 reflectionData.screenSpaceNoise = noise;
 				float3 reflectionColor = GetReflectionColor(reflectionData);
 				color.rgb = lerp(color.rgb, reflectionColor, noiseMap.a);
-				// color.rbg = reflectionColor;
-				// color.rgb = noiseMap.xyz;
 				// ====================================
 
 				
