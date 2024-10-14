@@ -10,6 +10,8 @@ namespace ToonURP
         private ComputeShader m_CS;
         private RTHandle m_ReflectionColorRTHandle = null;
         private RTHandle m_UVRTHandle = null;
+        private RTHandle m_PosYRTHandle = null;     // World Space Y Position
+        private ProfilingSampler m_MobileSinglePassProfilingSampler = new ProfilingSampler("MobileSinglePass");
         private ProfilingSampler m_ClearRTProfilingSampler = new ProfilingSampler("ClearRT");
         private ProfilingSampler m_RenderUVProfilingSampler = new ProfilingSampler("RenderUV");
         private ProfilingSampler m_RenderColorProfilingSampler = new ProfilingSampler("RenderColor");
@@ -60,6 +62,13 @@ namespace ToonURP
             };
             RenderingUtils.ReAllocateIfNeeded(ref m_ReflectionColorRTHandle, descriptor, FilterMode.Bilinear,
                 TextureWrapMode.Clamp, name: "_ReflectionColorTexture");
+            
+            if (UseMobileAPI())
+            {
+                descriptor.colorFormat = RenderTextureFormat.RFloat;
+                RenderingUtils.ReAllocateIfNeeded(ref m_PosYRTHandle, descriptor, FilterMode.Bilinear,
+                    TextureWrapMode.Clamp, name: "_PosYTexture");
+            }
             descriptor.colorFormat = RenderTextureFormat.RInt;
             RenderingUtils.ReAllocateIfNeeded(ref m_UVRTHandle, descriptor, FilterMode.Bilinear,
                 TextureWrapMode.Clamp, name: "_ReflectionUVTexture");
@@ -75,28 +84,34 @@ namespace ToonURP
             Camera camera = renderingData.cameraData.camera;
             Matrix4x4 VP = GL.GetGPUProjectionMatrix(camera.projectionMatrix, true) * camera.worldToCameraMatrix;
 
+            #region Convert Uniform
+
+            cmd.SetComputeVectorParam(m_CS, Shader.PropertyToID("_RTSize"), new Vector2(m_RTWidth, m_RTHeight));
+            cmd.SetComputeFloatParam(m_CS, Shader.PropertyToID("_HorizontalPlaneHeightWS"), m_SSPR.planeHeight.value);
+            cmd.SetComputeMatrixParam(m_CS, "_VPMatrix", VP);
+            cmd.SetComputeFloatParam(m_CS, Shader.PropertyToID("_ScreenLRStretchIntensity"), m_SSPR.stretchIntensity.value);
+            cmd.SetComputeFloatParam(m_CS, Shader.PropertyToID("_ScreenLRStretchThreshold"), m_SSPR.stretchThreshold.value);
+            cmd.SetComputeFloatParam(m_CS, Shader.PropertyToID("_FadeOutScreenBorderWidthVertical"), m_SSPR.verticalFadeOutDistance.value);
+            cmd.SetComputeFloatParam(m_CS, Shader.PropertyToID("_FadeOutScreenBorderWidthHorizontal"), m_SSPR.horizontalFadeOutDistance.value);
+            cmd.SetComputeVectorParam(m_CS, Shader.PropertyToID("_CameraDirection"), camera.transform.forward);
+            cmd.SetComputeVectorParam(m_CS, Shader.PropertyToID("_FinalTintColor"), m_SSPR.tintColor.value);
+
+            #endregion
+            
             if (UseMobileAPI())
             {
-                
+                using (new ProfilingScope(cmd, m_MobileSinglePassProfilingSampler))
+                {
+                    int kernel_MobileSinglePass = m_CS.FindKernel("MobileSinglePass");
+                    cmd.SetComputeTextureParam(m_CS, kernel_MobileSinglePass, "PosYRT", m_PosYRTHandle);
+                    cmd.SetComputeTextureParam(m_CS, kernel_MobileSinglePass, "ColorRT", m_ReflectionColorRTHandle);
+                    cmd.DispatchCompute(m_CS, kernel_MobileSinglePass, dispatchThreadGroupXCount, dispatchThreadGroupYCount, dispatchThreadGroupZCount);
+                }
             }
             else
             {
                 using (new ProfilingScope(cmd, m_ClearRTProfilingSampler))
                 {
-                    #region Convert Uniform
-
-                    cmd.SetComputeVectorParam(m_CS, Shader.PropertyToID("_RTSize"), new Vector2(m_RTWidth, m_RTHeight));
-                    cmd.SetComputeFloatParam(m_CS, Shader.PropertyToID("_HorizontalPlaneHeightWS"), m_SSPR.planeHeight.value);
-                    cmd.SetComputeMatrixParam(m_CS, "_VPMatrix", VP);
-                    cmd.SetComputeFloatParam(m_CS, Shader.PropertyToID("_ScreenLRStretchIntensity"), m_SSPR.stretchIntensity.value);
-                    cmd.SetComputeFloatParam(m_CS, Shader.PropertyToID("_ScreenLRStretchThreshold"), m_SSPR.stretchThreshold.value);
-                    cmd.SetComputeFloatParam(m_CS, Shader.PropertyToID("_FadeOutScreenBorderWidthVertical"), m_SSPR.verticalFadeOutDistance.value);
-                    cmd.SetComputeFloatParam(m_CS, Shader.PropertyToID("_FadeOutScreenBorderWidthHorizontal"), m_SSPR.horizontalFadeOutDistance.value);
-                    cmd.SetComputeVectorParam(m_CS, Shader.PropertyToID("_CameraDirection"), camera.transform.forward);
-                    cmd.SetComputeVectorParam(m_CS, Shader.PropertyToID("_FinalTintColor"), m_SSPR.tintColor.value);
-
-                    #endregion
-                    
                     int kernel_ClearRT = m_CS.FindKernel("ClearRT");
                     cmd.SetComputeTextureParam(m_CS, kernel_ClearRT, "UVRT", m_UVRTHandle);
                     cmd.SetComputeTextureParam(m_CS, kernel_ClearRT, "ColorRT", m_ReflectionColorRTHandle);

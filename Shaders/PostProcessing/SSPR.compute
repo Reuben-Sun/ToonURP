@@ -10,11 +10,9 @@
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareOpaqueTexture.hlsl"
 
 
-RWTexture2D<half4> ColorRT;
-RWTexture2D<uint> UVRT;     //前 16bits为 y， 后 16bits为 x，利用原子写入 InterlockedMin来做深度测试
-
-// Texture2D<half4> _CameraOpaqueTexture;
-// Texture2D<float> _CameraDepthTexture;
+RWTexture2D<float4> ColorRT;	// for mac, we need to use float4 instead of half4
+RWTexture2D<uint> UVRT;     // 前 16bits为 y， 后 16bits为 x，利用原子写入 InterlockedMin来做深度测试
+RWTexture2D<float> PosYRT;
 
 SamplerState PointClampSampler;
 SamplerState LinearClampSampler;
@@ -36,7 +34,7 @@ float3 ConvertScreenIDToPosWS(uint2 id)
 {
 	//input id is compute function's input SV_DispatchThreadID
 	float2 screenUV = float2(id.x / (_RTSize.x), id.y / (_RTSize.y)); //[0,RTSize-1] -> screen [0,1] uv
-	float inputPixelRawDepth = _CameraDepthTexture.SampleLevel(PointClampSampler, screenUV, 0);//get rawDepth(posCS.z) in _CameraDepthTexture
+	float inputPixelRawDepth = _CameraDepthTexture.SampleLevel(PointClampSampler, screenUV, 0).x;//get rawDepth(posCS.z) in _CameraDepthTexture
 	float4 posCS = float4(screenUV * 2.0 - 1.0, inputPixelRawDepth, 1.0); //reconstruct posCS using screen [0,1] uv & rawDepth
 	
 #if UNITY_UV_STARTS_AT_TOP
@@ -91,6 +89,69 @@ half ConvertOpaqueColorRTScreenUVToFadeAlphaParam(float2 screenUV, float reflect
 	//fadeout using horizontal uv.x
 	fadeoutAlpha *= smoothstep(1, 1 - _FadeOutScreenBorderWidthHorizontal * -reflectedPosWSy, abs(screenUV.x * 2 - 1));
 	return fadeoutAlpha;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// mobile single pass
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#pragma kernel MobileSinglePass
+
+[numthreads(NUMTHREAD_X, NUMTHREAD_Y, 1)]
+void MobileSinglePass (uint3 id : SV_DispatchThreadID)
+{
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	//Clear
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+    ColorRT[uint2(id.xy)] = half4(0,0,0,0);//black rgb and alpha = 0. alpha 0 means no valid SSPR pixels found, so reflection plane will not use SSRP's result     
+    PosYRT[uint2(id.xy)] = 9999999;//a very high posWS.y as clear value
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	//ConvertScreenIDToPosWS
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	float3 posWS = ConvertScreenIDToPosWS(id.xy);
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	//if posWS is already under reflection plane (e.g. under water plane), 
+	//it will never be a correct color to reflect anyway, early exit to prevent wrong result write to Color RT
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	if(posWS.y <= _HorizontalPlaneHeightWS)
+		return;
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	//mirror posWS according to horizontal reflection plane (e.g. water plane)
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	float3 reflectedPosWS = MirrorPosWS(posWS);
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	//ConvertReflectedPosWSToScreenID
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	float2 reflectedScreenUV = ConvertReflectedPosWSToScreenUV(reflectedPosWS);
+	//early exit if not valid uv anymore, to avoid out of bound access
+	float2 earlyExitTest = abs(reflectedScreenUV - 0.5);
+	if (earlyExitTest.x >= 0.5 || earlyExitTest.y >= 0.5) 
+		return;
+	uint2 reflectedScreenID = reflectedScreenUV * _RTSize;//from screen uv[0,1] to [0,RTSize-1]
+
+	//because writes to ColorRT are in an unknown random order(there can be >1 candidates writing to the same slot in the same dispatch call!),
+	//here we only allow "closer to horizontal reflection plane's candidate" to write to ColorRT & PosYRT.
+	//At the end, only the "closest to horizontal reflection plane candidate" will remain in ColorRT & PosYRT, which is the correct reflection data
+	if(posWS.y < PosYRT[reflectedScreenID])
+	{
+		float2 screenUV = id.xy / _RTSize;
+		half3 inputPixelSceneColor = _CameraOpaqueTexture.SampleLevel(LinearClampSampler, screenUV, 0).rgb;
+
+		half fadeoutAlpha = ConvertOpaqueColorRTScreenUVToFadeAlphaParam(screenUV, reflectedPosWS.y);
+
+		//we write the following data to 2 RTs:
+		//-ColorRT.rgba = current best reflection color and alpha(alpha means SSPR usage %)
+		//-PosYRT.r = current lowest PosyWS (concept similar to a regular depth buffer ZTest->ZWrite)
+		half4 color = half4(inputPixelSceneColor,fadeoutAlpha) * _FinalTintColor;
+		color.a = saturate(color.a);
+		ColorRT[reflectedScreenID] = color;
+		PosYRT[reflectedScreenID] = posWS.y;
+	}
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
