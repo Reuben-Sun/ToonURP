@@ -27,6 +27,11 @@ namespace ToonURP
             m_CS = cs;
             ConfigureInput(ScriptableRenderPassInput.Depth | ScriptableRenderPassInput.Color);   
         }
+        
+        private bool UseMobileAPI()
+        {
+            return SystemInfo.graphicsDeviceType == GraphicsDeviceType.Metal;
+        }
 
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
@@ -70,47 +75,53 @@ namespace ToonURP
             Camera camera = renderingData.cameraData.camera;
             Matrix4x4 VP = GL.GetGPUProjectionMatrix(camera.projectionMatrix, true) * camera.worldToCameraMatrix;
 
-            using (new ProfilingScope(cmd, m_ClearRTProfilingSampler))
+            if (UseMobileAPI())
             {
-                #region Convert Uniform
-
-                cmd.SetComputeVectorParam(m_CS, Shader.PropertyToID("_RTSize"), new Vector2(m_RTWidth, m_RTHeight));
-                cmd.SetComputeFloatParam(m_CS, Shader.PropertyToID("_HorizontalPlaneHeightWS"), m_SSPR.planeHeight.value);
-                cmd.SetComputeMatrixParam(m_CS, "_VPMatrix", VP);
-                cmd.SetComputeFloatParam(m_CS, Shader.PropertyToID("_ScreenLRStretchIntensity"), m_SSPR.stretchIntensity.value);
-                cmd.SetComputeFloatParam(m_CS, Shader.PropertyToID("_ScreenLRStretchThreshold"), m_SSPR.stretchThreshold.value);
-                cmd.SetComputeFloatParam(m_CS, Shader.PropertyToID("_FadeOutScreenBorderWidthVertical"), m_SSPR.verticalFadeOutDistance.value);
-                cmd.SetComputeFloatParam(m_CS, Shader.PropertyToID("_FadeOutScreenBorderWidthHorizontal"), m_SSPR.horizontalFadeOutDistance.value);
-                cmd.SetComputeVectorParam(m_CS, Shader.PropertyToID("_CameraDirection"), camera.transform.forward);
-                cmd.SetComputeVectorParam(m_CS, Shader.PropertyToID("_FinalTintColor"), m_SSPR.tintColor.value);
-
-                #endregion
                 
-                int kernel_ClearRT = m_CS.FindKernel("ClearRT");
-                cmd.SetComputeTextureParam(m_CS, kernel_ClearRT, "UVRT", m_UVRTHandle);
-                cmd.SetComputeTextureParam(m_CS, kernel_ClearRT, "ColorRT", m_ReflectionColorRTHandle);
-                cmd.DispatchCompute(m_CS, kernel_ClearRT, dispatchThreadGroupXCount, dispatchThreadGroupYCount, dispatchThreadGroupZCount);
             }
-
-            using (new ProfilingScope(cmd, m_RenderUVProfilingSampler))
+            else
             {
-                int kernel_RenderUV = m_CS.FindKernel("RenderUV");
-                cmd.SetComputeTextureParam(m_CS, kernel_RenderUV, "UVRT", m_UVRTHandle);
-                // cmd.SetComputeTextureParam(m_CS, kernel_RenderUV, "_CameraDepthTexture", new RenderTargetIdentifier("_CameraDepthTexture"));
-                cmd.DispatchCompute(m_CS, kernel_RenderUV, dispatchThreadGroupXCount, dispatchThreadGroupYCount, dispatchThreadGroupZCount);
+                using (new ProfilingScope(cmd, m_ClearRTProfilingSampler))
+                {
+                    #region Convert Uniform
+
+                    cmd.SetComputeVectorParam(m_CS, Shader.PropertyToID("_RTSize"), new Vector2(m_RTWidth, m_RTHeight));
+                    cmd.SetComputeFloatParam(m_CS, Shader.PropertyToID("_HorizontalPlaneHeightWS"), m_SSPR.planeHeight.value);
+                    cmd.SetComputeMatrixParam(m_CS, "_VPMatrix", VP);
+                    cmd.SetComputeFloatParam(m_CS, Shader.PropertyToID("_ScreenLRStretchIntensity"), m_SSPR.stretchIntensity.value);
+                    cmd.SetComputeFloatParam(m_CS, Shader.PropertyToID("_ScreenLRStretchThreshold"), m_SSPR.stretchThreshold.value);
+                    cmd.SetComputeFloatParam(m_CS, Shader.PropertyToID("_FadeOutScreenBorderWidthVertical"), m_SSPR.verticalFadeOutDistance.value);
+                    cmd.SetComputeFloatParam(m_CS, Shader.PropertyToID("_FadeOutScreenBorderWidthHorizontal"), m_SSPR.horizontalFadeOutDistance.value);
+                    cmd.SetComputeVectorParam(m_CS, Shader.PropertyToID("_CameraDirection"), camera.transform.forward);
+                    cmd.SetComputeVectorParam(m_CS, Shader.PropertyToID("_FinalTintColor"), m_SSPR.tintColor.value);
+
+                    #endregion
+                    
+                    int kernel_ClearRT = m_CS.FindKernel("ClearRT");
+                    cmd.SetComputeTextureParam(m_CS, kernel_ClearRT, "UVRT", m_UVRTHandle);
+                    cmd.SetComputeTextureParam(m_CS, kernel_ClearRT, "ColorRT", m_ReflectionColorRTHandle);
+                    cmd.DispatchCompute(m_CS, kernel_ClearRT, dispatchThreadGroupXCount, dispatchThreadGroupYCount, dispatchThreadGroupZCount);
+                }
+
+                using (new ProfilingScope(cmd, m_RenderUVProfilingSampler))
+                {
+                    int kernel_RenderUV = m_CS.FindKernel("RenderUV");
+                    cmd.SetComputeTextureParam(m_CS, kernel_RenderUV, "UVRT", m_UVRTHandle);
+                    cmd.DispatchCompute(m_CS, kernel_RenderUV, dispatchThreadGroupXCount, dispatchThreadGroupYCount, dispatchThreadGroupZCount);
+
+                }
+
+                using (new ProfilingScope(cmd, m_RenderColorProfilingSampler))
+                {
+                    int kernel_RenderColor = m_CS.FindKernel("RenderColor");
+                    cmd.SetComputeTextureParam(m_CS, kernel_RenderColor, "ColorRT", m_ReflectionColorRTHandle);
+                    cmd.SetComputeTextureParam(m_CS, kernel_RenderColor, "UVRT", m_UVRTHandle);
+                    cmd.DispatchCompute(m_CS, kernel_RenderColor, dispatchThreadGroupXCount, dispatchThreadGroupYCount, dispatchThreadGroupZCount);
+
+                }
 
             }
-
-            using (new ProfilingScope(cmd, m_RenderColorProfilingSampler))
-            {
-                int kernel_RenderColor = m_CS.FindKernel("RenderColor");
-                // cmd.SetComputeTextureParam(m_CS, kernel_RenderColor, "_CameraOpaqueTexture", new RenderTargetIdentifier("_CameraOpaqueTexture"));
-                cmd.SetComputeTextureParam(m_CS, kernel_RenderColor, "ColorRT", m_ReflectionColorRTHandle);
-                cmd.SetComputeTextureParam(m_CS, kernel_RenderColor, "UVRT", m_UVRTHandle);
-                cmd.DispatchCompute(m_CS, kernel_RenderColor, dispatchThreadGroupXCount, dispatchThreadGroupYCount, dispatchThreadGroupZCount);
-
-            }
-
+            
             using (new ProfilingScope(cmd, m_FixHoleProfilingSampler))
             {
                 int kernel_FixHole = m_CS.FindKernel("FixHole");

@@ -25,7 +25,7 @@ namespace ToonURP
                 renderPassEvent = RenderPassEvent.AfterRenderingOpaques
             };
         }
-
+        
         public override void SetupRenderPasses(ScriptableRenderer renderer, in RenderingData renderingData)
         {
             var stack = VolumeManager.instance.stack;

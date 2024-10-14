@@ -129,8 +129,11 @@ void RenderUV (uint3 id : SV_DispatchThreadID)
 	half fadeoutAlpha = ConvertOpaqueColorRTScreenUVToFadeAlphaParam(screenUV, reflectedPosWS.y);
 	uint fadeoutAlphaInt = fadeoutAlpha * 255;//8 bit
 	uint hash = id.y << 20 | id.x << 8 | fadeoutAlphaInt; //pack 3 uint into 1
-
+#if SHADER_API_METAL
+	// do nothing beacuse metal doesn't support InterlockedMin
+#else
 	InterlockedMin(UVRT[screenID], hash);
+#endif
 }
 
 
