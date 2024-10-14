@@ -24,6 +24,8 @@ git submodule update --init --recursive
 
 ![替换资产](Documentation~/image/replace_assets.png)
 
+URP 添加 RenderFeature的方式：在 Graphics Setting 中找到 Scriptable Render Pipeline Settings，点击找到对应的 RenderPipelineAsset，点击找到对应的 RendererAsset，点击 Add Render Feature
+
 ## 效果演示
 
 ### Skin
