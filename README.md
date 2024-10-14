@@ -13,6 +13,11 @@
 git clone https://github.com/Reuben-Sun/ToonURP.git
 ```
 
+> 如果你只打算使用ToonURP包，并不进行开发和查看历史记录，你可以使用浅克隆，以加速下载速度
+> 
+> `git clone --depth 1 https://github.com/Reuben-Sun/ToonURP.git`
+
+
 并拉新submodule
 
 ```
