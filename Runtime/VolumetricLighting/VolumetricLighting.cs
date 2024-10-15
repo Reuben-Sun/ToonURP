@@ -19,6 +19,10 @@ namespace ToonURP
         public BoolParameter enableBlur = new BoolParameter(true);
         [Tooltip("Blur Size, calc cout = (2 * value + 1)^2")]
         public ClampedIntParameter blurSize = new ClampedIntParameter(3, 0, 6);
+        [Tooltip("多大距离的数据会影响模糊")]
+        public ClampedIntParameter sigmaSpace = new ClampedIntParameter(4, 1, 10);
+        [Tooltip("值差距多少才会影响模糊")]
+        public ClampedIntParameter sigmaColor = new ClampedIntParameter(60, 1, 150);
         public bool IsActive()
         {
             return intensity.value > 0;

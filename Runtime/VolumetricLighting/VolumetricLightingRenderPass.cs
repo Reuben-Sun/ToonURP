@@ -14,6 +14,8 @@ namespace ToonURP
         private VolumetricLighting m_VolumetricLighting = null;
         private bool m_EnableBlur = true;
         private int m_BlurSize = 1;
+        private float m_SigmaSpace = 1;
+        private float m_SigmaColor = 10;
         
         private int m_RTWidth;
         private int m_RTHeight;
@@ -56,11 +58,14 @@ namespace ToonURP
                 TextureWrapMode.Clamp, name: "_LightingMatchingTexture");
         }
         
-        public void SetupProperties(bool enableBlur, int blurSize)
+        public void SetupProperties(bool enableBlur, int blurSize, float sigmaSpace, float sigmaColor)
         {
             m_EnableBlur = enableBlur;
             m_BlurSize = blurSize;
+            m_SigmaSpace = sigmaSpace;
+            m_SigmaColor = sigmaColor;
         }
+
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
@@ -82,6 +87,8 @@ namespace ToonURP
                     int dispatchThreadGroupZCount = 1; 
                     int kernel = m_CS.FindKernel("BoxBlur");
                     cmd.SetComputeIntParam(m_CS, "BlurSize", m_BlurSize);
+                    cmd.SetComputeFloatParam(m_CS, "SigmaSpace", m_SigmaSpace);
+                    cmd.SetComputeFloatParam(m_CS, "SigmaColor", m_SigmaColor);
                     cmd.SetComputeTextureParam(m_CS, kernel, "SourceRT", m_RayMatchingRTHandle);
                     cmd.DispatchCompute(m_CS, kernel, dispatchThreadGroupXCount, dispatchThreadGroupYCount, dispatchThreadGroupZCount);
                 }

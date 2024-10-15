@@ -32,7 +32,7 @@ namespace ToonURP
                 return;
             }
             blurCs = AssetDatabase.LoadAssetAtPath<ComputeShader>(
-                "Packages/com.reubensun.toonurp/Shaders/PostProcessing/BoxBlur.compute");
+                "Packages/com.reubensun.toonurp/Shaders/PostProcessing/BilateralBlur.compute");
             if(ReferenceEquals(blurCs, null))
             {
                 Debug.LogError("Can't find BoxBlur.compute");
@@ -62,7 +62,8 @@ namespace ToonURP
                 {
                     return;
                 }
-                m_VolumetricLightingPass.SetupProperties(volumetricLighting.enableBlur.value, volumetricLighting.blurSize.value);
+                m_VolumetricLightingPass.SetupProperties(volumetricLighting.enableBlur.value, 
+                    volumetricLighting.blurSize.value, volumetricLighting.sigmaSpace.value, volumetricLighting.sigmaColor.value);
                 m_CombineSamplePass.SetupProperties(renderer.cameraColorTargetHandle, volumetricLighting.intensity.value);
             }
         }
