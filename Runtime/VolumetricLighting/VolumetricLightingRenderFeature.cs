@@ -38,7 +38,7 @@ namespace ToonURP
             m_CombineMaterial = CoreUtils.CreateEngineMaterial(combineSampleShader);
             m_CombineSamplePass = new CombineSampleRenderPass(m_CombineMaterial)
             {
-                renderPassEvent = RenderPassEvent.AfterRenderingSkybox
+                renderPassEvent = RenderPassEvent.AfterRenderingTransparents
             };
         }
 

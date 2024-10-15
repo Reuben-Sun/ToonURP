@@ -15,7 +15,19 @@ MonoBehaviour:
   active: 1
   intensity:
     m_OverrideState: 1
-    m_Value: 0.401
+    m_Value: 0.11
+  textureSize:
+    m_OverrideState: 1
+    m_Value: 0
+  eachStepDistance:
+    m_OverrideState: 1
+    m_Value: 0.27
+  maxDistance:
+    m_OverrideState: 1
+    m_Value: 742
+  maxStepCount:
+    m_OverrideState: 1
+    m_Value: 233
 --- !u!114 &-2318318568312946360
 MonoBehaviour:
   m_ObjectHideFlags: 3
