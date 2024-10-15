@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
@@ -15,6 +16,7 @@ namespace ToonURP
         private Shader combineSampleShader = null;
         private Material m_CombineMaterial = null;
         private CombineSampleRenderPass m_CombineSamplePass = null;
+        [SerializeField] private ComputeShader blurCs = null;
         public override void Create()
         {
             volumetricLightingShader = Shader.Find("Hidden/ToonURP/VolumetricLighting");
@@ -29,9 +31,16 @@ namespace ToonURP
                 Debug.LogError("Can't find Hidden/ToonURP/CombineSample shader.");
                 return;
             }
+            blurCs = AssetDatabase.LoadAssetAtPath<ComputeShader>(
+                "Packages/com.reubensun.toonurp/Shaders/PostProcessing/BoxBlur.compute");
+            if(ReferenceEquals(blurCs, null))
+            {
+                Debug.LogError("Can't find BoxBlur.compute");
+                return;
+            }
             
             m_LightingMatchingMaterial = CoreUtils.CreateEngineMaterial(volumetricLightingShader);
-            m_VolumetricLightingPass = new VolumetricLightingRenderPass(m_LightingMatchingMaterial)
+            m_VolumetricLightingPass = new VolumetricLightingRenderPass(m_LightingMatchingMaterial, blurCs)
             {
                 renderPassEvent = RenderPassEvent.AfterRenderingOpaques
             };
@@ -47,7 +56,14 @@ namespace ToonURP
             if (renderingData.cameraData.cameraType == CameraType.Game ||
                 renderingData.cameraData.cameraType == CameraType.SceneView)
             {
-                m_CombineSamplePass.SetupProperties(renderer.cameraColorTargetHandle);
+                var stack = VolumeManager.instance.stack;
+                VolumetricLighting volumetricLighting = stack.GetComponent<VolumetricLighting>();
+                if (volumetricLighting == null || !volumetricLighting.IsActive())
+                {
+                    return;
+                }
+                m_VolumetricLightingPass.SetupProperties(volumetricLighting.enableBlur.value, volumetricLighting.blurSize.value);
+                m_CombineSamplePass.SetupProperties(renderer.cameraColorTargetHandle, volumetricLighting.intensity.value);
             }
         }
 

@@ -33,7 +33,8 @@
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
-            TEXTURE2D(_SourceMap);  SAMPLER(sampler_SourceMap); 
+            TEXTURE2D(_SourceMap);  SAMPLER(sampler_SourceMap);
+            float _Intensity;
 
             Varyings CombineSampleVertex (Attributes input)
             {
@@ -51,7 +52,7 @@
                 float2 uv = UnityStereoTransformScreenSpaceTex(input.texcoord);
                 float4 sourceColor = SAMPLE_TEXTURE2D(_SourceMap, sampler_SourceMap, uv);
                 float3 opaqueColor = SampleSceneColor(uv);
-                outColor = float4(sourceColor + opaqueColor, 1.0);
+                outColor = float4(sourceColor * _Intensity + opaqueColor, 1.0);
             }
 
             ENDHLSL

@@ -1,0 +1,25 @@
+﻿#define NUMTHREAD_X 8
+#define NUMTHREAD_Y 8
+
+RWTexture2D<float4> SourceRT;
+int BlurSize;
+
+#pragma kernel BoxBlur
+
+[numthreads(NUMTHREAD_X, NUMTHREAD_Y, 1)]
+void BoxBlur(uint3 id : SV_DispatchThreadID)
+{
+    float4 sum = float4(0, 0, 0, 0);
+    int size = BlurSize;
+    int count = 0;
+    for (int y = -size; y <= size; y++)
+    {
+        for (int x = -size; x <= size; x++)
+        {
+            sum += SourceRT.Load(int3(id.xy + int2(x, y), 0));
+            count++;
+        }
+    }
+    sum /= count;
+    SourceRT[id.xy] = sum;
+}
