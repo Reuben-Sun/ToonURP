@@ -47,9 +47,13 @@ URP 添加 RenderFeature的方式：在 Graphics Setting 中找到 Scriptable Re
 
 ![Grass](Documentation~/image/Grass.png)
 
+### 体积光
+
+![vl](Documentation~/image/vl.png)
+
 ## 开发计划
 
-- [ ] 基础卡通材质
+- [x] 基础卡通材质
   - [x] 二值CellShading
   - [x] 多光源
   - [x] 色散
@@ -64,7 +68,7 @@ URP 添加 RenderFeature的方式：在 Graphics Setting 中找到 Scriptable Re
 - [ ] 卡通面片草
   - [x] 几何着色器草
   - [ ] HiZ剔除+Instance
-  
+
 - [x] 卡通石头
   - [x] 顶部覆盖植被
 - [ ] 卡通水
@@ -74,8 +78,13 @@ URP 添加 RenderFeature的方式：在 Graphics Setting 中找到 Scriptable Re
   - [ ] 近海水花
   - [ ] 物体交互
 - [ ] 卡通树
-- [ ] 湿平面
+- [x] 湿平面
   - [x] SSPR
+- [x] 体积光
+  - [x] RayMatching
+  - [x] Blur
+  - [ ] 时域优化
+
 
 
 ## 设计理念
