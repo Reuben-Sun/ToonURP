@@ -9,6 +9,12 @@ namespace ToonURP
         private Material m_LightingMatchingMaterial = null;
         private RTHandle m_LightingMatchingRTHandle = null;
         private ProfilingSampler m_ProfilingSampler = new ProfilingSampler("VolumetricLightingRenderPass");
+        private VolumetricLighting m_VolumetricLighting = null;
+        
+        private int m_RTWidth;
+        private int m_RTHeight;
+        const int SHADER_NUMTHREAD_X = 8; 
+        const int SHADER_NUMTHREAD_Y = 8;
         
         public VolumetricLightingRenderPass(Material material)
         {
@@ -18,12 +24,23 @@ namespace ToonURP
 
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
-            var descriptor = renderingData.cameraData.cameraTargetDescriptor;
-            descriptor.msaaSamples = 1;
-            descriptor.useMipMap = false;
-            descriptor.autoGenerateMips = false;
-            descriptor.depthBufferBits = 0;
-            descriptor.colorFormat = RenderTextureFormat.ARGB32;
+            var stack = VolumeManager.instance.stack;
+            m_VolumetricLighting = stack.GetComponent<VolumetricLighting>();
+            if (m_VolumetricLighting == null || !m_VolumetricLighting.IsActive())
+            {
+                return;
+            }
+ 
+            int size = m_VolumetricLighting.textureSize.value == TextureSizeEnum.Low ? 512 : 1024;
+            m_RTHeight = Mathf.CeilToInt(size / (float)SHADER_NUMTHREAD_Y) * SHADER_NUMTHREAD_Y;
+            float aspect = (float)Screen.width / Screen.height;
+            m_RTWidth = Mathf.CeilToInt(m_RTHeight * aspect / (float)SHADER_NUMTHREAD_X) * SHADER_NUMTHREAD_X;
+
+            var descriptor = new RenderTextureDescriptor(m_RTWidth, m_RTHeight, RenderTextureFormat.ARGB32, 0, 0,
+                RenderTextureReadWrite.Linear)
+            {
+                enableRandomWrite = true
+            };
             RenderingUtils.ReAllocateIfNeeded(ref m_LightingMatchingRTHandle, descriptor, FilterMode.Bilinear,
                 TextureWrapMode.Clamp, name: "_LightingMatchingTexture");
         }
