@@ -34,6 +34,10 @@
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
+            float _EachStepDistance;
+            float _MaxDistance;
+            int _MaxStepCount;
+
             float GetShadow(float3 posWS)
             {
                 half4 shadowMask = half4(1, 1, 1, 1);
@@ -59,9 +63,31 @@
                 float2 uv = UnityStereoTransformScreenSpaceTex(input.texcoord);
                 float depth = SampleSceneDepth(uv);
                 float4 pos = float4(uv.x * 2 -1 , uv.y * 2 -1, 1, depth);
-				float3 posWS = ComputeWorldSpacePosition(uv, depth, UNITY_MATRIX_I_VP);
-                float shadow = GetShadow(posWS);
-                outColor = float4(shadow, shadow, shadow, 1.0);
+				float3 screenPointPosWS = ComputeWorldSpacePosition(uv, depth, UNITY_MATRIX_I_VP);
+                float shadow = GetShadow(screenPointPosWS);
+                float3 cameraPos = GetCameraPositionWS();
+
+                float maxDistance = min(length(cameraPos - screenPointPosWS), _MaxDistance);
+                float stepDistance = _EachStepDistance;
+                float totalIntensity = 0.0;
+                float forwardDistance = 0.0;
+                float3 currtenPos = cameraPos;
+                float3 stepDirection = normalize(screenPointPosWS - cameraPos);
+                int totalStepCount = 0;
+                for(int index = 0; index < _MaxStepCount; index++)
+                {
+                    totalStepCount++;
+                    forwardDistance += stepDistance;
+                    if(forwardDistance > maxDistance)
+                    {
+                        break;
+                    }
+                    currtenPos += stepDirection * stepDistance;
+                    totalIntensity += GetShadow(currtenPos);
+                }
+                Light mainlight = GetMainLight();                                //获取场景主光源
+                float3 lightColor = mainlight.color * totalIntensity /totalStepCount;
+                outColor = float4(lightColor, 1.0);
             }
 
             ENDHLSL
