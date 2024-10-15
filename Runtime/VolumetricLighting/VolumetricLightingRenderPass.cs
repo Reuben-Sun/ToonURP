@@ -63,7 +63,7 @@ namespace ToonURP
                 cmd.SetGlobalFloat("_MaxDistance", m_MaxDistance);
                 cmd.SetGlobalInt("_MaxStepCount", m_MaxStepCount);
                 Blitter.BlitTexture(cmd, m_LightingMatchingRTHandle, m_LightingMatchingRTHandle, m_LightingMatchingMaterial, 0);
-                cmd.SetGlobalTexture("_VolumetricLightingTexture", m_LightingMatchingRTHandle.nameID);
+                cmd.SetGlobalTexture("_SourceMap", m_LightingMatchingRTHandle.nameID);
             }
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);

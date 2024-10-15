@@ -11,6 +11,10 @@ namespace ToonURP
         private Shader volumetricLightingShader = null;
         private Material m_LightingMatchingMaterial = null;
         private VolumetricLightingRenderPass m_VolumetricLightingPass = null;
+        [SerializeField]
+        private Shader combineSampleShader = null;
+        private Material m_CombineMaterial = null;
+        private CombineSampleRenderPass m_CombineSamplePass = null;
         public override void Create()
         {
             volumetricLightingShader = Shader.Find("Hidden/ToonURP/VolumetricLighting");
@@ -19,10 +23,22 @@ namespace ToonURP
                 Debug.LogError("Can't find Hidden/ToonURP/VolumetricLighting shader.");
                 return;
             }
+            combineSampleShader = Shader.Find("Hidden/ToonURP/CombineSample");
+            if(!combineSampleShader)
+            {
+                Debug.LogError("Can't find Hidden/ToonURP/CombineSample shader.");
+                return;
+            }
+            
             m_LightingMatchingMaterial = CoreUtils.CreateEngineMaterial(volumetricLightingShader);
             m_VolumetricLightingPass = new VolumetricLightingRenderPass(m_LightingMatchingMaterial)
             {
                 renderPassEvent = RenderPassEvent.AfterRenderingOpaques
+            };
+            m_CombineMaterial = CoreUtils.CreateEngineMaterial(combineSampleShader);
+            m_CombineSamplePass = new CombineSampleRenderPass(m_CombineMaterial)
+            {
+                renderPassEvent = RenderPassEvent.AfterRenderingSkybox
             };
         }
 
@@ -31,6 +47,7 @@ namespace ToonURP
             if (renderingData.cameraData.cameraType == CameraType.Game ||
                 renderingData.cameraData.cameraType == CameraType.SceneView)
             {
+                m_CombineSamplePass.SetupProperties(renderer.cameraColorTargetHandle);
             }
         }
 
@@ -46,6 +63,7 @@ namespace ToonURP
                     return;
                 }
                 renderer.EnqueuePass(m_VolumetricLightingPass);
+                renderer.EnqueuePass(m_CombineSamplePass);
             }
         }
 
@@ -56,6 +74,7 @@ namespace ToonURP
             if (disposing)
             {
                 CoreUtils.Destroy(m_LightingMatchingMaterial);
+                CoreUtils.Destroy(m_CombineMaterial);
             }
         }
     }
