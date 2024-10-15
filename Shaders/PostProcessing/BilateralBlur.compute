@@ -1,0 +1,32 @@
+﻿#define NUMTHREAD_X 8
+#define NUMTHREAD_Y 8
+
+RWTexture2D<float4> SourceRT;
+int BlurSize;
+float SigmaSpace;
+float SigmaColor;
+
+#pragma kernel BoxBlur
+
+[numthreads(NUMTHREAD_X, NUMTHREAD_Y, 1)]
+void BoxBlur(uint3 id : SV_DispatchThreadID)
+{
+    float4 sum = float4(0, 0, 0, 0);
+    float4 centerPixel = SourceRT[id.xy];
+    float weightSum = 0;
+    int size = BlurSize;
+
+    for (int y = -size; y <= size; y++)
+    {
+        for (int x = -size; x <= size; x++)
+        {
+            float4 curPixel = SourceRT.Load(int3(id.xy + int2(x, y), 0));
+            float colorDistance = length(curPixel - centerPixel);
+            float weight = exp(-(x*x + y*y) / (2 * SigmaSpace*SigmaSpace) - (colorDistance*colorDistance) / (2 * SigmaColor*SigmaColor));
+            sum += weight * curPixel;
+            weightSum += weight;
+        }
+    }
+    sum /= weightSum;
+    SourceRT[id.xy] = sum;
+}

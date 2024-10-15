@@ -41,7 +41,7 @@ namespace ToonURP
             m_EdgeOutlineMaterial = CoreUtils.CreateEngineMaterial(edgeOutlineShader);
             m_EdgeOutlinePass = new EdgeOutlineRenderPass(m_EdgeOutlineMaterial)
             {
-                renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing
+                renderPassEvent = RenderPassEvent.AfterRenderingTransparents
             };
         }
 
