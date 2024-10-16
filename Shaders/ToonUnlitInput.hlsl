@@ -11,15 +11,15 @@
 
 
 CBUFFER_START(UnityPerMaterial)
-
-// Surface
-float4 _MainTex_ST;
-float4 _BaseColor;
+    // Surface
+    float4 _MainTex_ST;
+    float4 _BaseColor;
 
 CBUFFER_END
 
 
-TEXTURE2D(_MainTex);        SAMPLER(sampler_MainTex);
+TEXTURE2D(_MainTex);
+SAMPLER(sampler_MainTex);
 
 inline void InitializeToonMapSurfaceData(float2 uv, out ToonSurfaceData outSurfaceData)
 {
@@ -30,7 +30,6 @@ inline void InitializeToonMapSurfaceData(float2 uv, out ToonSurfaceData outSurfa
     outSurfaceData.albedo *= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv).rgb;
     #endif
 }
-
 
 
 #endif

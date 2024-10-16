@@ -19,9 +19,9 @@ struct Varyings
     float2 uv : TEXCOORD0;
     float3 positionWS : TEXCOORD1;
     float3 normalWS : TEXCOORD2;
-    float4 tangentWS : TEXCOORD3;    // xyz: tangent, w: sign
+    float4 tangentWS : TEXCOORD3; // xyz: tangent, w: sign
     float3 viewDirWS : TEXCOORD4;
-    
+
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
 };
@@ -40,7 +40,7 @@ Varyings ToonDepthNormalsVertex(Attributes input)
     output.positionWS = vertexInput.positionWS;
 
     output.uv = TRANSFORM_TEX(input.uv, _MainTex);
-    
+
     output.normalWS = normalInput.normalWS;
     real sign = input.tangentOS.w * GetOddNegativeScale();
     half4 tangentWS = half4(normalInput.tangentWS.xyz, sign);
@@ -49,16 +49,16 @@ Varyings ToonDepthNormalsVertex(Attributes input)
 
     half3 viewDirWS = GetWorldSpaceNormalizeViewDir(vertexInput.positionWS);
     output.viewDirWS = viewDirWS;
-    
+
     return output;
 }
 
 void ToonDepthNormalsFragment(
     Varyings input
     , out half4 outNormalWS : SV_Target0
-#ifdef _WRITE_RENDERING_LAYERS
+    #ifdef _WRITE_RENDERING_LAYERS
     , out float4 outRenderingLayers : SV_Target1
-#endif
+    #endif
 )
 {
     UNITY_SETUP_INSTANCE_ID(input);
