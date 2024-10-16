@@ -15,7 +15,7 @@ MonoBehaviour:
   active: 1
   intensity:
     m_OverrideState: 1
-    m_Value: 0.11
+    m_Value: 1
   textureSize:
     m_OverrideState: 1
     m_Value: 0
@@ -28,6 +28,18 @@ MonoBehaviour:
   maxStepCount:
     m_OverrideState: 1
     m_Value: 233
+  enableBlur:
+    m_OverrideState: 1
+    m_Value: 1
+  blurSize:
+    m_OverrideState: 1
+    m_Value: 3
+  sigmaSpace:
+    m_OverrideState: 1
+    m_Value: 4
+  sigmaColor:
+    m_OverrideState: 1
+    m_Value: 60
 --- !u!114 &-2318318568312946360
 MonoBehaviour:
   m_ObjectHideFlags: 3
