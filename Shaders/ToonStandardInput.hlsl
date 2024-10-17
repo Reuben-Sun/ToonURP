@@ -89,6 +89,8 @@ inline void InitializeToonStandardLitSurfaceData(float2 uv, out ToonSurfaceData 
 {
     outSurfaceData.alpha = _BaseColor.a;
     outSurfaceData.albedo = _BaseColor.xyz;
+    outSurfaceData.diffuseModify = float3(1.0f, 1.0f, 1.0f);
+    outSurfaceData.specularModify = float3(1.0f, 1.0f, 1.0f);
     #if _ALBEDOMAP
     outSurfaceData.albedo *= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv).rgb;
     #endif

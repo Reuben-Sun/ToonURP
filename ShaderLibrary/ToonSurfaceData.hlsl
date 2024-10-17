@@ -12,6 +12,8 @@ struct ToonSurfaceData
     half3 emission;
     half  occlusion;    // 1.0 mean no occlusion        
     half  alpha;
+    float3 diffuseModify;    // Only work on toon shader
+    float3 specularModify;   // Only work on toon shader 
 };
 
 SurfaceData ConvertToonSurfaceDataToURPSurfaceData(ToonSurfaceData toonSurfaceData)

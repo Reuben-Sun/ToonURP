@@ -7,14 +7,14 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CheckerCard
-  m_Shader: {fileID: 4800000, guid: a5ffc5e0b3cf48ca9d0b624edef86772, type: 3}
+  m_Name: FresnelStocking
+  m_Shader: {fileID: 4800000, guid: f688ad7214864c64b791e71387379a75, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _ALBEDOMAP
   - _CELLSHADING
-  - _RECEIVE_SHADOWS_OFF
+  - _FRESNEL_STOCKING
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -51,7 +51,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 3ac05865c2ff2fd47a286854dd6382ba, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -102,11 +102,12 @@ Material:
     - _BlendMode: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
-    - _CellSmoothing: 0.001
+    - _CellSmoothing: 0.248
     - _CellThreshold: 0.5
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
+    - _CustomFloat1: 3.57
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
@@ -118,9 +119,11 @@ Material:
     - _EnableNormalMap: 0
     - _EnableOcclusionMap: 0
     - _EnableRoughnessMap: 0
+    - _EnumFeatureMode: 0
     - _EnumRim: 0
     - _EnumShadingMode: 0
     - _EnvironmentReflections: 1
+    - _FeatureGroup: 0
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -131,13 +134,13 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueOffset: 0
-    - _RECEIVE_SHADOWS_OFF: 1
+    - _RECEIVE_SHADOWS_OFF: 0
     - _ReceiveShadows: 1
     - _RenderSettingGroup: 0
     - _RimDirectionLightContribution: 1
     - _RimGroup: 0
     - _RimSoftness: 0.01
-    - _RimThreshold: 0.2
+    - _RimThreshold: 0.131
     - _Roughness: 1
     - _ScatterWeight: 10
     - _ShadingModeGroup: 0
@@ -158,17 +161,19 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColor: {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DarkColor: {r: 0, g: 0, b: 0, a: 1}
+    - _CustomVector1: {r: 1, g: 0.7484277, b: 0.745283, a: 1}
+    - _CustomVector2: {r: 0, g: 0, b: 0, a: 1}
+    - _DarkColor: {r: 0.6556604, g: 0.45417222, b: 0.04020561, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _HighColor: {r: 1, g: 1, b: 1, a: 1}
-    - _RimColor: {r: 1, g: 1, b: 1, a: 1}
+    - _HighColor: {r: 1, g: 0.9956985, b: 0.9386792, a: 1}
+    - _RimColor: {r: 0.3018868, g: 0.3018868, b: 0.3018868, a: 1}
     - _ScatterColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
---- !u!114 &2962276247146987888
+--- !u!114 &7334085138549943168
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

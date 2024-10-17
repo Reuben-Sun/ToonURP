@@ -152,8 +152,8 @@ float3 ToonMainLightDirectLighting(BRDFData brdfData, InputData inputData, ToonS
 {
     half radiance = LightingRadiance(lightData, _UseHalfLambert, surfData.occlusion, _UseRadianceOcclusion);
 
-    float3 diffuse = NPRDiffuseLighting(brdfData, lightData, radiance, uv);
-    float3 specular = NPRSpecularLighting(brdfData, surfData, inputData, surfData.albedo, radiance, lightData);
+    float3 diffuse = NPRDiffuseLighting(brdfData, lightData, radiance, uv) * surfData.diffuseModify;
+    float3 specular = NPRSpecularLighting(brdfData, surfData, inputData, surfData.albedo, radiance, lightData) * surfData.specularModify;
     // float shadow = lerp(0, lightData.shadowAttenuation, lightData.NoLClamp);
     float3 color = (diffuse + specular) * lightData.lightColor;
     return color;
