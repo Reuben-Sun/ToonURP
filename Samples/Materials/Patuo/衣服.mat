@@ -27,6 +27,7 @@ Material:
   m_ValidKeywords:
   - _ALBEDOMAP
   - _CELLSHADING
+  - _FRESNELRIM
   - _RECEIVE_SHADOWS_OFF
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -131,7 +132,7 @@ Material:
     - _EnableNormalMap: 0
     - _EnableOcclusionMap: 0
     - _EnableRoughnessMap: 0
-    - _EnumRim: 0
+    - _EnumRim: 1
     - _EnumShadingMode: 0
     - _EnvironmentReflections: 1
     - _GlossMapScale: 1
@@ -150,8 +151,8 @@ Material:
     - _RenderSettingGroup: 0
     - _RimDirectionLightContribution: 1
     - _RimGroup: 0
-    - _RimSoftness: 0.01
-    - _RimThreshold: 0.2
+    - _RimSoftness: 0.001
+    - _RimThreshold: 0.162
     - _Roughness: 1
     - _ScatterWeight: 10
     - _ShadingModeGroup: 0

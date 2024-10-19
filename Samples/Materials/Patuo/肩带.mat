@@ -14,6 +14,7 @@ Material:
   m_ValidKeywords:
   - _ALBEDOMAP
   - _CELLSHADING
+  - _FRESNELRIM
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -117,7 +118,7 @@ Material:
     - _EnableNormalMap: 0
     - _EnableOcclusionMap: 0
     - _EnableRoughnessMap: 0
-    - _EnumRim: 0
+    - _EnumRim: 1
     - _EnumShadingMode: 0
     - _EnvironmentReflections: 1
     - _GlossMapScale: 1
@@ -137,7 +138,7 @@ Material:
     - _RimDirectionLightContribution: 1
     - _RimGroup: 0
     - _RimSoftness: 0.01
-    - _RimThreshold: 0.2
+    - _RimThreshold: 0.095
     - _Roughness: 1
     - _ScatterWeight: 10
     - _ShadingModeGroup: 0
@@ -161,7 +162,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DarkColor: {r: 0, g: 0, b: 0, a: 1}
+    - _DarkColor: {r: 0.31399074, g: 0.38964045, b: 0.7924528, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _HighColor: {r: 1, g: 1, b: 1, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}

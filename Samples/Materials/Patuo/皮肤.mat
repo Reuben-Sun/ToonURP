@@ -116,8 +116,8 @@ Material:
     - _BlendMode: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
-    - _CellSmoothing: 0.13
-    - _CellThreshold: 0.585
+    - _CellSmoothing: 0.219
+    - _CellThreshold: 0.508
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -151,8 +151,8 @@ Material:
     - _RenderSettingGroup: 0
     - _RimDirectionLightContribution: 1
     - _RimGroup: 0
-    - _RimSoftness: 0.003
-    - _RimThreshold: 0.053
+    - _RimSoftness: 0.001
+    - _RimThreshold: 0.107
     - _Roughness: 1
     - _ScatterWeight: 10
     - _ShadingModeGroup: 0
@@ -161,7 +161,7 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularAlbedoWeight: 0
     - _SpecularHighlights: 1
-    - _SpecularIntensity: 3.41
+    - _SpecularIntensity: 2.53
     - _SpecularSize: 0.337
     - _SpecularSoftness: 0.177
     - _SrcBlend: 1
@@ -176,9 +176,9 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DarkColor: {r: 1, g: 0.745283, b: 0.745283, a: 1}
+    - _DarkColor: {r: 1, g: 0.5990566, b: 0.5990566, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _HighColor: {r: 1, g: 0.9009434, b: 0.9009434, a: 1}
+    - _HighColor: {r: 1, g: 0.7877358, b: 0.7877358, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
     - _ScatterColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}

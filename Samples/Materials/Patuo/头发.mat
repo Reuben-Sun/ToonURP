@@ -14,6 +14,7 @@ Material:
   m_ValidKeywords:
   - _ALBEDOMAP
   - _CELLSHADING
+  - _FRESNELRIM
   - _RECEIVE_SHADOWS_OFF
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -111,7 +112,7 @@ Material:
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
     - _CellSmoothing: 0.195
-    - _CellThreshold: 0.523
+    - _CellThreshold: 0.475
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -127,7 +128,7 @@ Material:
     - _EnableOcclusionMap: 0
     - _EnableRoughnessMap: 0
     - _EnumFeatureMode: 0
-    - _EnumRim: 0
+    - _EnumRim: 1
     - _EnumShadingMode: 0
     - _EnvironmentReflections: 1
     - _FeatureGroup: 0
@@ -147,8 +148,8 @@ Material:
     - _RenderSettingGroup: 0
     - _RimDirectionLightContribution: 1
     - _RimGroup: 0
-    - _RimSoftness: 0.01
-    - _RimThreshold: 0.2
+    - _RimSoftness: 0.163
+    - _RimThreshold: 0.187
     - _Roughness: 1
     - _SDFDirectionReversal: 0
     - _SDFFaceArea: 0
@@ -175,7 +176,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DarkColor: {r: 0.8962264, g: 0.9221698, b: 1, a: 1}
+    - _DarkColor: {r: 0.8244482, g: 0.8411815, b: 0.9009434, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GrassRockColor: {r: 1, g: 1, b: 1, a: 1}
     - _HighColor: {r: 1, g: 1, b: 1, a: 1}
