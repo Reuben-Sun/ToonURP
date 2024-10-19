@@ -138,7 +138,7 @@ Material:
     - _GlossyReflections: 1
     - _LimitAdditionLightNum: 0
     - _MaxAdditionLightNum: 1
-    - _Metallic: 0.238
+    - _Metallic: 0
     - _Mode: 0
     - _MultipleLightGroup: 0
     - _OcclusionStrength: 1

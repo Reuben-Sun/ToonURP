@@ -148,8 +148,8 @@ Material:
     - _RenderSettingGroup: 0
     - _RimDirectionLightContribution: 1
     - _RimGroup: 0
-    - _RimSoftness: 0.163
-    - _RimThreshold: 0.187
+    - _RimSoftness: 0.44
+    - _RimThreshold: 0.232
     - _Roughness: 1
     - _SDFDirectionReversal: 0
     - _SDFFaceArea: 0
@@ -176,10 +176,10 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DarkColor: {r: 0.8244482, g: 0.8411815, b: 0.9009434, a: 1}
+    - _DarkColor: {r: 0.5778747, g: 0.6114721, b: 0.7122642, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GrassRockColor: {r: 1, g: 1, b: 1, a: 1}
-    - _HighColor: {r: 1, g: 1, b: 1, a: 1}
+    - _HighColor: {r: 0.7688679, g: 0.7688679, b: 0.7688679, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
     - _ScatterColor: {r: 1, g: 1, b: 1, a: 1}
     - _SnowRockColor: {r: 1, g: 1, b: 1, a: 1}
