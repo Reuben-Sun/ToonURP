@@ -33,6 +33,12 @@ URP 添加 RenderFeature的方式：在 Graphics Setting 中找到 Scriptable Re
 
 ## 效果演示
 
+### 角色
+
+![patuo](Documentation~/image/patuo.png)
+
+![qianzhi_stocking](Documentation~/image/qianzhi_stocking.png)
+
 ### Skin
 
 ![Skin](Documentation~/image/Skin.png)
