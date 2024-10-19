@@ -7,7 +7,16 @@
 
 ## 安装使用
 
-在Unity项目的Packages文件夹下运行
+0. 使用Unity 2022.3创建一个build-in的项目（因为之后要自行添加URP包）
+
+1. 进入Unity项目的Packages文件夹
+2. 运行（这一步是clone一个我略微修改的URP package）
+
+```cpp
+git clone -b toon-urp https://github.com/Reuben-Sun/URP-Package.git
+```
+
+3. 运行（clone ToonURP）
 
 ```
 git clone https://github.com/Reuben-Sun/ToonURP.git
@@ -17,15 +26,14 @@ git clone https://github.com/Reuben-Sun/ToonURP.git
 > 
 > `git clone --depth 1 https://github.com/Reuben-Sun/ToonURP.git`
 
-
-并拉新submodule
+4. 并拉新submodule（clone LWGUI）
 
 ```
 cd ToonURP
 git submodule update --init --recursive
 ```
 
-替换Render Pipeline Assets，使用Setting文件夹下的URP-HighFidelity.asset（或者使用自己的URP Asset）
+5. 替换Render Pipeline Assets，使用Setting文件夹下的URP-HighFidelity.asset（或者使用自己的URP Asset）
 
 ![替换资产](Documentation~/image/replace_assets.png)
 
