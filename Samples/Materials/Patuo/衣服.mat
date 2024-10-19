@@ -117,7 +117,7 @@ Material:
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
     - _CellSmoothing: 0.028
-    - _CellThreshold: 0.5
+    - _CellThreshold: 0.287
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -176,7 +176,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DarkColor: {r: 0, g: 0.14764896, b: 0.3207547, a: 1}
+    - _DarkColor: {r: 0.27055892, g: 0.3200514, b: 0.3773585, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _HighColor: {r: 1, g: 1, b: 1, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}

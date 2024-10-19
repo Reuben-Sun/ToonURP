@@ -162,7 +162,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DarkColor: {r: 0.25745374, g: 0.33766028, b: 0.6273585, a: 1}
+    - _DarkColor: {r: 0.28479886, g: 0.32456467, b: 0.4716981, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _HighColor: {r: 0.9245283, g: 0.9621779, b: 1, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
