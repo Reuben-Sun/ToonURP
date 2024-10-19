@@ -165,6 +165,8 @@
                 float4 color = 1;
                 color.rgb = ToonMainLightSDFDirectLighting(brdfData, inputData, toonSurfaceData, lightingData, additionInput.uv);
                 color.rgb += ToonRimLighting(lightingData, inputData);
+                color.rgb += ToonIndirectLighting(brdfData, inputData, toonSurfaceData.occlusion);
+                color.rgb += ToonRimLighting(lightingData, inputData); 
 
                 color.rgb += toonSurfaceData.emission;
                 color.rgb = MixFog(color.rgb, inputData.fogCoord);
