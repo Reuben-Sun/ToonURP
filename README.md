@@ -68,9 +68,11 @@ URP 添加 RenderFeature的方式：在 Graphics Setting 中找到 Scriptable Re
   - [x] 多光源
   - [x] 色散
   - [x] SRP batcher
-- [x] 边缘检测描边 
-  - [ ] 根据距离Cutoff
+- [ ] 描边
+  - [x] 边缘检测描边
 
+  - [ ] 法线外拓描边（考虑角色和场景使用两套描边）
+  
 - [x] GT Tonemapping
 - [ ] 高质量Bloom
 - [ ] 人物
