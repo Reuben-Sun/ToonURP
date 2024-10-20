@@ -178,6 +178,7 @@
                 float3 diffuse = NPRDiffuseLighting(brdfData, lightingData, radiance, additionInput.uv);
 
                 // ----------- Hair specular ----------------
+                // TODO: better specular, sucn as use uv2
                 float noise = SAMPLE_TEXTURE2D(_NoiseShiftMap, sampler_CustomMap1, additionInput.uv.xy).r;
                 float shift1 = noise - _Shift1;
 				float shift2 = noise - _Shift2;
