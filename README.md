@@ -189,3 +189,5 @@ float4 CustomFragment(InputData inputData, ToonSurfaceData toonSurfaceData, Addi
 [UnityURP-MobileScreenSpacePlanarReflection](https://github.com/ColinLeung-NiloCat/UnityURP-MobileScreenSpacePlanarReflection)
 
 [DanbaidongRP](https://github.com/danbaidong1111/DanbaidongRP)
+
+[ShaderLibrary](https://github.com/falseeeeeeeeee/ShaderLibrary/tree/main)
