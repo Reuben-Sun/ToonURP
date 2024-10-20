@@ -5,13 +5,13 @@
 
 struct ToonSurfaceData
 {
-    half3 albedo;
-    half  metallic;
-    half  roughness;
-    half3 normalTS;     // default is (0, 0, 1)
-    half3 emission;
-    half  occlusion;    // 1.0 mean no occlusion        
-    half  alpha;
+    float3 albedo;
+    float  metallic;
+    float  roughness;
+    float3 normalTS;     // default is (0, 0, 1)
+    float3 emission;
+    float  occlusion;    // 1.0 mean no occlusion        
+    float  alpha;
     float3 diffuseModify;    // Only work on toon shader
     float3 specularModify;   // Only work on toon shader 
 };

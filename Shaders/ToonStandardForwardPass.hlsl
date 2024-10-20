@@ -153,6 +153,8 @@ void ToonShandardPassFragment(Varyings input, out float4 outColor: SV_Target0)
     AdditionInputData additionInputData;
     additionInputData.uv = input.uv;
     additionInputData.screenPos = input.screenPos;
+    additionInputData.normalTS = surfaceData.normalTS;
+    additionInputData.tangentWS = input.tangentWS;
     color = CustomFragment(inputData, surfaceData, additionInputData);
     #endif
     outColor = color;

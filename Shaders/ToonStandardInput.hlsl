@@ -127,6 +127,8 @@ struct AdditionInputData
 {
     float4 uv;
     float4 screenPos;
+    float3 normalTS;
+    float4 tangentWS;
 };
 
 #endif

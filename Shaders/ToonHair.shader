@@ -34,18 +34,22 @@
         [Sub(ShadingMode)] _SpecularColor ("Specular Color", Color) = (1,1,1,1)
         [Sub(ShadingMode)] [HDR] _HighColor ("Hight Color", Color) = (1,1,1,1)
         [Sub(ShadingMode)] _DarkColor ("Dark Color", Color) = (0,0,0,1)
-        [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _CellThreshold ("Cell Threshold", Range(0.01,1)) = 0.5
-        [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _CellSmoothing ("Cell Smoothing", Range(0.001,1)) = 0.001
-        [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _SpecularIntensity ("Specular Intensity", Range(0,8)) = 1
+        [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, NotEqual, 1)] _CellThreshold ("Cell Threshold", Range(0.01,1)) = 0.5
+        [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, NotEqual, 1)] _CellSmoothing ("Cell Smoothing", Range(0.001,1)) = 0.001
+        [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, NotEqual, 1)] _SpecularIntensity ("Specular Intensity", Range(0,8)) = 1
         [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _SpecularSize ("Specular Size", Range(0,1)) = 0.1
         [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _SpecularSoftness ("Specular Softness", Range(0.001,1)) = 0.05
         [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _SpecularAlbedoWeight ("Color Albedo Weight", Range(0,1)) = 0
-        [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _ScatterColor ("Scatter Color", Color) = (1,1,1,1)
-        [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, Equal, 0)] _ScatterWeight ("Scatter Weight", Range(4,20)) = 10
-        [SubToggle(ShadingMode_CUSTOMSHADING)] _SDFDirectionReversal ("Direction Reversal",Float) = 0
-        [Tex(ShadingMode_CUSTOMSHADING)] _SDFFaceMap("SDF Face Map", 2D) = "white" {}
-        [Sub(ShadingMode_CUSTOMSHADING)] _SDFFaceArea ("Face Angle Range (0~360)",Range(0,360)) = 0
-        [Sub(ShadingMode_CUSTOMSHADING)] _SDFShadingSoftness ("SDF Shading Softness",Range(0,1)) = 0.3
+        [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, NotEqual, 1)] _ScatterColor ("Scatter Color", Color) = (1,1,1,1)
+        [Sub(ShadingMode)] [ShowIf(_EnumShadingMode, NotEqual, 1)] _ScatterWeight ("Scatter Weight", Range(4,20)) = 10
+        [Tex(ShadingMode_CUSTOMSHADING)] _CustomMap1("Noise Shift Map", 2D) = "white" {}
+        [Sub(ShadingMode_CUSTOMSHADING)] _CustomFloat1 ("Specular Shift1", Range(0,5)) = 0.8
+        [Sub(ShadingMode_CUSTOMSHADING)] _CustomFloat2 ("Specular Shift2", Range(0,5)) = 1.5
+        [Sub(ShadingMode_CUSTOMSHADING)] _CustomFloat3 ("Specular Gloss1", Range(0,5)) = 0.5
+        [Sub(ShadingMode_CUSTOMSHADING)] _CustomFloat4 ("Specular Gloss2", Range(0,5)) = 0.9
+        [Sub(ShadingMode_CUSTOMSHADING)] _CustomVector1 ("Specular Color1", Color) = (1,1,1,1)
+        [Sub(ShadingMode_CUSTOMSHADING)] _CustomVector2 ("Specular Color2", Color) = (1,1,1,1)
+        
 
         // Rim
         [Main(Rim, _, off, off)] _RimGroup("RimSettings", float) = 0
@@ -132,6 +136,15 @@
 
             #include "Packages/com.reubensun.toonurp/Shaders/ToonStandardInput.hlsl"
 
+            #define _NoiseShiftMap _CustomMap1
+            #define _Shift1 _CustomFloat1
+            #define _Shift2 _CustomFloat2
+            #define _Gloss1 _CustomFloat3
+            #define _Gloss2 _CustomFloat4
+            #define _SpecularColor1 _CustomVector1
+            #define _SpecularColor2 _CustomVector2
+            
+
             void PreProcessMaterial(inout InputData inputData, inout ToonSurfaceData surfaceData, float2 uv)
             {
             }
@@ -163,7 +176,27 @@
                 float4 color = 1;
                 half radiance = LightingRadiance(lightingData, _UseHalfLambert, toonSurfaceData.occlusion, _UseRadianceOcclusion);
                 float3 diffuse = NPRDiffuseLighting(brdfData, lightingData, radiance, additionInput.uv);
-                float3 specular = NPRSpecularLighting(brdfData, toonSurfaceData, inputData, toonSurfaceData.albedo, radiance, lightingData);
+
+                // ----------- Hair specular ----------------
+                float noise = SAMPLE_TEXTURE2D(_NoiseShiftMap, sampler_CustomMap1, additionInput.uv.xy).r;
+                float shift1 = noise - _Shift1;
+				float shift2 = noise - _Shift2;
+                float sgn = additionInput.tangentWS.w;      // should be either +1 or -1
+                float3 bitangent = sgn * cross(inputData.normalWS.xyz, additionInput.tangentWS.xyz);
+				float3 bitangentWS1 = normalize(bitangent + shift1 * inputData.normalWS.xyz);
+				float3 bitangentWS2 = normalize(bitangent + shift2 * inputData.normalWS.xyz);
+                float3 BoH1 = dot(bitangentWS1, lightingData.halfDir);
+                float3 BoH2 = dot(bitangentWS2, lightingData.halfDir);
+                // speuclar 1
+                float sinTH1 = sqrt(1.0 - BoH1 * BoH1);
+				float attenDir1 = smoothstep(-1, 0, BoH1);
+                float specular1 = attenDir1 * pow(sinTH1, _Gloss1 * 256.0 + 0.1) * _SpecularColor1;
+                // specular 2
+                float sinTH2 = sqrt(1.0 - BoH2 * BoH2);
+                float attenDir2 = smoothstep(-1, 0, BoH2);
+                float specular2 = attenDir2 * pow(sinTH2, _Gloss2 * 256.0 + 0.1) * _SpecularColor2;
+                float3 specular = (specular1 + specular2) * _SpecularColor * _SpecularIntensity;
+                // ----------- Hair specular end ----------------
                 color.rgb = (diffuse + specular) * lightingData.lightColor;
 
                 color.rgb += ToonRimLighting(lightingData, inputData);
