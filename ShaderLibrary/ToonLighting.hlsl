@@ -168,17 +168,6 @@ float3 NPRAdditionLighting(Light light, BRDFData brdfData, InputData inputData, 
     return addLightColor;
 }
 
-// For SDF face lighting
-float3 ToonMainLightSDFDirectLighting(BRDFData brdfData, InputData inputData, ToonSurfaceData surfData, ToonLightingData lightData, float4 uv)
-{
-    half radiance = LightingRadiance(lightData, _UseHalfLambert, surfData.occlusion, _UseRadianceOcclusion);
-
-    float3 diffuse = NPRDiffuseSDFLighting(brdfData, lightData, radiance, uv);
-    float3 specular = NPRSpecularLighting(brdfData, surfData, inputData, surfData.albedo, radiance, lightData);
-    float3 color = (diffuse + specular) * lightData.lightColor;
-    return color;
-}
-
 
 float3 ToonAdditionLightDirectLighting(BRDFData brdfData, InputData inputData, ToonSurfaceData surfData, half4 shadowMask, half meshRenderingLayers, AmbientOcclusionFactor aoFactor, float4 uv)
 {

@@ -1,4 +1,4 @@
-﻿Shader "ToonURP/ToonFace"
+﻿Shader "ToonURP/ToonHair"
 {
     Properties
     {
@@ -28,7 +28,7 @@
 
         // Lighting mode
         [Main(ShadingMode, _, off, off)] _ShadingModeGroup("ShadingMode", float) = 0
-        [KWEnum(ShadingMode, CelShading, _CELLSHADING, PBRShading, _PBRSHADING, SDFFace, _CUSTOMSHADING)] _EnumShadingMode ("Mode", float) = 2
+        [KWEnum(ShadingMode, CelShading, _CELLSHADING, PBRShading, _PBRSHADING, CelHair, _CUSTOMSHADING)] _EnumShadingMode ("Mode", float) = 2
         [SubToggle(ShadingMode)] _UseHalfLambert ("Use HalfLambert (More Flatter)", float) = 0
         [SubToggle(ShadingMode)] _UseRadianceOcclusion ("Radiance Occlusion", float) = 0
         [Sub(ShadingMode)] _SpecularColor ("Specular Color", Color) = (1,1,1,1)
@@ -76,7 +76,7 @@
     {
         Pass
         {
-            Name "Toon Face"
+            Name "Toon Hair"
             Tags
             {
                 "LightMode" = "UniversalForward"
@@ -138,8 +138,6 @@
 
             float4 CustomFragment(InputData inputData, ToonSurfaceData toonSurfaceData, AdditionInputData additionInput)
             {
-                SDFFaceUV(_SDFDirectionReversal, _SDFFaceArea, additionInput.uv.zw);
-
                 // prepare main light
                 half4 shadowMask = CalculateShadowMask(inputData);
                 uint meshRenderingLayers = GetMeshRenderingLayer();
@@ -164,10 +162,10 @@
 
                 float4 color = 1;
                 half radiance = LightingRadiance(lightingData, _UseHalfLambert, toonSurfaceData.occlusion, _UseRadianceOcclusion);
-                float3 diffuse = NPRDiffuseSDFLighting(brdfData, lightingData, radiance, additionInput.uv);
+                float3 diffuse = NPRDiffuseLighting(brdfData, lightingData, radiance, additionInput.uv);
                 float3 specular = NPRSpecularLighting(brdfData, toonSurfaceData, inputData, toonSurfaceData.albedo, radiance, lightingData);
                 color.rgb = (diffuse + specular) * lightingData.lightColor;
-                
+
                 color.rgb += ToonRimLighting(lightingData, inputData);
                 color.rgb += ToonIndirectLighting(brdfData, inputData, toonSurfaceData.occlusion);
                 color.rgb += ToonRimLighting(lightingData, inputData); 
