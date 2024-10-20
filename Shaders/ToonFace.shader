@@ -163,7 +163,11 @@
                 ToonLightingData lightingData = InitializeLightingData(mainLight, inputData.normalWS, inputData.viewDirectionWS);
 
                 float4 color = 1;
-                color.rgb = ToonMainLightSDFDirectLighting(brdfData, inputData, toonSurfaceData, lightingData, additionInput.uv);
+                half radiance = LightingRadiance(lightingData, _UseHalfLambert, toonSurfaceData.occlusion, _UseRadianceOcclusion);
+                float3 diffuse = NPRDiffuseSDFLighting(brdfData, lightingData, radiance, additionInput.uv);
+                float3 specular = NPRSpecularLighting(brdfData, toonSurfaceData, inputData, toonSurfaceData.albedo, radiance, lightingData);
+                color.rgb = (diffuse + specular) * lightingData.lightColor;
+                
                 color.rgb += ToonRimLighting(lightingData, inputData);
                 color.rgb += ToonIndirectLighting(brdfData, inputData, toonSurfaceData.occlusion);
                 color.rgb += ToonRimLighting(lightingData, inputData); 
