@@ -45,6 +45,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _CustomMap1:
+        m_Texture: {fileID: 2800000, guid: b2b83ed86ac793d47a728e3e94d8a833, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -117,11 +121,15 @@ Material:
     - _BlendMode: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
-    - _CellSmoothing: 0.001
-    - _CellThreshold: 0.5
+    - _CellSmoothing: 0.009
+    - _CellThreshold: 0.468
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
+    - _CustomFloat1: 1.32
+    - _CustomFloat2: 0.54
+    - _CustomFloat3: 3.24
+    - _CustomFloat4: 4.01
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
@@ -164,7 +172,7 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularAlbedoWeight: 0
     - _SpecularHighlights: 1
-    - _SpecularIntensity: 1
+    - _SpecularIntensity: 0.28
     - _SpecularSize: 0.1
     - _SpecularSoftness: 0.05
     - _SrcBlend: 1
@@ -178,9 +186,11 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DarkColor: {r: 0, g: 0, b: 0, a: 1}
+    - _CustomVector1: {r: 1, g: 1, b: 1, a: 1}
+    - _CustomVector2: {r: 1, g: 1, b: 1, a: 1}
+    - _DarkColor: {r: 0.21893914, g: 0.2830189, b: 0.22541589, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _HighColor: {r: 1, g: 1, b: 1, a: 1}
+    - _HighColor: {r: 0.3820755, g: 1, b: 0.62363285, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
     - _ScatterColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
