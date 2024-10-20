@@ -92,7 +92,7 @@ MonoBehaviour:
   active: 1
   intensity:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0.942
   color:
     m_OverrideState: 1
     m_Value: {r: 0.06415099, g: 0.03265043, b: 0.022150245, a: 1}
@@ -101,10 +101,10 @@ MonoBehaviour:
     m_Value: 1
   angleThreshold:
     m_OverrideState: 1
-    m_Value: 60.3
+    m_Value: 37.3
   depthThreshold:
     m_OverrideState: 1
-    m_Value: 0.036
+    m_Value: 0.163
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0

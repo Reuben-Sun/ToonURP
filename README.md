@@ -47,10 +47,6 @@ URP 添加 RenderFeature的方式：在 Graphics Setting 中找到 Scriptable Re
 
 ![qianzhi_stocking](Documentation~/image/qianzhi_stocking.png)
 
-### Skin
-
-![Skin](Documentation~/image/Skin.png)
-
 ### SSPR
 
 ![SSPR](Documentation~/image/SSPR.png)
@@ -73,10 +69,14 @@ URP 添加 RenderFeature的方式：在 Graphics Setting 中找到 Scriptable Re
   - [x] 色散
   - [x] SRP batcher
 - [x] 边缘检测描边 
+  - [ ] 根据距离Cutoff
+
+- [x] GT Tonemapping
+- [ ] 高质量Bloom
 - [ ] 人物
   - [ ] 眼睛
   - [ ] 头发
-  - [ ] 黑丝
+  - [x] 黑丝
   - [x] 脸
     - [x] SDF阴影
 - [ ] 卡通面片草
@@ -185,3 +185,5 @@ float4 CustomFragment(InputData inputData, ToonSurfaceData toonSurfaceData, Addi
 [FernRP](https://github.com/FernRP/FernRPExample)
 
 [UnityURP-MobileScreenSpacePlanarReflection](https://github.com/ColinLeung-NiloCat/UnityURP-MobileScreenSpacePlanarReflection)
+
+[DanbaidongRP](https://github.com/danbaidong1111/DanbaidongRP)
