@@ -8,14 +8,14 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: "\u773C\u775B"
-  m_Shader: {fileID: 4800000, guid: a5ffc5e0b3cf48ca9d0b624edef86772, type: 3}
+  m_Shader: {fileID: 4800000, guid: 1b8a64d4d0a14fb68e3043afd09883ed, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _ALBEDOMAP
   - _CELLSHADING
   - _EMISSION
-  - _RECEIVE_SHADOWS_OFF
+  - _PARALLAX
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -116,6 +116,9 @@ Material:
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
+    - _CustomFloat1: 0
+    - _CustomFloat2: 0.8
+    - _CustomFloat3: 0.311
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
@@ -143,7 +146,7 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueOffset: 0
-    - _RECEIVE_SHADOWS_OFF: 1
+    - _RECEIVE_SHADOWS_OFF: 0
     - _ReceiveShadows: 1
     - _RenderSettingGroup: 0
     - _RimDirectionLightContribution: 1
@@ -163,7 +166,7 @@ Material:
     - _SpecularAlbedoWeight: 0
     - _SpecularHighlights: 1
     - _SpecularIntensity: 0.85
-    - _SpecularSize: 0.264
+    - _SpecularSize: 0
     - _SpecularSoftness: 0.05
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
