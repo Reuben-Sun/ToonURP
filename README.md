@@ -90,6 +90,7 @@ URP 添加 RenderFeature的方式：在 Graphics Setting 中找到 Scriptable Re
   - [x] 黑丝
   - [x] 脸
     - [x] SDF阴影
+      - [ ] 传递角色脸部方向
 - [x] 几何着色器草
 - [ ] 卡通面片草
   - [ ] HiZ剔除+Instance
