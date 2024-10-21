@@ -98,13 +98,13 @@ MonoBehaviour:
     m_Value: {r: 0.06415099, g: 0.03265043, b: 0.022150245, a: 1}
   thickness:
     m_OverrideState: 1
-    m_Value: 0.678
+    m_Value: 1
   angleThreshold:
     m_OverrideState: 1
-    m_Value: 37.3
+    m_Value: 47.6
   depthThreshold:
     m_OverrideState: 1
-    m_Value: 0.163
+    m_Value: 0.092
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
