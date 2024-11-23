@@ -278,7 +278,7 @@ Shader "ToonURP/ToonWater"
                 reflDir.xyz *= -1;
                 float4 skyColor = SAMPLE_TEXTURECUBE(_SkyboxTexture, sampler_CustomCube1, normalize(reflDir));
                 color *= skyColor;
-                
+
                 //=====================================
                 // color variation
                 const float4 phases = float4(0.28, 0.50, 0.07, 0.);
@@ -300,7 +300,7 @@ Shader "ToonURP/ToonWater"
                 float shoreDepth = saturate(depthDifference / _DepthGradientShore);
                 float shoreDisappearDepth = saturate(depthDifference / _DepthDisappearShore);
                 waterColor = afterBlend(waterColor, shoreDepth, shoreDisappearDepth);
-
+                color = afterBlend(color, shoreDepth, shoreDisappearDepth);
                 // fresnel term
                 float fTerm = saturate(BRDF_FresnelTerm(0.02 /*F0*/ , lightingData.NoVClamp) * _fresnelPow);
                 color = lerp(waterColor, color, fTerm);
