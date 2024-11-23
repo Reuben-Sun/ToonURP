@@ -146,7 +146,7 @@ Material:
     - _CustomFloat5: 5
     - _CustomFloat6: 1.02
     - _CustomFloat7: 0.3
-    - _CustomFloat8: 1
+    - _CustomFloat8: 0.1
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1

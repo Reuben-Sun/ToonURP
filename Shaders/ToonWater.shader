@@ -303,7 +303,6 @@ Shader "ToonURP/ToonWater"
                 float shoreDepth = saturate(depthDifference / _DepthGradientShore);
                 float shoreDisappearDepth = saturate(depthDifference / _DepthDisappearShore);
                 waterColor = afterBlend(waterColor, shoreDepth, shoreDisappearDepth);
-                color = afterBlend(color, shoreDepth, shoreDisappearDepth);
 
                 // underwater distortion
                 float4 blendStrength = float4(1, 1, 1, 1);
@@ -315,6 +314,7 @@ Shader "ToonURP/ToonWater"
                 float fTerm = saturate(BRDF_FresnelTerm(0.02 /*F0*/ , lightingData.NoVClamp) * _fresnelPow);
                 color = lerp(waterColor, color, fTerm);
                 color *= sceneColor;
+                color = afterBlend(color, shoreDepth, shoreDisappearDepth);
                 //======================================
                 return color;
             }
