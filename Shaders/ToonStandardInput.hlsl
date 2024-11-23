@@ -85,6 +85,11 @@ TEXTURE2D(_CustomMap2);        SAMPLER(sampler_CustomMap2);
 TEXTURE2D(_CustomMap3);        SAMPLER(sampler_CustomMap3);
 TEXTURE2D(_CustomMap4);        SAMPLER(sampler_CustomMap4);
 
+TEXTURECUBE(_CustomCube1);      SAMPLER(sampler_CustomCube1);
+TEXTURECUBE(_CustomCube2);      SAMPLER(sampler_CustomCube2);
+TEXTURECUBE(_CustomCube3);      SAMPLER(sampler_CustomCube3);
+TEXTURECUBE(_CustomCube4);      SAMPLER(sampler_CustomCube4);
+
 inline void InitializeToonStandardLitSurfaceData(float2 uv, out ToonSurfaceData outSurfaceData)
 {
     outSurfaceData.alpha = _BaseColor.a;

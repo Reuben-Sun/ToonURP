@@ -52,7 +52,10 @@ void InitializeInputData(Varyings input, half3 normalTS, out InputData inputData
     half3x3 tangentToWorld = half3x3(input.tangentWS.xyz, bitangent.xyz, input.normalWS.xyz);
     inputData.tangentToWorld = tangentToWorld;
     inputData.normalWS = TransformTangentToWorld(normalTS, tangentToWorld);
-    #else
+    #else // tangentToWorld should also be needed although we didn't use normalmap
+    float3 bitangent = cross(input.normalWS.xyz, input.tangentWS.xyz) * input.tangentWS.w;
+    half3x3 tangentToWorld = half3x3(input.tangentWS.xyz, bitangent.xyz, input.normalWS.xyz);
+    inputData.tangentToWorld = tangentToWorld;
     inputData.normalWS = input.normalWS;
     #endif
     inputData.normalWS = NormalizeNormalPerPixel(inputData.normalWS);
