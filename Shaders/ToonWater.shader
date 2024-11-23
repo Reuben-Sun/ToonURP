@@ -37,6 +37,7 @@ Shader "ToonURP/ToonWater"
         [Sub(FeatureMode)] _CustomFloat6 ("Normal Scale", Float) = 1
         [Sub(FeatureMode)] _CustomFloat7 ("Normal Strength", Float) = 1
         [Tex(FeatureMode)] _CustomCube1 ("Skybox Texture", Cube) = "_Skybox" {}
+        [Sub(FeatureMode)] _CustomFloat8 ("Underwater Distortion", Range(0.01,1)) = 0.1
 
 
         // Lighting mode
@@ -144,6 +145,7 @@ Shader "ToonURP/ToonWater"
             #include "Packages/com.reubensun.toonurp/Shaders/ToonStandardInput.hlsl"
             #include "Packages/com.reubensun.toonurp/ShaderLibrary/SSPRInclude.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareOpaqueTexture.hlsl"
 
             SAMPLER(sampler_linear_clamp);
 
@@ -158,6 +160,7 @@ Shader "ToonURP/ToonWater"
             #define _NormalScale _CustomFloat6
             #define _NormalStrength _CustomFloat7
             #define _SkyboxTexture _CustomCube1
+            #define _UnderwaterDistortion _CustomFloat8
 
             float3 bump = 0;
 
@@ -211,7 +214,7 @@ Shader "ToonURP/ToonWater"
                 bump = normalize(offset);
                 float3 tangentWS_xyz = inputData.tangentToWorld[0];
                 float tangentWS_w = inputData.tangentToWorld[1].x / cross(inputData.normalWS.xyz, tangentWS_xyz).x;
-                tangentWS_w = tangentWS_w - (-1) < 1 - tangentWS_w ? -1 : 1; 
+                tangentWS_w = abs(tangentWS_w - (-1)) < abs(1 - tangentWS_w) ? -1 : 1; 
                 float3 bitangentWS = normalize(cross(inputData.normalWS, tangentWS_xyz) * tangentWS_w);
                 float3x3 tangentTransform = float3x3(tangentWS_xyz, bitangentWS, inputData.normalWS);
                 float3 bumpWorld = normalize(mul(bump, tangentTransform));
@@ -301,10 +304,17 @@ Shader "ToonURP/ToonWater"
                 float shoreDisappearDepth = saturate(depthDifference / _DepthDisappearShore);
                 waterColor = afterBlend(waterColor, shoreDepth, shoreDisappearDepth);
                 color = afterBlend(color, shoreDepth, shoreDisappearDepth);
+
+                // underwater distortion
+                float4 blendStrength = float4(1, 1, 1, 1);
+                blendStrength = afterBlend(blendStrength, shoreDepth, shoreDisappearDepth);
+                float2 distortScreenUV = ScreenUV + -bump.xy * _UnderwaterDistortion * blendStrength.a;
+                float4 sceneColor = _CameraOpaqueTexture.SampleLevel(sampler_linear_clamp, distortScreenUV, 0);
+                
                 // fresnel term
                 float fTerm = saturate(BRDF_FresnelTerm(0.02 /*F0*/ , lightingData.NoVClamp) * _fresnelPow);
                 color = lerp(waterColor, color, fTerm);
-
+                color *= sceneColor;
                 //======================================
                 return color;
             }
