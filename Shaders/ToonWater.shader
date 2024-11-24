@@ -202,6 +202,22 @@ Shader "ToonURP/ToonWater"
                 return F0 + (1 - F0) * pow(1 - NdotV, 5);
             }
 
+            void calculate_F_Term(inout float a, inout float4 k) {
+                k.xyw = mul(k.xyw, float3x3(-2, -1, 2, 3, -2, 1, 1, 2, 2))*.3;
+                a = min(a,length(.5-frac(k.xyw)));
+            }
+
+            float4 calculateCaustic(float4 color, float2 screenUV) {
+                color = _Time * 0.2;
+                color.xy = screenUV * 12 + sin(color).w;
+                float a=1.;
+                calculate_F_Term(a,color);
+                calculate_F_Term(a,color);
+                calculate_F_Term(a,color);
+                color = pow(a,7.)*25.+float4(0,0,0,1);
+                return color;
+            }
+
             void PreProcessMaterial(inout InputData inputData, inout ToonSurfaceData surfaceData, float2 uv)
             {
                 // distort normal
@@ -310,6 +326,14 @@ Shader "ToonURP/ToonWater"
                 blendStrength = afterBlend(blendStrength, shoreDepth, shoreDisappearDepth);
                 float2 distortScreenUV = ScreenUV + -bump.xy * _UnderwaterDistortion * blendStrength.a;
                 float4 sceneColor = _CameraOpaqueTexture.SampleLevel(sampler_linear_clamp, distortScreenUV, 0);
+
+                // caustic effect. ref: https://www.shadertoy.com/view/4cl3W4
+                float4 inputColor = float4(1, 1, 1, 1);
+                float4 caustic = calculateCaustic(inputColor, additionInput.uv.xy);
+                caustic = afterBlend(caustic, shoreDepth, shoreDisappearDepth);
+                caustic.rgb = lerp(0, caustic.rgb, caustic.a);
+                sceneColor += caustic;
+                sceneColor = saturate(sceneColor);
                 // fresnel term
                 float fTerm = saturate(BRDF_FresnelTerm(0.02 /*F0*/ , lightingData.NoVClamp) * _FresnelPow);
                 color = lerp(waterColor, color, fTerm);
