@@ -64,6 +64,8 @@ float _CustomFloat5;
 float _CustomFloat6;
 float _CustomFloat7;
 float _CustomFloat8;
+float _CustomFloat9;
+float _CustomFloat10;
 
 float4 _CustomVector1;
 float4 _CustomVector2;

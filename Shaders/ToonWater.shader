@@ -38,7 +38,7 @@ Shader "ToonURP/ToonWater"
         [Sub(FeatureMode)] _CustomFloat7 ("Normal Strength", Float) = 1
         [Tex(FeatureMode)] _CustomCube1 ("Skybox Texture", Cube) = "_Skybox" {}
         [Sub(FeatureMode)] _CustomFloat8 ("Underwater Distortion", Range(0.01,1)) = 0.1
-
+        [Sub(FeatureMode)] _CustomFloat9 ("Caustic Scale", Range(1,50)) = 15
 
         // Lighting mode
         [Main(ShadingMode, _, off, off)] _ShadingModeGroup("ShadingMode", float) = 0
@@ -161,6 +161,7 @@ Shader "ToonURP/ToonWater"
             #define _NormalStrength _CustomFloat7
             #define _SkyboxTexture _CustomCube1
             #define _UnderwaterDistortion _CustomFloat8
+            #define _CausticScale _CustomFloat9
 
             float3 bump = 0;
 
@@ -209,7 +210,7 @@ Shader "ToonURP/ToonWater"
 
             float4 calculateCaustic(float4 color, float2 screenUV) {
                 color = _Time * 0.2;
-                color.xy = screenUV * 12 + sin(color).w;
+                color.xy = screenUV * _CausticScale + sin(color).w;
                 float a=1.;
                 calculate_F_Term(a,color);
                 calculate_F_Term(a,color);
