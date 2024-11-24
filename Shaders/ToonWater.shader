@@ -154,7 +154,7 @@ Shader "ToonURP/ToonWater"
             #define _DepthMaxDistance _CustomFloat2
             #define _DepthGradientShore _CustomFloat3
             #define _DepthDisappearShore _CustomFloat4
-            #define _fresnelPow _CustomFloat5
+            #define _FresnelPow _CustomFloat5
             #define _WaveSpeed _CustomVector1
             #define _NormalDistortMap _CustomMap2
             #define _NormalScale _CustomFloat6
@@ -187,6 +187,7 @@ Shader "ToonURP/ToonWater"
             {
                 return grad.rgb;
             }
+
             float4 afterBlend(float4 waterColor, float waterDepth, float shoreDisappearDepth)
             {
                 float3 color = waterColor.rgb;
@@ -309,12 +310,12 @@ Shader "ToonURP/ToonWater"
                 blendStrength = afterBlend(blendStrength, shoreDepth, shoreDisappearDepth);
                 float2 distortScreenUV = ScreenUV + -bump.xy * _UnderwaterDistortion * blendStrength.a;
                 float4 sceneColor = _CameraOpaqueTexture.SampleLevel(sampler_linear_clamp, distortScreenUV, 0);
-                
                 // fresnel term
-                float fTerm = saturate(BRDF_FresnelTerm(0.02 /*F0*/ , lightingData.NoVClamp) * _fresnelPow);
+                float fTerm = saturate(BRDF_FresnelTerm(0.02 /*F0*/ , lightingData.NoVClamp) * _FresnelPow);
                 color = lerp(waterColor, color, fTerm);
-                color *= sceneColor;
                 color = afterBlend(color, shoreDepth, shoreDisappearDepth);
+                color.rgb = lerp(sceneColor.rgb, color.rgb, color.a);
+                color.a = 1.0;
                 //======================================
                 return color;
             }
