@@ -22,6 +22,12 @@ git clone -b toon-urp https://github.com/Reuben-Sun/URP-Package.git
 git clone https://github.com/Reuben-Sun/ToonURP.git
 ```
 
+使用git lfs拉取二进制资源
+```
+cd ToonURP
+git lfs pull
+```
+
 > 如果你只打算使用ToonURP包，并不进行开发和查看历史记录，你可以使用浅克隆，以加速下载速度
 > 
 > `git clone --depth 1 https://github.com/Reuben-Sun/ToonURP.git`
