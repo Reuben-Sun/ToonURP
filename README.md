@@ -7,13 +7,16 @@
 
 ## 安装使用
 
+> 可以参考项目[ToonURP-Sample](https://github.com/Reuben-Sun/ToonURP-Sample)
+
 0. 使用Unity 2022.3创建一个build-in的项目（因为之后要自行添加URP包）
 
 1. 进入Unity项目的Packages文件夹
 2. 运行（这一步是clone一个我略微修改的URP package）
 
-```cpp
+```
 git clone -b toon-urp https://github.com/Reuben-Sun/URP-Package.git
+git clone https://github.com/Reuben-Sun/URP-Config-Package.git
 ```
 
 3. 运行（clone ToonURP）
